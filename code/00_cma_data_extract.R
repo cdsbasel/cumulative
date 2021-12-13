@@ -18,7 +18,7 @@ library(data.table)
 # READING XLSX FILES -------------------------------------------------------
 
 
-cma_file <- "~/Documents/GitHub/cumulative/data/cumulative_ma_data.xlsx"
+cma_file <- "data/cumulative_ma_data.xlsx"
 # list the sheets in excel workbook
 
 
@@ -78,22 +78,22 @@ for (CurrMA in ma_list) {
     
     colnames(ma_data) <- c("study",
                            "year",
-                           "task",
                            "n_young",
                            "n_old",
+                           "n",
                            "mean_age_young",
                            "mean_age_old",
-                           "task_type",
-                           "task_inc",
-                           "task_anon",
-                           "g")   
+                           "g",
+                           "se",
+                           "beh_task",
+                           "fin_task")   
     
     
     ma_data <- ma_data %>% mutate(pref = "altruism",
                                   ma_origin = CurrMA)
   } 
   
-
+  
   
   if (tolower(CurrMA) %like% "best") {
     
@@ -136,12 +136,12 @@ standard_df <- tibble(
   mean_edu_younger = character(),
   mean_edu_older = character(),
   task = character(),
-  task_type = character(),
-  task_inc = character(),
-  task_anon = character(),
   task_scen = character(),
   task_stak = character(),
+  beh_task = character(),
+  fin_task = character(),
   g = character(),
+  se = character(),
   g_pos_fram = character(),
   g_neg_fram = character(),
   w_fix = character(),
@@ -156,4 +156,4 @@ tidydata <- bind_rows(data_list) %>%
 
 
 
-write_csv(tidydata, file = "cma_data.csv")
+write_csv(tidydata, file = "data/cma_data.csv")
