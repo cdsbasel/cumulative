@@ -12,7 +12,7 @@ library(metafor)
 # READ DATA ---------------------------------------------------------------
 
 
-cma_file <- "cma_data.csv"
+cma_file <- "~/Documents/GitHub/cumulative/data/cma_data.csv"
 
 col_specs <- cols(
   pref = col_character(),
@@ -50,24 +50,45 @@ cma_data <- read_csv(cma_file, col_types = col_specs)
 
 cma_t <- cma_data %>% filter(pref == "time") %>% 
   
-  # not ideal, but unpublished results get assigned ther year 2021
+  # not ideal, but unpublished results get assigned the year 2021
   mutate(year = if_else(year == "unpublished", 2021, as.numeric(year)))
 
 # ARE THESE NEXT STEPS CORRECT? I checked Kendra's code on OSF, and yoU used the metacor package + 
 # I am not sure if I should use "zcor" as a measure, because otherwise the values are not converted back 
 
 ### calculate correlations and corresponding sampling variances
-cma_ <- escalc(measure = "COR", ri = g, ni = n, data = cma_t) 
+cma_t <- escalc(measure = "COR", ri = g, ni = n, data = cma_t) 
 
 # fitting a random-effects meta-analysis model  
 rma_model <-  rma(yi = yi, vi = vi, data = cma_, 
                   slab=paste0(study,", ",year, "   (", as.character(n), ")"))
 
 ### cumulative meta-analysis (in the order of publication year)
-tmp_y <- cumul(rma_model, order = order(cma_$year))
+tmp_y <- cumul(rma_model, order = cma_t$year)
 
 ### cumulative forest plot
 forest(tmp_y, cex=0.75, header="Author(s) and Year (Sample size)")
 
 
+# CMA : RISK (test) --------------------------------------------------------------
 
+cma_r <- cma_data %>% filter(pref == "risk") %>% 
+  
+  # not ideal, but unpublished results get assigned the year 2021
+  mutate(year = if_else(year == "unpublished", 2021, as.numeric(year)))
+
+# ARE THESE NEXT STEPS CORRECT? I checked Kendra's code on OSF, and yoU used the metacor package + 
+# I am not sure if I should use "zcor" as a measure, because otherwise the values are not converted back 
+
+### calculate correlations and corresponding sampling variances
+cma_r <- escalc(measure = "COR", ri = g, ni = n, data = cma_r) 
+
+# fitting a random-effects meta-analysis model  
+rma_model <-  rma(yi = yi, vi = vi, data = cma_r, 
+                  slab=paste0(study,", ",year, "   (", as.character(n), ")"))
+
+### cumulative meta-analysis (in the order of publication year)
+risk_y <- cumul(rma_model, order = cma_r$year)
+
+### cumulative forest plot
+forest(risk_y, cex=0.75, header="Author(s) and Year (Sample size)")

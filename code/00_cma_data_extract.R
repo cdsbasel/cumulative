@@ -18,7 +18,7 @@ library(data.table)
 # READING XLSX FILES -------------------------------------------------------
 
 
-cma_file <- "cumulative_ma_data.xlsx"
+cma_file <- "~/Documents/GitHub/cumulative/data/cumulative_ma_data.xlsx"
 # list the sheets in excel workbook
 
 
