@@ -45,7 +45,10 @@ for (CurrMA in ma_list) {
                            "mean_edu_older",
                            "g",
                            "g_gain_dom",
-                           "g_loss_dom")   
+                           "g_loss_dom",
+                           "se",
+                           "se_gain_dom",
+                           "se_loss_dom")   
     
     ma_data[ma_data == "-"] <- NA
     ma_data <- ma_data %>% mutate(pref = "risk",
@@ -106,7 +109,9 @@ for (CurrMA in ma_list) {
                            "task_scen",
                            "task_stak",
                            "g_pos_fram",
-                           "g_neg_fram")   
+                           "g_neg_fram",
+                           "se_pos_fram",
+                           "se_neg_fram")   
     
     ma_data[ma_data == "-"] <- NA
     ma_data <- ma_data %>% mutate(pref = "risk",
@@ -144,10 +149,14 @@ standard_df <- tibble(
   se = character(),
   g_pos_fram = character(),
   g_neg_fram = character(),
+  se_pos_fram = character(),
+  se_neg_fram = character(),
   w_fix = character(),
   w_rang = character(),
   g_gain_dom = character(),
-  g_loss_dom = character())
+  g_loss_dom = character(),
+  se_gain_dom = character(),
+  se_loss_dom = character())
 
 
 tidydata <- bind_rows(data_list) %>%

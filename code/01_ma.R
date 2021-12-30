@@ -60,35 +60,34 @@ col_specs <- cols(
 cma_data <- read_csv(cma_file, col_types = col_specs)
 
 
-# CMA BY YEAR: TIME -------------------------------------------------------
+# MA BY STUDY : TIME  --------------------------------------------------------------
 
 cma_t <- cma_data %>% filter(pref == "time") %>% 
   # not ideal, but unpublished results get assigned the year 2021
   mutate(year = if_else(year == "unpublished", 2021, as.numeric(year)))
 
+# ARE THESE NEXT STEPS CORRECT? I checked Kendra's code on OSF, and yoU used the metacor package + 
+# I am not sure if I should use "zcor" as a measure, because otherwise the values are not converted back 
+
+
+### Aggregate Multiple Effect Sizes or Outcomes Within Studies
+# NA
+
 ### calculate correlations and corresponding sampling variances
 cma_t <- escalc(measure = "COR", ri = g, ni = n, data = cma_t) 
 
-
-## aggregate by year (assuming independent samples...)
-cma_t <- aggregate.escalc(cma_t, cluster=year, struct="ID")
-
 # fitting a random-effects meta-analysis model  
 rma_model <-  rma(yi = yi, vi = vi, data = cma_t, 
-                  slab=paste0(year))
+                  slab=paste0(study,", ",year, "   (", as.character(n), ")"))
 
-### cumulative meta-analysis (in the order of publication year)
-tmp_y <- cumul(rma_model, order = cma_t$year)
 
-### cumulative forest plot
 
-### cumulative forest plot
-png("figures/cma_time_year.png", height = 15, width = 15, units = "cm", res = 600)
-forest(tmp_y, cex=0.75, header="Year of Publication")
+### forest plot
+png("figures/ma_time.png", height = 30, width = 20, units = "cm", res = 600)
+forest(rma_model, cex=0.75, header="Author(s) and Year (Sample size)")
 dev.off()
 
-
-# CMA BY YEAR : RISK --------------------------------------------------------------
+# CMA BY STUDY : RISK --------------------------------------------------------------
 
 cma_r <- cma_data %>% 
   filter(pref == "risk" & !task_scen %in% c("Mort", "Var"))  %>% # only take into account monetary tasks
@@ -111,34 +110,24 @@ cma_r <- bind_rows(cma_ra, cma_rb, cma_rc, cma_rd, cma_re)
 # what do we do about the pos/neg framing and gain/loss domain? Should we aggregate these?
 
 
-
-
 cma_r <- escalc(yi = g, sei = se, data = cma_r)
 
-
-## aggregate by study first and then year (assuming independent samples...NOT ACCURATE!)
-cma_r <- aggregate.escalc(cma_r, cluster=study, struct="ID")
-cma_r <- aggregate.escalc(cma_r, cluster=year, struct="ID")
+## Aggregate Multiple Effect Sizes or Outcomes Within Studies (assuming independent samples, not ideal...)
+cma_r <- aggregate.escalc(cma_r, cluster = study, struct="ID")
 
 
 rma_model <-  rma(yi, vi , data = cma_r, 
-                  slab=paste0(year))
-
-### cumulative meta-analysis (in the order of publication year)
-risk_y <- cumul(rma_model, order = cma_r$year)
+                  slab=paste0(study,"   (", as.character(n), ")"))
 
 
-### cumulative forest plot
-png("figures/cma_risk_year.png", height = 15, width = 15, units = "cm", res = 600)
-forest(risk_y, cex=0.75, header="Year of Publication")
+### forest plot
+png("figures/ma_risk.png", height = 30, width = 20, units = "cm", res = 600)
+forest(rma_model, cex=0.75, header="Author(s) and Year (Sample size)")
 dev.off()
 
 
 
-
-
-
-# CMA BY YEAR : ALTRUISM --------------------------------------------------------------
+# CMA BY STUDY : ALTRUISM --------------------------------------------------------------
 
 cma_a <- cma_data %>% 
   filter(pref == "altruism" & beh_task == 1 & fin_task == 1) %>% #  need to make sure we are selecting the correct studies with taks of interest
@@ -151,20 +140,13 @@ cma_a <- escalc(yi = g, sei = se, data = cma_a)
 ## Aggregate Multiple Effect Sizes or Outcomes Within Studies (assuming independent samples, not ideal...)
 # NA
 
-## aggregate by year (assuming independent samples...)
-cma_a <- aggregate.escalc(cma_a, cluster=year, struct="ID")
-
-
 rma_model <-  rma(yi = yi, vi = vi, data = cma_a, 
-                  slab=paste0(year))
+                  slab=paste0(study,", ",year, "   (", as.character(n), ")"))
 
 
-### cumulative meta-analysis (in the order of publication year)
-alt_y <- cumul(rma_model, order = cma_a$year)
-
-### cumulative forest plot
-png("figures/cma_altruism_year.png", height = 15, width = 15, units = "cm", res = 600)
-forest(alt_y, cex=0.75, header="Year of Publication")
+### forest plot
+png("figures/ma_altruism.png", height = 20, width = 15, units = "cm", res = 600)
+forest(rma_model, cex=0.75, header="Author(s) and Year (Sample size)")
 dev.off()
 
 
