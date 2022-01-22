@@ -17,6 +17,7 @@
 
 library(tidyverse)
 library(metafor)
+library(data.table)
 
 
 # READ DATA ---------------------------------------------------------------
@@ -45,14 +46,10 @@ col_specs <- cols(
   se = col_double(),
   g_pos_fram = col_double(),
   g_neg_fram = col_double(),
-  se_pos_fram = col_double(),
-  se_neg_fram = col_double(),
   w_fix = col_double(),
   w_rang = col_double(),
   g_gain_dom = col_double(),
-  g_loss_dom = col_double(),
-  se_gain_dom = col_double(),
-  se_loss_dom = col_double()
+  g_loss_dom = col_double()
 )
 
 
@@ -60,95 +57,125 @@ col_specs <- cols(
 cma_data <- read_csv(cma_file, col_types = col_specs)
 
 
-# MA BY STUDY : TIME  --------------------------------------------------------------
+# MA : TIME  --------------------------------------------------------------
 
 cma_t <- cma_data %>% filter(pref == "time") %>% 
-  # not ideal, but unpublished results get assigned the year 2021
-  mutate(year = if_else(year == "unpublished", 2021, as.numeric(year)))
+  # adding date for unpublished results 
+  mutate(year = case_when(year == "unpublished" & study == "Lempert" ~ "2018",
+                          year == "unpublished" & study == "Sisso" ~ "2017",
+                          year == "unpublished" & study == "Li (study 2)" ~ "2020",
+                          TRUE ~ year),
+         year = as.numeric(year))
 
-# ARE THESE NEXT STEPS CORRECT? I checked Kendra's code on OSF, and yoU used the metacor package + 
-# I am not sure if I should use "zcor" as a measure, because otherwise the values are not converted back 
 
-
-### Aggregate Multiple Effect Sizes or Outcomes Within Studies
-# NA
-
-### calculate correlations and corresponding sampling variances
-cma_t <- escalc(measure = "COR", ri = g, ni = n, data = cma_t) 
+# calculating corresponding sampling variances
+# vtype = "AV" leads to comparable results, even "narrower" CIs and lower ESs
+cma_t <- escalc(measure = "COR", ri = g, ni = n, data = cma_t, vtype = "LS") 
 
 # fitting a random-effects meta-analysis model  
-rma_model <-  rma(yi = yi, vi = vi, data = cma_t, 
+rma_model <-  rma(yi = yi,
+                  vi = vi,
+                  data = cma_t, 
                   slab=paste0(study,", ",year, "   (", as.character(n), ")"))
 
 
 
-### forest plot
-png("figures/ma_time.png", height = 30, width = 20, units = "cm", res = 600)
-forest(rma_model, cex=0.75, header="Author(s) and Year (Sample size)")
+
+write_rds(rma_model, file = "output/ma_time.rds")
+
+# save default cumulative forest plot
+png("figures/ma_time_def.png", height = 25, width = 15, units = "cm", res = 600)
+forest(rma_model, cex=0.75, header="Author(s) and Year (Sample size)", order = "obs")
 dev.off()
 
-# CMA BY STUDY : RISK --------------------------------------------------------------
+
+# MA : RISK --------------------------------------------------------------
 
 cma_r <- cma_data %>% 
-  filter(pref == "risk" & !task_scen %in% c("Mort", "Var"))  %>% # only take into account monetary tasks
-  mutate(n = case_when(is.na(n) ~ n_young + n_old,
+  # only take into account monetary tasks
+  filter(pref == "risk" & ma_origin == "Best_Charness (2015)")  %>% #!task_scen %in% c("Mort", "Var") 
+  # classify ESs into a gain, or loss or dk domain
+  mutate(g = case_when(!is.na(g) & c(!is.na(g_gain_dom) | !is.na(g_loss_dom)) ~ NA_real_,
+                       TRUE ~ g)) %>% 
+  pivot_longer(c(g, g_pos_fram, g_neg_fram, g_gain_dom, g_loss_dom), names_to = "g_type", values_to = "g_val") %>% 
+  filter(!is.na(g_val)) %>% 
+  mutate(g_type = case_when(g_type %in% c("g_pos_fram") ~ "g_gain_dom",
+                            g_type %in% c("g_neg_fram") ~ "g_loss_dom",
+                            g_type %in% c("g") ~ "g_dk_dom",
+                            TRUE ~ g_type),
+         n = case_when(is.na(n) ~ n_young + n_old,
                        TRUE ~ n),
-         study = paste0(study,", ",year))
-
-## Fairly messy, will need to fix this
-cma_ra<- cma_r %>%  select(c(pref:n_old), se, g)  %>% filter(!is.na(g)) 
-cma_rb<- cma_r %>%  select(c(pref:n_old), se_neg_fram, g_neg_fram)  %>% filter(!is.na(g_neg_fram)) %>%
-  rename(se = se_neg_fram, g = g_neg_fram)
-cma_rc<- cma_r %>%  select(c(pref:n_old), se_pos_fram, g_pos_fram)  %>% filter(!is.na(g_pos_fram)) %>%
-  rename(se = se_pos_fram, g = g_pos_fram)
-cma_rd<- cma_r %>%  select(c(pref:n_old), se_loss_dom, g_loss_dom)  %>% filter(!is.na(g_loss_dom)) %>%
-  rename(se = se_loss_dom, g = g_loss_dom)
-cma_re<- cma_r %>%  select(c(pref:n_old), se_gain_dom, g_gain_dom)  %>% filter(!is.na(g_gain_dom))%>%
-  rename(se = se_gain_dom, g = g_gain_dom)
-
-cma_r <- bind_rows(cma_ra, cma_rb, cma_rc, cma_rd, cma_re) 
-# what do we do about the pos/neg framing and gain/loss domain? Should we aggregate these?
+         study = paste0(study,", ",year)) %>% 
+  # calculating se since not given in the MAs 
+  # (https://stats.stackexchange.com/questions/495015/what-is-the-formula-for-the-standard-error-of-cohens-d)
+  mutate(se = sqrt((n_young + n_old)/(n_young*n_old)) + ((g_val^2)/(2*(n_young + n_old)))) %>% 
+  select(study, g_val, g_type, year, se, n) %>% 
+  # removing duplicates
+  distinct(study, g_type, n,year, .keep_all = T) %>% 
+  filter(study != "Weller et al.") # not sure about this one....
 
 
-cma_r <- escalc(yi = g, sei = se, data = cma_r)
 
-## Aggregate Multiple Effect Sizes or Outcomes Within Studies (assuming independent samples, not ideal...)
-cma_r <- aggregate.escalc(cma_r, cluster = study, struct="ID")
+# no need to aggregate ESs (1 per (sub)study)
+cma_r <- escalc(yi = g_val, sei = se, data = cma_r)
+
+# separating ESs into gains and losses
+cma_r_loss <- cma_r %>% filter(g_type == "g_loss_dom")
+cma_r_gain <- cma_r %>% filter(g_type == "g_gain_dom")
+
+rma_model_g <-  rma(yi = yi,
+                    vi = vi,
+                    data = cma_r_gain, 
+                    slab=paste0(study,"   (", as.character(n), ")"))
 
 
-rma_model <-  rma(yi, vi , data = cma_r, 
-                  slab=paste0(study,"   (", as.character(n), ")"))
+rma_model_l <-  rma(yi = yi,
+                    vi = vi,
+                    data = cma_r_loss, 
+                    slab=paste0(study,"   (", as.character(n), ")"))
 
 
-### forest plot
-png("figures/ma_risk.png", height = 30, width = 20, units = "cm", res = 600)
-forest(rma_model, cex=0.75, header="Author(s) and Year (Sample size)")
+
+write_rds(rma_model_g, file = "output/ma_risk_g.rds")
+
+
+write_rds(rma_model_l, file = "output/ma_risk_l.rds")
+
+### cumulative forest plot
+png("figures/ma_risk_l_def.png", height = 30, width = 20, units = "cm", res = 600)
+forest(rma_model_l, cex=0.75, header="Author(s) and Year (Sample size)", order = "obs")
+dev.off()
+
+png("figures/ma_risk_g_def.png", height = 30, width = 20, units = "cm", res = 600)
+forest(rma_model_g, cex=0.75, header="Author(s) and Year (Sample size)", order = "obs")
 dev.off()
 
 
+# MA : ALTRUISM --------------------------------------------------------------
 
-# CMA BY STUDY : ALTRUISM --------------------------------------------------------------
-
+# select studies with task of interest (i.e., lab based financial/monetary tasks; no real-world donations) 
 cma_a <- cma_data %>% 
-  filter(pref == "altruism" & beh_task == 1 & fin_task == 1) %>% #  need to make sure we are selecting the correct studies with taks of interest
+  filter(pref == "altruism" & beh_task == 1 & fin_task == 1 & !study %in% c("Freund: Exp 4", "Sze")) %>% 
   mutate(year = as.numeric(year),
          n = if_else(is.na(n), n_young + n_old, n))
 
-
+# calculating corresponding sampling variances (i.e., se^2)
 cma_a <- escalc(yi = g, sei = se, data = cma_a)
 
-## Aggregate Multiple Effect Sizes or Outcomes Within Studies (assuming independent samples, not ideal...)
-# NA
 
-rma_model <-  rma(yi = yi, vi = vi, data = cma_a, 
+# fitting a random-effects meta-analysis model  
+rma_model <-  rma(yi = yi,
+                  vi = vi,
+                  data = cma_a, 
                   slab=paste0(study,", ",year, "   (", as.character(n), ")"))
 
 
-### forest plot
-png("figures/ma_altruism.png", height = 20, width = 15, units = "cm", res = 600)
-forest(rma_model, cex=0.75, header="Author(s) and Year (Sample size)")
-dev.off()
+write_rds(rma_model, file = "output/ma_altrusim.rds")
 
+### cumulative forest plot
+png("figures/ma_altruism_def.png", height = 20, width = 15, units = "cm", res = 600)
+forest(rma_model, cex=0.75, header="Author(s) and Year (Sample size)", order = "obs")
+dev.off()
 
 
 

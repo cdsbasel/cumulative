@@ -75,7 +75,7 @@ cma_t <- escalc(measure = "COR", ri = g, ni = n, data = cma_t, vtype = "LS")
 rma_model <-  rma(yi = yi,
                   vi = vi,
                   data = cma_t, 
-                  slab=paste0(study,", ",year, "   (", as.character(n), ")"))
+                  slab=paste0(study," (",year, ")"))
 
 # cumulative meta-analysis (in the order of publication year)
 tmp_y <- cumul(rma_model, order = cma_t$year)
@@ -84,7 +84,7 @@ write_rds(tmp_y, file = "output/cma_study_time.rds")
 
 # save default cumulative forest plot
 png("figures/cma_time_study_def.png", height = 25, width = 15, units = "cm", res = 600)
-forest(tmp_y, cex=0.75, header="Author(s) and Year (Sample size)")
+forest(tmp_y, cex=0.75, header="Author(s) and Year")
 dev.off()
 
 
@@ -105,7 +105,7 @@ cma_r <- cma_data %>%
                             TRUE ~ g_type),
          n = case_when(is.na(n) ~ n_young + n_old,
                        TRUE ~ n),
-         study = paste0(study,", ",year)) %>% 
+         study = paste0(study," (",year, ")")) %>% 
   # calculating se since not given in the MAs 
   # (https://stats.stackexchange.com/questions/495015/what-is-the-formula-for-the-standard-error-of-cohens-d)
   mutate(se = sqrt((n_young + n_old)/(n_young*n_old)) + ((g_val^2)/(2*(n_young + n_old)))) %>% 
@@ -126,13 +126,13 @@ cma_r_gain <- cma_r %>% filter(g_type == "g_gain_dom")
 rma_model_g <-  rma(yi = yi,
                     vi = vi,
                     data = cma_r_gain, 
-                    slab=paste0(study,"   (", as.character(n), ")"))
+                    slab=paste0(study))
 
 
 rma_model_l <-  rma(yi = yi,
                     vi = vi,
                     data = cma_r_loss, 
-                    slab=paste0(study,"   (", as.character(n), ")"))
+                    slab=paste0(study))
 
 
 
@@ -145,11 +145,11 @@ write_rds(risk_y_l, file = "output/cma_study_risk_l.rds")
 
 ### cumulative forest plot
 png("figures/cma_risk_l_study_def.png", height = 30, width = 20, units = "cm", res = 600)
-forest(risk_y_l, cex=0.75, header="Author(s) and Year (Sample size)")
+forest(risk_y_l, cex=0.75, header="Author(s) and Year")
 dev.off()
 
 png("figures/cma_risk_g_study_def.png", height = 30, width = 20, units = "cm", res = 600)
-forest(risk_y_g, cex=0.75, header="Author(s) and Year (Sample size)")
+forest(risk_y_g, cex=0.75, header="Author(s) and Year")
 dev.off()
 
 
@@ -169,7 +169,7 @@ cma_a <- escalc(yi = g, sei = se, data = cma_a)
 rma_model <-  rma(yi = yi,
                   vi = vi,
                   data = cma_a, 
-                  slab=paste0(study,", ",year, "   (", as.character(n), ")"))
+                  slab=paste0(study," (",year, ")"))
 
 
 ### cumulative meta-analysis (in the order of publication year)
@@ -179,7 +179,7 @@ write_rds(alt_y, file = "output/cma_study_altrusim.rds")
 
 ### cumulative forest plot
 png("figures/cma_altruism_study_def.png", height = 20, width = 15, units = "cm", res = 600)
-forest(alt_y, cex=0.75, header="Author(s) and Year (Sample size)")
+forest(alt_y, cex=0.75, header="Author(s) and Year")
 dev.off()
 
 

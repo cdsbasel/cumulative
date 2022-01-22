@@ -63,6 +63,7 @@ cma_t <- cma_data %>% filter(pref == "time") %>%
                           year == "unpublished" & study == "Sisso" ~ "2017",
                           year == "unpublished" & study == "Li (study 2)" ~ "2020",
                           TRUE ~ year),
+         study = paste0(study, " (", year, ")"),
          year = as.numeric(year))
 
 
@@ -70,27 +71,33 @@ cma_t <- cma_data %>% filter(pref == "time") %>%
 # vtype = "AV" leads to comparable results, even "narrower" CIs and lower ESs
 cma_t <- escalc(measure = "COR", ri = g, ni = n, data = cma_t, vtype = "LS") 
 
+cma_t <- summary(cma_t)
+cma_t <- cma_t %>% arrange(yi) %>% mutate(order_ = 1:n())
 
-## aggregate by year (assuming independent samples...)
-cma_t <- aggregate.escalc(cma_t, cluster=year, struct="ID")
+ma_t <- read_rds(file = "output/ma_time.rds")
 
 
-# fitting a random-effects meta-analysis model  
-rma_model <-  rma(yi = yi,
-                  vi = vi,
-                  data = cma_t, 
-                  slab = as.character(year))
 
-# cumulative meta-analysis (in the order of publication year)
-tmp_y <- cumul(rma_model, order = cma_t$year)
+cma_t <- bind_rows(cma_t,
+                   data.frame(study = "Overall", yi = ma_t$beta[1], ci.ub = ma_t$ci.ub, ci.lb = ma_t$ci.lb, order_ = nrow(cma_t)+1))
 
-write_rds(tmp_y, file = "output/cma_year_time.rds")
+#setting up the basic plot
+p <- cma_t %>% 
+  ggplot(aes(y= reorder(study,-order_), x= yi, xmin=ci.lb, xmax=ci.ub))+ 
+  #this adds the effect sizes to the plot
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey80", size = 0.5) +
+  geom_point(shape = c(rep(15,41),18), size = c(rep(1,41),3.5), color = "grey15")+ 
+  geom_errorbarh(height=.2, color = "grey15") +
+  theme_minimal() +
+  labs(y = "", x = "cor") +
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "Barlow", color = "grey15"),
+        axis.text.y = element_text(color = "grey15", face=c("bold",rep("plain", 41)),
+                                   size=c(10, rep(6, 41))))
+p
 
-# save default cumulative forest plot
-png("figures/cma_time_year_def.png", height = 25, width = 15, units = "cm", res = 600)
-forest(tmp_y, cex=0.75, header= "Year of Publication")
-dev.off()
 
+ggsave(filename = "figures/ma_time.png", plot = p, width = 10, height = 13.5, units = "cm", dpi = 600)
 
 # CMA BY STUDY : RISK --------------------------------------------------------------
 
@@ -171,30 +178,39 @@ dev.off()
 cma_a <- cma_data %>% 
   filter(pref == "altruism" & beh_task == 1 & fin_task == 1 & !study %in% c("Freund: Exp 4", "Sze")) %>% 
   mutate(year = as.numeric(year),
+         study = paste0(study, " (", year, ")"),
          n = if_else(is.na(n), n_young + n_old, n))
 
 # calculating corresponding sampling variances (i.e., se^2)
 cma_a <- escalc(yi = g, sei = se, data = cma_a)
 
-## aggregate by year (assuming independent samples...)
-cma_a <- aggregate.escalc(cma_a, cluster=year, struct="ID")
+cma_a <- summary(cma_a)
+cma_a <- cma_a %>% arrange(yi) %>% mutate(order_ = 1:n())
 
-# fitting a random-effects meta-analysis model  
-rma_model <-  rma(yi = yi,
-                  vi = vi,
-                  data = cma_a, 
-                  slab = as.character(year))
+ma_a <- read_rds(file = "output/ma_altrusim.rds")
 
-### cumulative meta-analysis (in the order of publication year)
-alt_y <- cumul(rma_model, order = cma_a$year)
 
-write_rds(alt_y, file = "output/cma_year_altrusim.rds")
 
-### cumulative forest plot
-png("figures/cma_altruism_year_def.png", height = 20, width = 15, units = "cm", res = 600)
-forest(alt_y, cex=0.75, header="Year of Publication")
-dev.off()
+cma_a <- bind_rows(cma_a,
+                   data.frame(study = "Overall", yi = ma_a$beta[1], ci.ub = ma_a$ci.ub, ci.lb = ma_a$ci.lb, order_ = nrow(cma_a)+1))
 
+#setting up the basic plot
+p <- cma_a %>% 
+  ggplot(aes(y= reorder(study,-order_), x= yi, xmin=ci.lb, xmax=ci.ub))+ 
+  #this adds the effect sizes to the plot
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey80", size = 0.5) +
+  geom_point(shape = c(rep(15,9),18), size = c(rep(1.5,9),4), color = "grey15")+ 
+  geom_errorbarh(height=.2, color = "grey15") +
+  theme_minimal() +
+  labs(y = "", x = "cor") +
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "Barlow", color = "grey15"),
+        axis.text.y = element_text(color = "grey15", face=c("bold",rep("plain", 9)),
+                                   size=c(12, rep(8, 9))))
+p
+
+
+ggsave(filename = "figures/ma_altruism.png", plot = p, width = 10, height = 13.5, units = "cm", dpi = 600)
 
 
 
