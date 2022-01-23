@@ -32,41 +32,74 @@ risk,Mata_et_al(2011),Weller et al.,2010,419,358,61,18-22,65-85,NA,NA,Sure/risky
 risk,Mata_et_al(2011),Wood et al.,2005,150,87,63,23,77,14.2,14.7,IGT,NA,NA,NA,NA,0.1,NA,NA,NA,NA,NA,NA,NA
 risk,Mata_et_al(2011),Zamarian et al.,2008,85,33,52,36.1,69.3,10.7,10.4,IGT,NA,NA,NA,NA,0.76,NA,NA,NA,NA,NA,NA,NA
 risk,Mata_et_al(2011),Zamarian et al.,2008,85,33,52,36.1,69.3,10.7,10.4,Sure/risky,NA,NA,NA,NA,0.19,NA,NA,NA,NA,NA,NA,NA
-risk,Best_Charness (2015),Bruine de Bruin et al.,2007,NA,63,56,NA,NA,NA,NA,NA,Var,Var,NA,NA,NA,NA,0.31,0.04,NA,NA,NA,NA
-risk,Best_Charness (2015),Bruine de Bruin et al.,2007,NA,63,56,NA,NA,NA,NA,NA,Mort,Small,NA,NA,NA,NA,-0.03,0.03,NA,NA,NA,NA
-risk,Best_Charness (2015),Holliday,1988,NA,24,24,NA,NA,NA,NA,NA,Fin,Large,NA,NA,NA,NA,0.11,-0.21,NA,NA,NA,NA
-risk,Best_Charness (2015),Karns,2013,NA,119,106,NA,NA,NA,NA,NA,Mort,Small,NA,NA,NA,NA,-0.69,-1.26,NA,NA,NA,NA
-risk,Best_Charness (2015),Kim et al. (1),2005,NA,53,53,NA,NA,NA,NA,NA,Mort,Var,NA,NA,NA,NA,0.54,1.33,NA,NA,NA,NA
-risk,Best_Charness (2015),Kim et al (1),2005,NA,53,53,NA,NA,NA,NA,NA,Mort,Small,NA,NA,NA,NA,0.89,0.93,NA,NA,NA,NA
-risk,Best_Charness (2015),Kim et al (2),2005,NA,40,40,NA,NA,NA,NA,NA,Mort,Var,NA,NA,NA,NA,-0.74,1.52,NA,NA,NA,NA
-risk,Best_Charness (2015),Kim et al (2),2005,NA,40,40,NA,NA,NA,NA,NA,Mort,Small,NA,NA,NA,NA,-0.62,0.55,NA,NA,NA,NA
-risk,Best_Charness (2015),Lauriola & Levin,2005,NA,26,23,NA,NA,NA,NA,NA,Mort,Large,NA,NA,NA,NA,-0.54,0.38,NA,NA,NA,NA
-risk,Best_Charness (2015),Mather et al. (1),2012,NA,38,38,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,-0.8,NA,NA,NA,NA,NA
-risk,Best_Charness (2015),Mather et al. (2),2012,NA,48,48,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,-0.86,NA,NA,NA,NA,NA
-risk,Best_Charness (2015),Mather et al. (3),2012,NA,20,20,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,NA,1.65,NA,NA,NA,NA
-risk,Best_Charness (2015),Mather et al. (4),2012,NA,107,50,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,0.06,0.36,NA,NA,NA,NA
-risk,Best_Charness (2015),Mayhorn et al.,2002,NA,58,58,NA,NA,NA,NA,NA,Var,Var,NA,NA,NA,NA,-0.59,-0.29,NA,NA,NA,NA
-risk,Best_Charness (2015),Mayhorn et al.,2002,NA,58,58,NA,NA,NA,NA,NA,Fin,Large,NA,NA,NA,NA,-0.79,0,NA,NA,NA,NA
-risk,Best_Charness (2015),McKee,2001,NA,166,137,NA,NA,NA,NA,NA,Mort,Small,NA,NA,NA,NA,0.19,0.33,NA,NA,NA,NA
-risk,Best_Charness (2015),Mikels & Reed,2009,NA,22,22,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,-0.03,-0.7,NA,NA,NA,NA
-risk,Best_Charness (2015),Ronnlund et al. (1),2005,NA,32,32,NA,NA,NA,NA,NA,Mort,Large,NA,NA,NA,NA,-1.08,-1.06,NA,NA,NA,NA
-risk,Best_Charness (2015),Ronnlund et al. (2),2005,NA,32,32,NA,NA,NA,NA,NA,Fin,Large,NA,NA,NA,NA,0,-0.24,NA,NA,NA,NA
-risk,Best_Charness (2015),Ronnlund et al. (3),2005,NA,32,32,NA,NA,NA,NA,NA,Fin,Large,NA,NA,NA,NA,1.08,0.48,NA,NA,NA,NA
-risk,Best_Charness (2015),Sproten et al.,2010,NA,51,24,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,0.05,NA,NA,NA,NA,NA
-risk,Best_Charness (2015),Sproten,2012,NA,36,18,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,-0.3,NA,NA,NA,NA,NA
-risk,Best_Charness (2015),Thomas & Millar (1),2012,NA,68,68,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,-0.12,0.07,NA,NA,NA,NA
-risk,Best_Charness (2015),Thomas & Millar (2),2012,NA,68,68,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,-0.15,0.04,NA,NA,NA,NA
-risk,Best_Charness (2015),Thomas & Millar (3),2012,NA,60,60,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,-0.04,0.75,NA,NA,NA,NA
-risk,Best_Charness (2015),Thomas & Millar (4),2012,NA,60,60,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,-0.08,-0.04,NA,NA,NA,NA
-risk,Best_Charness (2015),Tymula Glimcher et al.,2012,NA,34,36,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,-0.37,-0.19,NA,NA,NA,NA
-risk,Best_Charness (2015),Watanabe & Shibutani (1),2010,NA,41,87,NA,NA,NA,NA,NA,Mort,Var,NA,NA,NA,NA,-1.13,NA,NA,NA,NA,NA
-risk,Best_Charness (2015),Watanabe & Shibutani (1),2010,NA,41,87,NA,NA,NA,NA,NA,Mort,Large,NA,NA,NA,NA,-0.89,NA,NA,NA,NA,NA
-risk,Best_Charness (2015),Watanabe & Shibutani (2),2010,NA,41,81,NA,NA,NA,NA,NA,Mort,Var,NA,NA,NA,NA,NA,-1.93,NA,NA,NA,NA
-risk,Best_Charness (2015),Watanabe & Shibutani (2),2010,NA,41,81,NA,NA,NA,NA,NA,Mort,Large,NA,NA,NA,NA,NA,-1.59,NA,NA,NA,NA
-risk,Best_Charness (2015),"Weller, Levin & Denburg",2011,NA,358,61,NA,NA,NA,NA,NA,Fin,Small,NA,NA,NA,NA,-0.81,-0.1,NA,NA,NA,NA
-risk,Best_Charness (2015),Woodhead (1),2006,NA,32,29,NA,NA,NA,NA,NA,Mort,Small,NA,NA,NA,NA,-0.4,0.03,NA,NA,NA,NA
-risk,Best_Charness (2015),Woodhead (2),2006,NA,31,29,NA,NA,NA,NA,NA,Mort,Small,NA,NA,NA,NA,0.8,-0.44,NA,NA,NA,NA
-risk,Best_Charness (2015),Woodhead,2008,NA,40,40,NA,NA,NA,NA,NA,Mort,Small,NA,NA,NA,NA,-1.25,-0.22,NA,NA,NA,NA
+risk,Mata_et_al(2011),Ashman et al.,2003,32,16,16,25,75,NA,NA,Blackjack,NA,NA,NA,NA,0.06,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Baena et al.,2010,78,39,39,18-35,60-90,NA,NA,IGT,NA,NA,NA,NA,1.72,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Bruine de Bruin et al.,2007,119,63,56,24.9,76.7,NA,NA,Sure/risky,NA,NA,NA,NA,0.19,NA,NA,NA,NA,NA,0.15,0
+risk,Mata_et_al(2011),Deakin et al.,2004,86,41,45,17-27,53-79,NA,NA,CGT,NA,NA,NA,NA,0.31,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Denburg et al.,2005,80,40,40,26-55,56-85,NA,NA,IGT,NA,NA,NA,NA,2.72,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Denburg et al.,2009,152,73,79,74,48.6,15.8,15.8,IGT,NA,NA,NA,NA,0.48,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Dror et al.,1998,36,18,18,18-22,59-91,NA,NA,Blackjack,NA,NA,NA,NA,-0.45,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Fein et al.,2010,164,112,52,37.799999999999997,73.3,16.4,16.1,IGT,NA,NA,NA,NA,0.71,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Henninger et al.,2010,112,58,54,23.4,70.069999999999993,15,15.9,IGT,NA,NA,NA,NA,0.05,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Henninger et al.,2010,112,58,54,23.4,70.069999999999993,15,15.9,BART,NA,NA,NA,NA,-0.71,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Henninger et al.,2010,112,58,54,23.4,70.069999999999993,15,15.9,CGT,NA,NA,NA,NA,0.9,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Holliday,1988,48,24,24,24.2,69.400000000000006,14.9,12.6,Sure/risky,NA,NA,NA,NA,-0.08,NA,NA,NA,NA,NA,0.11,-0.39
+risk,Mata_et_al(2011),Isella et al.,2008,80,40,40,27.9,65.400000000000006,13.1,8.7,IGT,NA,NA,NA,NA,0.32,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Kim et al.,2005,80,186,186,17-29,58-79,NA,NA,Sure/risky,NA,NA,NA,NA,0.95,NA,NA,NA,NA,NA,0.54,1.35
+risk,Mata_et_al(2011),Kim et al.,2005,106,186,186,17-30,58-80,NA,NA,Sure/risky,NA,NA,NA,NA,0.09,NA,NA,NA,NA,NA,-0.74,0.93
+risk,Mata_et_al(2011),Lamar & Resnick,2004,43,23,20,28.4,69.099999999999994,15.7,15.5,IGT,NA,NA,NA,NA,-0.03,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Laurioa & Levin,2001,49,26,23,21-40,61-80,NA,NA,Sure/risky,NA,NA,NA,NA,0.03,NA,NA,NA,NA,NA,-0.54,0.39
+risk,Mata_et_al(2011),Lee et al.,2008,21,12,9,29.2,65.2,17.2,16.2,Sure/risky,NA,NA,NA,NA,-0.89,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),MacPherson et al.,2001,60,30,30,28.8,69.900000000000006,14,12.4,IGT,NA,NA,NA,NA,0.61,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Mayhorn et al.,2002,116,58,58,20.3,70.3,NA,NA,Sure/risky,NA,NA,NA,NA,-0.61,NA,NA,NA,NA,NA,-0.84,NA
+risk,Mata_et_al(2011),Mikels & Reed,2009,44,22,22,19.8,71.599999999999994,14.6,15.8,Sure/risky,NA,NA,NA,NA,-0.39,NA,NA,NA,NA,NA,-0.03,-0.69
+risk,Mata_et_al(2011),Rafaely et al. (1),2006,87,42,45,20.9,70.5,14.6,13.3,Blackjack,NA,NA,NA,NA,-0.13,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Rafaely et al. (2),2006,103,50,53,21,71,NA,NA,Blackjack,NA,NA,NA,NA,-0.03,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Rolison et al.,2011,84,40,44,19.3,76.599999999999994,13.4,16.5,BART,NA,NA,NA,NA,-0.23,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Roennlund et al.,2005,384,192,192,23.9,69.099999999999994,14.4,9.9,Sure/risky,NA,NA,NA,NA,0.05,NA,NA,NA,NA,NA,0,0.1
+risk,Mata_et_al(2011),Samanez-Larkin et al.,2010,77,35,42,25.7,72.5,16.2,16.1,BIAS,NA,NA,NA,NA,0.5,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Samanez-Larkin et al.,2011,108,49,59,27.3,70.599999999999994,NA,NA,BIAS,NA,NA,NA,NA,0.43,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Sproten et al.,2010,75,51,24,25,68,12.6,12.2,Sure/risky,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.05,NA
+risk,Mata_et_al(2011),Watanabe & Shibutani,2010,829,661,168,44.8,72.5,NA,NA,Sure/risky,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.06,-3.43
+risk,Mata_et_al(2011),Weller et al.,2010,419,358,61,18-22,65-85,NA,NA,Sure/risky,NA,NA,NA,NA,-0.24,NA,NA,NA,NA,NA,-0.37,-0.1
+risk,Mata_et_al(2011),Wood et al.,2005,150,87,63,23,77,14.2,14.7,IGT,NA,NA,NA,NA,0.1,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Zamarian et al.,2008,85,33,52,36.1,69.3,10.7,10.4,IGT,NA,NA,NA,NA,0.76,NA,NA,NA,NA,NA,NA,NA
+risk,Mata_et_al(2011),Zamarian et al.,2008,85,33,52,36.1,69.3,10.7,10.4,Sure/risky,NA,NA,NA,NA,0.19,NA,NA,NA,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Holliday,1988,NA,24,24,NA,NA,NA,NA,NA,Financial,Large,NA,NA,NA,NA,0.11,-0.21,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Lauriola & Levin,2001,NA,26,23,NA,NA,NA,NA,NA,Financial,Large,NA,NA,NA,NA,-0.54,0.38,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Mather et al. (1),2012,NA,38,38,NA,NA,NA,NA,NA,Financial,Small,NA,NA,NA,NA,-0.8,NA,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Mather et al. (2),2012,NA,48,48,NA,NA,NA,NA,NA,Financial,Small,NA,NA,NA,NA,-0.86,NA,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Mather et al. (3),2012,NA,20,20,NA,NA,NA,NA,NA,Financial,Small,NA,NA,NA,NA,NA,1.65,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Mather et al.  (4),2012,NA,107,50,NA,NA,NA,NA,NA,Financial,Small,NA,NA,NA,NA,0.06,0.36,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Mayhorn et al.,2002,NA,58,58,NA,NA,NA,NA,NA,Financial,Large,NA,NA,NA,NA,-0.79,0,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Mikels & Reed,2009,NA,22,22,NA,NA,NA,NA,NA,Financial,Small,NA,NA,NA,NA,-0.03,-0.7,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Ronnlund et al. (2),2005,NA,32,32,NA,NA,NA,NA,NA,Financial,Large,NA,NA,NA,NA,0,-0.24,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Ronnlund et al. (3),2005,NA,32,32,NA,NA,NA,NA,NA,Financial,Large,NA,NA,NA,NA,1.08,0.48,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,"Sproten, Diener, Fiebach, & Schwieren",2010,NA,51,24,NA,NA,NA,NA,NA,Financial,Small,NA,NA,NA,NA,0.05,NA,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Sproten,2012,NA,36,18,NA,NA,NA,NA,NA,Financial,Small,NA,NA,NA,NA,-0.3,NA,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Thomas & Millar (1),2012,NA,68,68,NA,NA,NA,NA,NA,Financial,Large,NA,NA,NA,NA,0.12,0.07,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Thomas & Millar (2),2012,NA,68,68,NA,NA,NA,NA,NA,Financial,Large,NA,NA,NA,NA,-0.15,0.04,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Thomas & Millar (3),2012,NA,60,60,NA,NA,NA,NA,NA,Financial,Large,NA,NA,NA,NA,-0.04,0.75,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Thomas & Millar(4),2012,NA,60,60,NA,NA,NA,NA,NA,Financial,Large,NA,NA,NA,NA,-0.08,-0.04,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,"Tymula Glimcher, Levy, & Belmaker",2012,NA,34,36,NA,NA,NA,NA,NA,Financial,Small,NA,NA,NA,NA,-0.37,-0.19,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,"Weller, Levin, & Denburg",2011,NA,358,61,NA,NA,NA,NA,NA,Financial,Small,NA,NA,NA,NA,-0.81,-0.1,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Bruine de Bruin et al. (2007)                                                                 63             56        Mortality      Small                -0.03b                                  0.03b,2007,NA,63,56,NA,NA,NA,NA,NA,Mortality,Small,NA,NA,NA,NA,-0.03,0.03,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Karns,2013,NA,119,106,NA,NA,NA,NA,NA,Mortality,Small,NA,NA,NA,NA,-0.69,-1.26,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,"Kim, Goldstein, Hasher, & Zacks (1)",2005,NA,53,53,NA,NA,NA,NA,NA,Mortality,Variable,NA,NA,NA,NA,0.54,1.33,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Kim et al. (1),2005,NA,53,53,NA,NA,NA,NA,NA,Mortality,Small,NA,NA,NA,NA,0.89,0.93,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Kim et al. (2),2005,NA,40,40,NA,NA,NA,NA,NA,Mortality,Variable,NA,NA,NA,NA,-0.74,1.52,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Kim et al.  (2),2005,NA,40,40,NA,NA,NA,NA,NA,Mortality,Small,NA,NA,NA,NA,-0.62,0.55,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,McKee,2001,NA,166,137,NA,NA,NA,NA,NA,Mortality,Small,NA,NA,NA,NA,0.19,0.33,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,"Ronnlund, Karlsson, Laggnas, Larsson, & Lindstrom (1)",2005,NA,32,32,NA,NA,NA,NA,NA,Mortality,Large,NA,NA,NA,NA,-1.08,-1.06,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Watanabe & Shibutani (1),2010,NA,41,87,NA,NA,NA,NA,NA,Mortality,Variable,NA,NA,NA,NA,-1.13,NA,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Watanabe & Shibutani (1),2010,NA,41,87,NA,NA,NA,NA,NA,Mortality,Large,NA,NA,NA,NA,-0.89,NA,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Watanabe & Shibutani (2),2010,NA,41,81,NA,NA,NA,NA,NA,Mortality,Variable,NA,NA,NA,NA,NA,-1.93,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Watanabe & Shibutani (2),2010,NA,41,81,NA,NA,NA,NA,NA,Mortality,Large,NA,NA,NA,NA,NA,-1.59,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Woodhead (1),2006,NA,32,29,NA,NA,NA,NA,NA,Mortality,Small,NA,NA,NA,NA,-0.4,0.03,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Woodhead (2),2006,NA,31,29,NA,NA,NA,NA,NA,Mortality,Small,NA,NA,NA,NA,0.8,-0.44,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,Woodhead,2008,NA,40,40,NA,NA,NA,NA,NA,Mortality,Small,NA,NA,NA,NA,-1.25,-0.22,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,"Bruine de Bruin, Parker, & Fischhoff (2007)                                        63             56       Variable       Variable              0.31a                                 0.04a",2007,NA,63,56,NA,NA,NA,NA,NA,Variable,Variable,NA,NA,NA,NA,0.31,0.04,NA,NA,NA,NA
+risk,Best_Charness (2015)v2,"Mayhorn, Fisk, & Whittle",2002,NA,58,58,NA,NA,NA,NA,NA,Variable,Variable,NA,NA,NA,NA,-0.59,-0.29,NA,NA,NA,NA
 time,Seaman_et_al(2021),Green,1994,24,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,-0.91,NA,NA,NA,0.02,1.85,NA,NA
 time,Seaman_et_al(2021),Eppinger,2012,30,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,-0.85,NA,NA,NA,0.03,1.99,NA,NA
 time,Seaman_et_al(2021),Stoeckel,2013,19,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,-0.67,NA,NA,NA,0.02,1.68,NA,NA

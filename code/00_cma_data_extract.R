@@ -95,7 +95,7 @@ for (CurrMA in ma_list) {
   
   
   
-  if (tolower(CurrMA) %like% "best") {
+  if (tolower(CurrMA) %like% "v2") {
     
     ma_data <-data.frame(read_xlsx(cma_file, CurrMA))
     

@@ -23,23 +23,121 @@ library(metafor)
 cma_t <- read_rds(file = "output/cma_study_time.rds")
 cma_t <- as.data.frame(cma_t)
 cma_t <- cma_t %>% mutate(study = rownames(cma_t),
-                          order_ = 1:n())
+                          order_ = 1:n(),
+                          study = case_when(order_ != 1 ~ paste0("+ ", study),
+                                            TRUE ~ study))
 
 
 #setting up the basic plot
 p <- cma_t %>% 
   ggplot(aes(y= reorder(study, -order_), x= estimate, xmin=ci.lb, xmax=ci.ub)) + 
   #this adds the effect sizes to the plot
-  geom_vline(xintercept = 0, linetype = "dashed", color = "grey80", size = 0.5) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
   geom_point(shape = 15, size = 1, color = "grey15")+ 
-  geom_errorbarh(height=.2, color = "grey15") +
+  geom_errorbarh(height=.5, color = "grey15") +
   theme_minimal() +
   labs(y = "", x = "cor") +
   theme(panel.grid = element_blank(),
         text = element_text(family = "Barlow", color = "grey15"),
         axis.text.y = element_text(color = "grey15",
-                                   size= 6))
+                                   size= 6)) +
+  scale_x_continuous(limits = c(-1.5, 1), breaks = seq(-1.5,1,by = 0.5))
 p
 
 
 ggsave(filename = "figures/cma_study_time.png", plot = p, width = 10, height = 13.5, units = "cm", dpi = 600)
+
+
+
+
+# CMA BY STUDY : ALTRUISM  --------------------------------------------------------------
+
+cma_a <- read_rds(file = "output/cma_study_altrusim.rds")
+cma_a <- as.data.frame(cma_a)
+cma_a <- cma_a %>% mutate(study = rownames(cma_a),
+                          order_ = 1:n(),
+                          study = case_when(order_ != 1 ~ paste0("+ ", study),
+                                            TRUE ~ study))
+
+
+#setting up the basic plot
+p <- cma_a %>% 
+  ggplot(aes(y= reorder(study, -order_), x= estimate, xmin=ci.lb, xmax=ci.ub)) + 
+  #this adds the effect sizes to the plot
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
+  geom_point(shape = 15, size = 1.5, color = "grey15")+ 
+  geom_errorbarh(height=.2, color = "grey15") +
+  theme_minimal() +
+  labs(y = "", x = "g") +
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "Barlow", color = "grey15"),
+        axis.text.y = element_text(color = "grey15",
+                                   size= 9)) +
+  scale_x_continuous(limits = c(-1, 3), breaks = seq(-1,3,by = 0.5))
+  p
+
+
+ggsave(filename = "figures/cma_study_altruism.png", plot = p, width = 10, height = 13.5, units = "cm", dpi = 600)
+
+
+# CMA BY STUDY : RISK  GAINS  --------------------------------------------------------------
+
+cma_r <- read_rds(file = "output/cma_study_risk_g.rds")
+cma_r <- as.data.frame(cma_r)
+cma_r <- cma_r %>% mutate(study = rownames(cma_r),
+                          order_ = 1:n(),
+                          study = case_when(order_ != 1 ~ paste0("+ ", study),
+                                            TRUE ~ study))
+
+
+#setting up the basic plot
+p <- cma_r %>% 
+  ggplot(aes(y= reorder(study, -order_), x= estimate, xmin=ci.lb, xmax=ci.ub)) + 
+  #this adds the effect sizes to the plot
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
+  geom_point(shape = 15, size = 2, color = "grey15")+ 
+  geom_errorbarh(height=.5, color = "grey15") +
+  theme_minimal() +
+  labs(y = "", x = "g") +
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "Barlow", color = "grey15"),
+        axis.text.y = element_text(color = "grey15",
+                                   size= 8)) +
+  scale_x_continuous(limits = c(-2, 2), breaks = seq(-2,2,by = 0.5))
+p
+
+
+ggsave(filename = "figures/cma_study_risk_g.png", plot = p, width = 10, height = 13.5, units = "cm", dpi = 600)
+
+
+
+# CMA BY STUDY : RISK  LOSS  --------------------------------------------------------------
+
+cma_r <- read_rds(file = "output/cma_study_risk_l.rds")
+cma_r <- as.data.frame(cma_r)
+cma_r <- cma_r %>% mutate(study = rownames(cma_r),
+                          order_ = 1:n(),
+                          study = case_when(order_ != 1 ~ paste0("+ ", study),
+                                            TRUE ~ study))
+
+
+#setting up the basic plot
+p <- cma_r %>% 
+  ggplot(aes(y= reorder(study, -order_), x= estimate, xmin=ci.lb, xmax=ci.ub)) + 
+  #this adds the effect sizes to the plot
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
+  geom_point(shape = 15, size = 2, color = "grey15")+ 
+  geom_errorbarh(height=.5, color = "grey15") +
+  theme_minimal() +
+  labs(y = "", x = "g") +
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "Barlow", color = "grey15"),
+        axis.text.y = element_text(color = "grey15",
+                                   size= 8)) +
+  scale_x_continuous(limits = c(-1.5, 2.5), breaks = seq(-1.5,2.5,by = 0.5)) 
+
+p
+
+
+ggsave(filename = "figures/cma_study_risk_l.png", plot = p, width = 10, height = 13.5, units = "cm", dpi = 600)
+

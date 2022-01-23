@@ -78,6 +78,7 @@ cma_t <- aggregate.escalc(cma_t, cluster=year, struct="ID")
 # fitting a random-effects meta-analysis model  
 rma_model <-  rma(yi = yi,
                   vi = vi,
+                  method = "REML",
                   data = cma_t, 
                   slab = as.character(year))
 
@@ -95,13 +96,9 @@ dev.off()
 # CMA BY STUDY : RISK --------------------------------------------------------------
 
 cma_r <- cma_data %>% 
-  # only take into account monetary tasks
-  filter(pref == "risk" & !task_scen %in% c("Mort", "Var"))  %>% 
-  
-  # classify ESs into a gain, or loss or dk domain
-  mutate(g = case_when(!is.na(g) & c(!is.na(g_gain_dom) | !is.na(g_loss_dom)) ~ NA_real_,
-                       TRUE ~ g)) %>% 
-  pivot_longer(c(g, g_pos_fram, g_neg_fram, g_gain_dom, g_loss_dom), names_to = "g_type", values_to = "g_val") %>% 
+  # only take into account monetary tasks (for now just using Best and Charness)
+  filter(pref == "risk" & ma_origin == "Best_Charness (2015)v2" & !task_scen %in% c("Mortality", "Variable") )  %>% #
+  pivot_longer(c(g_pos_fram, g_neg_fram), names_to = "g_type", values_to = "g_val") %>% 
   filter(!is.na(g_val)) %>% 
   mutate(g_type = case_when(g_type %in% c("g_pos_fram") ~ "g_gain_dom",
                             g_type %in% c("g_neg_fram") ~ "g_loss_dom",
@@ -113,10 +110,7 @@ cma_r <- cma_data %>%
   # calculating se since not given in the MAs 
   # (https://stats.stackexchange.com/questions/495015/what-is-the-formula-for-the-standard-error-of-cohens-d)
   mutate(se = sqrt((n_young + n_old)/(n_young*n_old)) + ((g_val^2)/(2*(n_young + n_old)))) %>% 
-  select(study, g_val, g_type, year, se, n) %>% 
-  # removing duplicates
-  distinct(study, g_type, n,year, .keep_all = T) %>% 
-  filter(study != "Weller et al.") # not sure about this one....
+  select(study, g_val, g_type, year, task_stak, se, n) 
 
 
 
@@ -137,12 +131,14 @@ cma_r_gain <- aggregate.escalc(cma_r_gain, cluster=year, struct="ID")
 
 rma_model_g <-  rma(yi = yi,
                     vi = vi,
+                    method = "REML",
                     data = cma_r_gain, 
                     slab = as.character(year))
 
 
 rma_model_l <-  rma(yi = yi,
                     vi = vi,
+                    method = "REML",
                     data = cma_r_loss, 
                     slab = as.character(year))
 
@@ -182,6 +178,7 @@ cma_a <- aggregate.escalc(cma_a, cluster=year, struct="ID")
 # fitting a random-effects meta-analysis model  
 rma_model <-  rma(yi = yi,
                   vi = vi,
+                  method = "REML",
                   data = cma_a, 
                   slab = as.character(year))
 

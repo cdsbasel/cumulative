@@ -55,7 +55,7 @@ col_specs <- cols(
 cma_data <- read_csv(cma_file, col_types = col_specs)
 
 
-# CMA BY STUDY : TIME  --------------------------------------------------------------
+# MA BY STUDY : TIME  --------------------------------------------------------------
 
 cma_t <- cma_data %>% filter(pref == "time") %>% 
   # adding date for unpublished results 
@@ -72,7 +72,7 @@ cma_t <- cma_data %>% filter(pref == "time") %>%
 cma_t <- escalc(measure = "COR", ri = g, ni = n, data = cma_t, vtype = "LS") 
 
 cma_t <- summary(cma_t)
-cma_t <- cma_t %>% arrange(yi) %>% mutate(order_ = 1:n())
+cma_t <- cma_t %>% arrange(year) %>% mutate(order_ = 1:n())
 
 ma_t <- read_rds(file = "output/ma_time.rds")
 
@@ -85,30 +85,32 @@ cma_t <- bind_rows(cma_t,
 p <- cma_t %>% 
   ggplot(aes(y= reorder(study,-order_), x= yi, xmin=ci.lb, xmax=ci.ub))+ 
   #this adds the effect sizes to the plot
-  geom_vline(xintercept = 0, linetype = "dashed", color = "grey80", size = 0.5) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
   geom_point(shape = c(rep(15,41),18), size = c(rep(1,41),3.5), color = "grey15")+ 
-  geom_errorbarh(height=.2, color = "grey15") +
+  geom_errorbarh(height=.5, color = "grey15") +
   theme_minimal() +
   labs(y = "", x = "cor") +
   theme(panel.grid = element_blank(),
         text = element_text(family = "Barlow", color = "grey15"),
         axis.text.y = element_text(color = "grey15", face=c("bold",rep("plain", 41)),
-                                   size=c(10, rep(6, 41))))
+                                   size=c(10, rep(6, 41)))) +
+  scale_x_continuous(limits = c(-1.5, 1), breaks = seq(-1.5,1,by = 0.5))+
+  geom_text(size = 3, aes(
+    x = ma_t$beta[1] - 0.75,
+    y = "Overall"),
+    family = "Barlow Bold", color = "grey15", 
+    label = paste0(as.character(round(ma_t$beta[1],2)),"   [", as.character(round(ma_t$ci.lb,2)), ", ", as.character(round(ma_t$ci.ub,2)),"]"))
 p
 
 
 ggsave(filename = "figures/ma_time.png", plot = p, width = 10, height = 13.5, units = "cm", dpi = 600)
 
-# CMA BY STUDY : RISK --------------------------------------------------------------
+# MA BY STUDY : RISK GAINS --------------------------------------------------------------
 
 cma_r <- cma_data %>% 
-  # only take into account monetary tasks
-  filter(pref == "risk" & !task_scen %in% c("Mort", "Var"))  %>% 
-  
-  # classify ESs into a gain, or loss or dk domain
-  mutate(g = case_when(!is.na(g) & c(!is.na(g_gain_dom) | !is.na(g_loss_dom)) ~ NA_real_,
-                       TRUE ~ g)) %>% 
-  pivot_longer(c(g, g_pos_fram, g_neg_fram, g_gain_dom, g_loss_dom), names_to = "g_type", values_to = "g_val") %>% 
+  # only take into account monetary tasks (for now just using Best and Charness)
+  filter(pref == "risk" & ma_origin == "Best_Charness (2015)v2" & !task_scen %in% c("Mortality", "Variable") )  %>% #
+  pivot_longer(c(g_pos_fram, g_neg_fram), names_to = "g_type", values_to = "g_val") %>% 
   filter(!is.na(g_val)) %>% 
   mutate(g_type = case_when(g_type %in% c("g_pos_fram") ~ "g_gain_dom",
                             g_type %in% c("g_neg_fram") ~ "g_loss_dom",
@@ -120,10 +122,74 @@ cma_r <- cma_data %>%
   # calculating se since not given in the MAs 
   # (https://stats.stackexchange.com/questions/495015/what-is-the-formula-for-the-standard-error-of-cohens-d)
   mutate(se = sqrt((n_young + n_old)/(n_young*n_old)) + ((g_val^2)/(2*(n_young + n_old)))) %>% 
-  select(study, g_val, g_type, year, se, n) %>% 
-  # removing duplicates
-  distinct(study, g_type, n,year, .keep_all = T) %>% 
-  filter(study != "Weller et al.") # not sure about this one....
+  select(study, g_val, g_type, year, task_stak, se, n) 
+
+
+
+# no need to aggregate ESs (1 per (sub)study)
+cma_r <- escalc(yi = g_val, sei = se, data = cma_r)
+
+
+cma_r_gain <- cma_r %>% filter(g_type == "g_gain_dom")
+
+
+ma_r_gain <- read_rds(file = "output/ma_risk_g.rds")
+
+cma_r_gain <- summary(cma_r_gain)
+
+cma_r_gain <- cma_r_gain %>% arrange(year) %>% mutate(order_ = 1:n())
+
+cma_r_gain <- bind_rows(cma_r_gain,
+                        data.frame(study = "Overall",
+                                   yi = ma_r_gain$beta[1],
+                                   ci.ub = ma_r_gain$ci.ub,
+                                   ci.lb = ma_r_gain$ci.lb,
+                                   order_ = nrow(cma_r_gain)+1))
+
+
+#setting up the basic plot
+p <-  ggplot(data = cma_r_gain, aes(y= reorder(study,-order_), x= yi, xmin= ci.lb, xmax=ci.ub)) + 
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
+  geom_point(shape = c(rep(15,17),18), size = c(rep(1.5,17),4), color = "grey15")+ 
+  geom_errorbarh(height=.2, color = "grey15") +
+  theme_minimal() +
+  labs(y = "", x = "g") +
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "Barlow", color = "grey15"),
+        axis.text.y = element_text(color = "grey15", face=c("bold",rep("plain", 17)),
+                                   size=c(11, rep(7, 17))))+
+  scale_x_continuous(limits = c(-2, 2), breaks = seq(-2,2,by = 0.5)) +
+  geom_text(size = 3.5, aes(
+           x = ma_r_gain$beta[1] + 1.2,
+           y = "Overall"),
+           family = "Barlow Bold", color = "grey15", 
+           label = paste0(as.character(round(ma_r_gain$beta[1],2)),"   [", as.character(round(ma_r_gain$ci.lb,2)), ", ", as.character(round(ma_r_gain$ci.ub,2)),"]"))
+p
+
+
+
+ggsave(filename = "figures/ma_risk_g.png", plot = p, width = 10, height = 13.5, units = "cm", dpi = 600)
+
+
+
+# MA BY STUDY : RISK LOSS --------------------------------------------------------------
+
+cma_r <- cma_data %>% 
+  # only take into account monetary tasks (for now just using Best and Charness)
+  filter(pref == "risk" & ma_origin == "Best_Charness (2015)v2" & !task_scen %in% c("Mortality", "Variable") )  %>% #
+  pivot_longer(c(g_pos_fram, g_neg_fram), names_to = "g_type", values_to = "g_val") %>% 
+  filter(!is.na(g_val)) %>% 
+  mutate(g_type = case_when(g_type %in% c("g_pos_fram") ~ "g_gain_dom",
+                            g_type %in% c("g_neg_fram") ~ "g_loss_dom",
+                            g_type %in% c("g") ~ "g_dk_dom",
+                            TRUE ~ g_type),
+         n = case_when(is.na(n) ~ n_young + n_old,
+                       TRUE ~ n),
+         study = paste0(study,", ",year)) %>% 
+  # calculating se since not given in the MAs 
+  # (https://stats.stackexchange.com/questions/495015/what-is-the-formula-for-the-standard-error-of-cohens-d)
+  mutate(se = sqrt((n_young + n_old)/(n_young*n_old)) + ((g_val^2)/(2*(n_young + n_old)))) %>% 
+  select(study, g_val, g_type, year, task_stak, se, n) 
 
 
 
@@ -132,47 +198,41 @@ cma_r <- escalc(yi = g_val, sei = se, data = cma_r)
 
 # separating ESs into gains and losses
 cma_r_loss <- cma_r %>% filter(g_type == "g_loss_dom")
-cma_r_gain <- cma_r %>% filter(g_type == "g_gain_dom")
 
-## aggregate by year (assuming independent samples...)
-cma_r_loss <- aggregate.escalc(cma_r_loss, cluster=year, struct="ID")
+ma_r_loss <- read_rds(file = "output/ma_risk_l.rds")
 
-## aggregate by year (assuming independent samples...)
-cma_r_gain <- aggregate.escalc(cma_r_gain, cluster=year, struct="ID")
+cma_r_loss <- summary(cma_r_loss)
+cma_r_loss <- cma_r_loss %>% arrange(year) %>% mutate(order_ = 1:n())
 
+cma_r_loss <- bind_rows(cma_r_loss,
+                        data.frame(study = "Overall", yi = ma_r_loss$beta[1], ci.ub = ma_r_loss$ci.ub, ci.lb = ma_r_loss$ci.lb, order_ = nrow(cma_r_loss)+1))
 
-
-rma_model_g <-  rma(yi = yi,
-                    vi = vi,
-                    data = cma_r_gain, 
-                    slab = as.character(year))
-
-
-rma_model_l <-  rma(yi = yi,
-                    vi = vi,
-                    data = cma_r_loss, 
-                    slab = as.character(year))
-
-
-
-### cumulative meta-analysis (in the order of publication year)
-risk_y_g <- cumul(rma_model_g, order = cma_r_gain$year)
-write_rds(risk_y_g, file = "output/cma_year_risk_g.rds")
-
-risk_y_l <- cumul(rma_model_l, order = cma_r_loss$year)
-write_rds(risk_y_l, file = "output/cma_year_risk_l.rds")
-
-### cumulative forest plot
-png("figures/cma_risk_l_year_def.png", height = 30, width = 20, units = "cm", res = 600)
-forest(risk_y_l, cex=0.75, header="Year of Publication")
-dev.off()
-
-png("figures/cma_risk_g_year_def.png", height = 30, width = 20, units = "cm", res = 600)
-forest(risk_y_g, cex=0.75, header="Year of Publication")
-dev.off()
+#setting up the basic plot
+p <- cma_r_loss %>% 
+  ggplot(aes(y= reorder(study,-order_), x= yi, xmin=ci.lb, xmax=ci.ub))+ 
+  #this adds the effect sizes to the plot
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
+  geom_point(shape = c(rep(15,14),18), size = c(rep(1.5,14),4), color = "grey15")+ 
+  geom_errorbarh(height=.2, color = "grey15") +
+  theme_minimal() +
+  labs(y = "", x = "g") +
+  scale_x_continuous(limits = c(-1.5, 2.5), breaks = seq(-1.5,2.5,by = 0.5)) +
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "Barlow", color = "grey15"),
+        axis.text.y = element_text(color = "grey15", face=c("bold",rep("plain", 14)),
+                                   size=c(11, rep(7, 14)))) +
+  geom_text(size = 3.5, aes(
+    x = ma_r_loss$beta[1] + 1.25,
+    y = "Overall"),
+    family = "Barlow Bold", color = "grey15", 
+    label = paste0(as.character(round(ma_r_loss$beta[1],2)),"   [", as.character(round(ma_r_loss$ci.lb,2)), ", ", as.character(round(ma_r_loss$ci.ub,2)),"]"))
+p
 
 
-# CMA BY STUDY : ALTRUISM --------------------------------------------------------------
+ggsave(filename = "figures/ma_risk_l.png", plot = p, width = 10, height = 13.5, units = "cm", dpi = 600)
+
+
+# MA BY STUDY : ALTRUISM --------------------------------------------------------------
 
 # select studies with task of interest (i.e., lab based financial/monetary tasks; no real-world donations) 
 cma_a <- cma_data %>% 
@@ -185,7 +245,7 @@ cma_a <- cma_data %>%
 cma_a <- escalc(yi = g, sei = se, data = cma_a)
 
 cma_a <- summary(cma_a)
-cma_a <- cma_a %>% arrange(yi) %>% mutate(order_ = 1:n())
+cma_a <- cma_a %>% arrange(year) %>% mutate(order_ = 1:n())
 
 ma_a <- read_rds(file = "output/ma_altrusim.rds")
 
@@ -198,15 +258,21 @@ cma_a <- bind_rows(cma_a,
 p <- cma_a %>% 
   ggplot(aes(y= reorder(study,-order_), x= yi, xmin=ci.lb, xmax=ci.ub))+ 
   #this adds the effect sizes to the plot
-  geom_vline(xintercept = 0, linetype = "dashed", color = "grey80", size = 0.5) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
   geom_point(shape = c(rep(15,9),18), size = c(rep(1.5,9),4), color = "grey15")+ 
   geom_errorbarh(height=.2, color = "grey15") +
   theme_minimal() +
-  labs(y = "", x = "cor") +
+  labs(y = "", x = "g") +
   theme(panel.grid = element_blank(),
         text = element_text(family = "Barlow", color = "grey15"),
         axis.text.y = element_text(color = "grey15", face=c("bold",rep("plain", 9)),
-                                   size=c(12, rep(8, 9))))
+                                   size=c(12, rep(8, 9)))) +
+  scale_x_continuous(limits = c(-1, 3), breaks = seq(-1,3,by = 0.5))+
+  geom_text(size = 3.5, aes(
+    x = ma_a$beta[1] + 1.25,
+    y = "Overall"),
+    family = "Barlow Bold", color = "grey15", 
+    label = paste0(as.character(round(ma_a$beta[1],2)),"   [", as.character(round(ma_a$ci.lb,2)), ", ", as.character(round(ma_a$ci.ub,2)),"]"))
 p
 
 
