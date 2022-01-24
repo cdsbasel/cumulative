@@ -56,7 +56,7 @@ col_specs <- cols(
 cma_data <- read_csv(cma_file, col_types = col_specs)
 
 
-# CMA BY STUDY : TIME  --------------------------------------------------------------
+# DATA  --------------------------------------------------------------
 
 cma_t <- cma_data %>% filter(pref == "time") %>% 
   # adding date for unpublished results 
@@ -64,25 +64,16 @@ cma_t <- cma_data %>% filter(pref == "time") %>%
                           year == "unpublished" & study == "Sisso" ~ "2017",
                           year == "unpublished" & study == "Li (study 2)" ~ "2020",
                           TRUE ~ year),
-         year = as.numeric(year))
+         pref == " time ",
+         es = metafor::transf.rtoz(g),
+         year = as.numeric(year)) %>% 
+  select(pref, n, year, es) 
 
-cma_t %>%
-  filter(n < 1000) %>% 
-  group_by(year) %>% 
-  summarise(n = mean(n)) %>% 
-  ggplot() +
-geom_col(aes(x = year, y = n))
-
-# CMA BY STUDY : RISK --------------------------------------------------------------
 
 cma_r <- cma_data %>% 
-  # only take into account monetary tasks
-  filter(pref == "risk" & !task_scen %in% c("Mort", "Var"))  %>% 
-  
-  # classify ESs into a gain, or loss or dk domain
-  mutate(g = case_when(!is.na(g) & c(!is.na(g_gain_dom) | !is.na(g_loss_dom)) ~ NA_real_,
-                       TRUE ~ g)) %>% 
-  pivot_longer(c(g, g_pos_fram, g_neg_fram, g_gain_dom, g_loss_dom), names_to = "g_type", values_to = "g_val") %>% 
+  # only take into account monetary tasks (for now just using Best and Charness)
+  filter(pref == "risk" & ma_origin == "Best_Charness (2015)v2" & !task_scen %in% c("Mortality", "Variable") )  %>% #
+  pivot_longer(c(g_pos_fram, g_neg_fram), names_to = "g_type", values_to = "g_val") %>% 
   filter(!is.na(g_val)) %>% 
   mutate(g_type = case_when(g_type %in% c("g_pos_fram") ~ "g_gain_dom",
                             g_type %in% c("g_neg_fram") ~ "g_loss_dom",
@@ -90,35 +81,57 @@ cma_r <- cma_data %>%
                             TRUE ~ g_type),
          n = case_when(is.na(n) ~ n_young + n_old,
                        TRUE ~ n),
-         study = paste0(study,", ",year)) %>% 
-  select(study, g_val, g_type, year, n) %>% 
-  # removing duplicates
-  distinct(study, g_type, n,year, .keep_all = T) %>% 
-  filter(study != "Weller et al.") # not sure about this one....
+         pref = " risk ",
+         es = g_val,
+         study = paste0(study,", ",year),
+         year = as.numeric(year)) %>% 
+  select(pref, n, year, es) 
 
 
-cma_r %>%
-  filter(n < 1000) %>% 
-  group_by(year) %>% 
-  summarise(n = mean(n)) %>% 
-  ungroup() %>% 
-  ggplot() +
-  geom_col(aes(x = year, y = n))
-
-
-# CMA BY STUDY : ALTRUISM --------------------------------------------------------------
 
 # select studies with task of interest (i.e., lab based financial/monetary tasks; no real-world donations) 
 cma_a <- cma_data %>% 
   filter(pref == "altruism" & beh_task == 1 & fin_task == 1 & !study %in% c("Freund: Exp 4", "Sze")) %>% 
   mutate(year = as.numeric(year),
-         n = if_else(is.na(n), n_young + n_old, n))
+         es = g,
+         n = if_else(is.na(n), n_young + n_old, n)) %>% 
+  select(pref, n, year, es) 
 
-cma_a %>%
-  filter(n < 1000) %>% 
-  group_by(year) %>% 
-  summarise(n = mean(n)) %>% 
-  ggplot() +
-  geom_col(aes(x = year, y = n))
 
+dat <- bind_rows(cma_a, cma_t, cma_r) %>% mutate(es = abs(es)) 
+
+
+
+p <- dat %>% ggplot(aes(x = as.character(year), y = n, color = toupper(pref), fill = toupper(pref), size = es)) + 
+  theme_minimal() +
+  geom_jitter(shape = 21,stroke = 1, height = 0, width = 0.5) + 
+  scale_colour_manual(values = c("#3C9AB2", "#F22300", "#E1AF00"))+
+  scale_fill_manual(values =alpha(c("#3C9AB2","#F22300", "#E1AF00"),0.4)) +
+  scale_y_log10() + 
+  annotation_logticks(sides = "l") +
+  # scale_x_continuous() +
+  scale_size_continuous(range = c(0.05, 8), breaks = c(0.2, 0.5, 0.8), labels = c("0.2", "0.5", "0.8")) +
+  labs(fill = "PREFERENCE", size = "EFFECT SIZE", x = "YEAR", y = "SAMPLE SIZE    (log10)",
+       caption = sprintf("Num of effect sizes = %d", nrow(dat)),
+       title = toupper("Sample Sizes & Effect Sizes of Studies by Year of Publication"))+
+  theme(legend.position = "top",
+        plot.title.position = "plot",
+        plot.title = element_text(margin = margin(t = 10, b = 5), size = 20),
+        axis.title = element_text(size = 13),
+        axis.text = element_text(size = 13),
+        plot.caption = element_text(size = 10, family = "Barlow"),
+        legend.text = element_text(hjust = 0.5, size = 11),
+        legend.title = element_text(hjust = 0.5, size = 11),
+        title = element_text(family = "Barlow Bold"),
+        legend.spacing.x = unit(0.5, "cm"),
+        legend.spacing.y = unit(0.2, "cm"),
+        legend.margin = margin(b = 10, t = 5, r = 30),
+        text = element_text(family = "Barlow")) +
+  guides(color = FALSE,
+          size = guide_legend(label.position = "bottom", title.position = "bottom"),
+          fill = guide_legend(label.position = "bottom", title.position = "bottom", override.aes = list(size = 4, alpha = 0.9, stroke = 0)))
+
+p
+
+ggsave(filename = "figures/sample_size.png", plot = p, width = 34, height = 19, units = "cm", dpi = 600)
 
