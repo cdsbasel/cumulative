@@ -14,8 +14,10 @@
 
 # PACKAGES ----------------------------------------------------------------
 
+
 library(tidyverse)
 library(metafor)
+library(data.table)
 
 
 # READ DATA ---------------------------------------------------------------
@@ -86,13 +88,17 @@ p <- cma_t %>%
   ggplot(aes(y= reorder(study,-order_), x= yi, xmin=ci.lb, xmax=ci.ub))+ 
   #this adds the effect sizes to the plot
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
-  geom_point(shape = c(rep(15,41),18), size = c(rep(1,41),3.5), color = "grey15")+ 
-  geom_errorbarh(height=.5, color = "grey15") +
+  geom_errorbarh(height=0, color = "grey15", size = 0.75) +
+  geom_point(shape = c(rep(21,41),18), size = c(rep(2,41),3.5), color = "grey15", stroke = 1, fill = "#e9edc9")+ 
   theme_minimal() +
   labs(y = "", x = "cor") +
   theme(panel.grid = element_blank(),
-        text = element_text(family = "Barlow", color = "grey15"),
-        axis.text.y = element_text(color = "grey15", face=c("bold",rep("plain", 41)),
+        axis.text.x = element_text(color = "grey15",
+                                   family = "Barlow"),
+        axis.title.x = element_text(color = "grey15",
+                                    family = "Barlow ExtraBold"),
+        axis.text.y = element_text(color = "grey15",
+                                   family = c("Barlow ExtraBold",rep("Barlow Medium", 41)),
                                    size=c(10, rep(6, 41)))) +
   scale_x_continuous(limits = c(-1.5, 1), breaks = seq(-1.5,1,by = 0.5))+
   geom_text(size = 3, aes(
@@ -116,6 +122,10 @@ cma_r <- cma_data %>%
                             g_type %in% c("g_neg_fram") ~ "g_loss_dom",
                             g_type %in% c("g") ~ "g_dk_dom",
                             TRUE ~ g_type),
+         study = case_when(study %like% "Sprot" ~ "Sprotem et al.",
+                           study %like% "Tymu" ~ "Tymula et al.",
+                           study %like% "Well" ~ "Weller et al.",
+                           TRUE ~ study),
          n = case_when(is.na(n) ~ n_young + n_old,
                        TRUE ~ n),
          study = paste0(study,", ",year)) %>% 
@@ -150,20 +160,24 @@ cma_r_gain <- bind_rows(cma_r_gain,
 #setting up the basic plot
 p <-  ggplot(data = cma_r_gain, aes(y= reorder(study,-order_), x= yi, xmin= ci.lb, xmax=ci.ub)) + 
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
-  geom_point(shape = c(rep(15,17),18), size = c(rep(1.5,17),4), color = "grey15")+ 
-  geom_errorbarh(height=.2, color = "grey15") +
+  geom_errorbarh(height=0, color = "grey15", size = 0.75) +
+  geom_point(shape = c(rep(21,17),18), size = c(rep(3,17),4.5), color = "grey15", stroke = 1, fill = "#e9edc9")+ 
   theme_minimal() +
   labs(y = "", x = "g") +
   theme(panel.grid = element_blank(),
-        text = element_text(family = "Barlow", color = "grey15"),
-        axis.text.y = element_text(color = "grey15", face=c("bold",rep("plain", 17)),
-                                   size=c(11, rep(7, 17))))+
-  scale_x_continuous(limits = c(-2, 2), breaks = seq(-2,2,by = 0.5)) +
-  geom_text(size = 3.5, aes(
-           x = ma_r_gain$beta[1] + 1.2,
-           y = "Overall"),
-           family = "Barlow Bold", color = "grey15", 
-           label = paste0(as.character(round(ma_r_gain$beta[1],2)),"   [", as.character(round(ma_r_gain$ci.lb,2)), ", ", as.character(round(ma_r_gain$ci.ub,2)),"]"))
+        axis.text.x = element_text(color = "grey15",
+                                   family = "Barlow"),
+        axis.title.x = element_text(color = "grey15",
+                                    family = "Barlow ExtraBold"),
+        axis.text.y = element_text(color = "grey15",
+                                   family = c("Barlow ExtraBold",rep("Barlow Medium", 41)),
+                                   size=c(11, rep(8, 17)))) +
+  scale_x_continuous(limits = c(-2, 2), breaks = seq(-2,2,by = 1)) +
+  geom_text(size = 3, aes(
+    x = ma_r_gain$beta[1] + 1.3,
+    y = "Overall"),
+    family = "Barlow Bold", color = "grey15", 
+    label = paste0(as.character(round(ma_r_gain$beta[1],2)),"   [", as.character(round(ma_r_gain$ci.lb,2)), ", ", as.character(round(ma_r_gain$ci.ub,2)),"]"))
 p
 
 
@@ -183,6 +197,10 @@ cma_r <- cma_data %>%
                             g_type %in% c("g_neg_fram") ~ "g_loss_dom",
                             g_type %in% c("g") ~ "g_dk_dom",
                             TRUE ~ g_type),
+         study = case_when(study %like% "Sprot" ~ "Sprotem et al.",
+                           study %like% "Tymu" ~ "Tymula et al.",
+                           study %like% "Well" ~ "Weller et al.",
+                           TRUE ~ study),
          n = case_when(is.na(n) ~ n_young + n_old,
                        TRUE ~ n),
          study = paste0(study,", ",year)) %>% 
@@ -212,15 +230,19 @@ p <- cma_r_loss %>%
   ggplot(aes(y= reorder(study,-order_), x= yi, xmin=ci.lb, xmax=ci.ub))+ 
   #this adds the effect sizes to the plot
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
-  geom_point(shape = c(rep(15,14),18), size = c(rep(1.5,14),4), color = "grey15")+ 
-  geom_errorbarh(height=.2, color = "grey15") +
+  geom_errorbarh(height=0, color = "grey15", size = 0.75) +
+  geom_point(shape = c(rep(21,14),18), size = c(rep(3,14),4.5), color = "grey15", stroke = 1, fill = "#e9edc9")+ 
   theme_minimal() +
   labs(y = "", x = "g") +
-  scale_x_continuous(limits = c(-1.5, 2.5), breaks = seq(-1.5,2.5,by = 0.5)) +
+  scale_x_continuous(limits = c(-1.5, 2.5), breaks = seq(-1,2,by = 1))+
   theme(panel.grid = element_blank(),
-        text = element_text(family = "Barlow", color = "grey15"),
-        axis.text.y = element_text(color = "grey15", face=c("bold",rep("plain", 14)),
-                                   size=c(11, rep(7, 14)))) +
+        axis.text.x = element_text(color = "grey15",
+                                   family = "Barlow"),
+        axis.title.x = element_text(color = "grey15",
+                                    family = "Barlow ExtraBold"),
+        axis.text.y = element_text(color = "grey15",
+                                   family = c("Barlow ExtraBold",rep("Barlow Medium", 41)),
+                                   size=c(11, rep(8, 14)))) +
   geom_text(size = 3.5, aes(
     x = ma_r_loss$beta[1] + 1.25,
     y = "Overall"),
@@ -259,15 +281,19 @@ p <- cma_a %>%
   ggplot(aes(y= reorder(study,-order_), x= yi, xmin=ci.lb, xmax=ci.ub))+ 
   #this adds the effect sizes to the plot
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
-  geom_point(shape = c(rep(15,9),18), size = c(rep(1.5,9),4), color = "grey15")+ 
-  geom_errorbarh(height=.2, color = "grey15") +
+  geom_errorbarh(height=0, color = "grey15", size = 0.75) +
+  geom_point(shape = c(rep(21,9),18), size = c(rep(3,9),4.5), color = "grey15", stroke = 1, fill = "#e9edc9")+ 
   theme_minimal() +
   labs(y = "", x = "g") +
   theme(panel.grid = element_blank(),
-        text = element_text(family = "Barlow", color = "grey15"),
-        axis.text.y = element_text(color = "grey15", face=c("bold",rep("plain", 9)),
-                                   size=c(12, rep(8, 9)))) +
-  scale_x_continuous(limits = c(-1, 3), breaks = seq(-1,3,by = 0.5))+
+        axis.text.x = element_text(color = "grey15",
+                                   family = "Barlow"),
+        axis.title.x = element_text(color = "grey15",
+                                    family = "Barlow ExtraBold"),
+        axis.text.y = element_text(color = "grey15",
+                                   family = c("Barlow ExtraBold",rep("Barlow Medium", 41)),
+                                   size=c(12, rep(9, 9)))) +
+  scale_x_continuous(limits = c(-1, 3), breaks = seq(-1,3,by = 1))+
   geom_text(size = 3.5, aes(
     x = ma_a$beta[1] + 1.25,
     y = "Overall"),

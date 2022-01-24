@@ -33,13 +33,17 @@ p <- cma_t %>%
   ggplot(aes(y= reorder(study, -order_), x= estimate, xmin=ci.lb, xmax=ci.ub)) + 
   #this adds the effect sizes to the plot
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
-  geom_point(shape = 15, size = 1, color = "grey15")+ 
-  geom_errorbarh(height=.5, color = "grey15") +
+  geom_errorbarh(height=0, color = "grey15", size = 0.75) +
+  geom_point(shape = 21, size = 2, color = "grey15", stroke = 1, fill = "#e9edc9")+ 
   theme_minimal() +
   labs(y = "", x = "cor") +
   theme(panel.grid = element_blank(),
-        text = element_text(family = "Barlow", color = "grey15"),
+        axis.text.x = element_text(color = "grey15",
+                                   family = "Barlow"),
+        axis.title.x = element_text(color = "grey15",
+                                    family = "Barlow ExtraBold"),
         axis.text.y = element_text(color = "grey15",
+                                   family = "Barlow Medium",
                                    size= 6)) +
   scale_x_continuous(limits = c(-1.5, 1), breaks = seq(-1.5,1,by = 0.5))
 p
@@ -65,15 +69,19 @@ p <- cma_a %>%
   ggplot(aes(y= reorder(study, -order_), x= estimate, xmin=ci.lb, xmax=ci.ub)) + 
   #this adds the effect sizes to the plot
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
-  geom_point(shape = 15, size = 1.5, color = "grey15")+ 
-  geom_errorbarh(height=.2, color = "grey15") +
+  geom_errorbarh(height=0, color = "grey15", size = 0.75) +
+  geom_point(shape = 21, size = 3, color = "grey15", stroke = 1, fill = "#e9edc9")+ 
   theme_minimal() +
   labs(y = "", x = "g") +
   theme(panel.grid = element_blank(),
-        text = element_text(family = "Barlow", color = "grey15"),
+        axis.text.x = element_text(color = "grey15",
+                                   family = "Barlow"),
+        axis.title.x = element_text(color = "grey15",
+                                    family = "Barlow ExtraBold"),
         axis.text.y = element_text(color = "grey15",
-                                   size= 9)) +
-  scale_x_continuous(limits = c(-1, 3), breaks = seq(-1,3,by = 0.5))
+                                   family = "Barlow Medium",
+                                   size= 10)) +
+  scale_x_continuous(limits = c(-1, 3), breaks = seq(-1,3,by = 1))
   p
 
 
@@ -95,15 +103,19 @@ p <- cma_r %>%
   ggplot(aes(y= reorder(study, -order_), x= estimate, xmin=ci.lb, xmax=ci.ub)) + 
   #this adds the effect sizes to the plot
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
-  geom_point(shape = 15, size = 2, color = "grey15")+ 
-  geom_errorbarh(height=.5, color = "grey15") +
+  geom_errorbarh(height=0, color = "grey15", size = 0.75) +
+  geom_point(shape = 21, size = 3, color = "grey15", stroke = 1, fill = "#e9edc9")+ 
   theme_minimal() +
   labs(y = "", x = "g") +
   theme(panel.grid = element_blank(),
-        text = element_text(family = "Barlow", color = "grey15"),
+        axis.text.x = element_text(color = "grey15",
+                                   family = "Barlow"),
+        axis.title.x = element_text(color = "grey15",
+                                    family = "Barlow ExtraBold"),
         axis.text.y = element_text(color = "grey15",
-                                   size= 8)) +
-  scale_x_continuous(limits = c(-2, 2), breaks = seq(-2,2,by = 0.5))
+                                   family = "Barlow Medium",
+                                   size= 9)) +
+  scale_x_continuous(limits = c(-2, 2), breaks = seq(-2,2,by = 1))
 p
 
 
@@ -126,15 +138,19 @@ p <- cma_r %>%
   ggplot(aes(y= reorder(study, -order_), x= estimate, xmin=ci.lb, xmax=ci.ub)) + 
   #this adds the effect sizes to the plot
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", size = 0.5) +
-  geom_point(shape = 15, size = 2, color = "grey15")+ 
-  geom_errorbarh(height=.5, color = "grey15") +
+  geom_errorbarh(height=0, color = "grey15", size = 0.75) +
+  geom_point(shape = 21, size = 3, color = "grey15", stroke = 1, fill = "#e9edc9")+ 
   theme_minimal() +
   labs(y = "", x = "g") +
   theme(panel.grid = element_blank(),
-        text = element_text(family = "Barlow", color = "grey15"),
+        axis.text.x = element_text(color = "grey15",
+                                   family = "Barlow"),
+        axis.title.x = element_text(color = "grey15",
+                                    family = "Barlow ExtraBold"),
         axis.text.y = element_text(color = "grey15",
-                                   size= 8)) +
-  scale_x_continuous(limits = c(-1.5, 2.5), breaks = seq(-1.5,2.5,by = 0.5)) 
+                                   family = "Barlow Medium",
+                                   size= 9)) +
+  scale_x_continuous(limits = c(-1.5, 2.5), breaks = seq(-1,2,by = 1)) 
 
 p
 

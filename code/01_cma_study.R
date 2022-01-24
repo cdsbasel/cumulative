@@ -17,6 +17,7 @@
 
 library(tidyverse)
 library(metafor)
+library(data.table)
 
 
 # READ DATA ---------------------------------------------------------------
@@ -100,6 +101,10 @@ cma_r <- cma_data %>%
                             g_type %in% c("g_neg_fram") ~ "g_loss_dom",
                             g_type %in% c("g") ~ "g_dk_dom",
                             TRUE ~ g_type),
+         study = case_when(study %like% "Sprot" ~ "Sprotem et al.",
+                           study %like% "Tymu" ~ "Tymula et al.",
+                           study %like% "Well" ~ "Weller et al.",
+                           TRUE ~ study),
          n = case_when(is.na(n) ~ n_young + n_old,
                        TRUE ~ n),
          study = paste0(study,", ",year)) %>% 
