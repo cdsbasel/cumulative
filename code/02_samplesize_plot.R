@@ -109,6 +109,7 @@ p <- dat %>% ggplot(aes(x = as.character(year), y = n, color = toupper(pref), fi
   scale_fill_manual(values =alpha(c("#3C9AB2","#F22300", "#E1AF00"),0.4)) +
   scale_y_log10() + 
   annotation_logticks(sides = "l") +
+  facet_grid(.~toupper(pref)) +
   # scale_x_continuous() +
   scale_size_continuous(range = c(0.05, 8), breaks = c(0.2, 0.5, 0.8), labels = c("0.2", "0.5", "0.8")) +
   labs(fill = "PREFERENCE", size = "EFFECT SIZE", x = "YEAR", y = "SAMPLE SIZE    (log10)",
@@ -118,7 +119,8 @@ p <- dat %>% ggplot(aes(x = as.character(year), y = n, color = toupper(pref), fi
         plot.title.position = "plot",
         plot.title = element_text(margin = margin(t = 10, b = 5), size = 20),
         axis.title = element_text(size = 13),
-        axis.text = element_text(size = 13),
+        axis.text.x = element_text(size = 11, angle = 45),
+        strip.text  = element_text(size = 15, family = "Barlow Bold"),
         plot.caption = element_text(size = 10, family = "Barlow"),
         legend.text = element_text(hjust = 0.5, size = 11),
         legend.title = element_text(hjust = 0.5, size = 11),
@@ -128,8 +130,8 @@ p <- dat %>% ggplot(aes(x = as.character(year), y = n, color = toupper(pref), fi
         legend.margin = margin(b = 10, t = 5, r = 30),
         text = element_text(family = "Barlow")) +
   guides(color = FALSE,
-          size = guide_legend(label.position = "bottom", title.position = "bottom"),
-          fill = guide_legend(label.position = "bottom", title.position = "bottom", override.aes = list(size = 4, alpha = 0.9, stroke = 0)))
+          size = guide_legend(label.position = "bottom", title.position = "left"),
+          fill = FALSE) #guide_legend(label.position = "bottom", title.position = "bottom", override.aes = list(size = 4, alpha = 0.9, stroke = 0)))
 
 p
 
