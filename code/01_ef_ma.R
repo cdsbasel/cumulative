@@ -37,6 +37,15 @@ cor_matrix <- function(x, r, v = rep(1, length(x)), na.rm = FALSE) {
 }
 
 
+# formula from https://constantinyvesplessen.com/post/g/
+calc_g_var <- function(g, n_young,n_old) {
+  
+  g_var <- (n_young + n_old)/(n_young * n_old) + g^2 / (2*(n_young + n_old))
+  
+  return(g_var)
+  
+}
+
 # READ DATA ---------------------------------------------------------------
 
 
@@ -67,32 +76,31 @@ col_specs <- cols(
 ef_data <- read_csv(ef_file, col_types =  col_specs)
 
 
+
+
+# FIX VARIANCE (?) --------------------------------------------------------
+
+ef_data <- ef_data %>% mutate(var_g_alt = calc_g_var(g = g, n_young = n_1, n_old = n_2))  
+  
+
 # MA: UPDATING  --------------------------------------------------------------
 
 
 dat <- ef_data %>% filter(domain == "updating") %>%  mutate(row_num=1:n())
-dat <- dat %>% filter(var.g < 3) # extremely high variance for some of the ESs (related to RT), seem to be on a different scale
-
-#In some of the primary studies, multiple outcomes were reported.
-# In order to make use of all available information and to avoid
-# potential bias by selecting only one outcome per study,
-# all reported outcomes of each study were included in the meta-analysis.
-# Assuming different outcomes of the same study to be independent is likely
-# invalid as they refer to the same treatment and control group.
-# Thus, outcomes reported by the same study were explicitly modeled as correlated.
-# In the absence of any reported correlations in the primary studies,
-# correlations were set to r = 0.7.
- 
-V <- cor_matrix(dat$study, r = 0.7, v = dat$var.g)
+# dat <- dat %>% filter(var.g < 3) # extremely high variance for some of the ESs (related to RT), seem to be on a different scale
 
 
-# fitting a three-level meta-analysis model 
-rma_model <-  rma.mv(yi = g,
-                  V = V,
+# aggregate outcomes (1 ES/study)
+dat <- escalc(yi = g, vi = var_g_alt, data = dat)
+dat <- aggregate.escalc(dat, cluster = study, struct = "CS", rho = .7)
+
+
+# fitting a RE meta-analysis model 
+rma_model <-  rma(yi = yi ,
+                  vi = vi,
                   data = dat, 
-                  method = "REML",
-                  random = ~ 1 | study/row_num, 
-                  slab = study)
+                  method = "REML")
+
 
 
 write_rds(rma_model, file = "output/ma_ef_updating.rds")
@@ -103,27 +111,17 @@ write_rds(rma_model, file = "output/ma_ef_updating.rds")
 
 dat <- ef_data %>% filter(domain == "shifting") %>%  mutate(row_num=1:n())
 
-
-#In some of the primary studies, multiple outcomes were reported.
-# In order to make use of all available information and to avoid
-# potential bias by selecting only one outcome per study,
-# all reported outcomes of each study were included in the meta-analysis.
-# Assuming different outcomes of the same study to be independent is likely
-# invalid as they refer to the same treatment and control group.
-# Thus, outcomes reported by the same study were explicitly modeled as correlated.
-# In the absence of any reported correlations in the primary studies,
-# correlations were set to r = 0.7.
-
-V <- cor_matrix(dat$study, r = 0.7, v = dat$var.g)
+# aggregate outcomes (1 ES/study)
+dat <- escalc(yi = g, vi = var_g_alt, data = dat)
+dat <- aggregate.escalc(dat, cluster = study, struct = "CS", rho = .7)
 
 
-# fitting a three-level meta-analysis model 
-rma_model <-  rma.mv(yi = g,
-                     V = V,
-                     data = dat, 
-                     method = "REML",
-                     random = ~ 1 | study/row_num, 
-                     slab = study)
+# fitting a RE meta-analysis model 
+rma_model <-  rma(yi = yi ,
+                  vi = vi,
+                  data = dat, 
+                  method = "REML")
+
 
 write_rds(rma_model, file = "output/ma_ef_shifting.rds")
 
@@ -144,7 +142,7 @@ dat <- ef_data %>% filter(domain == "processing speed") %>%  mutate(row_num=1:n(
 # In the absence of any reported correlations in the primary studies,
 # correlations were set to r = 0.7.
 
-V <- cor_matrix(dat$study, r = 0.7, v = dat$var.g)
+V <- cor_matrix(dat$study, r = 0.7, v = dat$var_g_alt)
 
 
 # fitting a three-level meta-analysis model 
