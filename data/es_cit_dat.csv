@@ -1,0 +1,52 @@
+pref,study,year_pub,g,cite_p_year,n_yr
+time,Green,1994,-0.91,49.535714285714285,28
+time,Eppinger,2012,-0.85,13.9,10
+time,Stoeckel,2013,-0.67,7.555555555555555,9
+time,Sparrow (st1),2018,-0.51,5.5,4
+time,Löckenhoff,2011,-0.34,6.615384615384615,13
+time,Eppinger,2018,-0.31,NA,NA
+time,Johnson,2015,-0.23,13.375,8
+time,Tschernegg,2015,-0.1,8.571428571428571,7
+time,Li,2013,-0.08,21.09090909090909,11
+time,Lee,2018,-0.07,NA,NA
+time,Lempert,unpublished,-0.07,NA,NA
+time,Reimers,2009,-0.05,31.384615384615383,13
+time,Bickel,2014,-0.05,11.555555555555555,9
+time,Hampton,2018,-0.04,2.8,5
+time,Sparrow (st2),2018,-0.04,5.5,4
+time,Boyle,2012,-0.04,3,10
+time,Garza,2016,-0.03,9.625,8
+time,Mahalingam (sample 3),2018,-0.02,NA,NA
+time,O'Hora,2016,-0.01,NA,NA
+time,Sisso,unpublished,-0.01,NA,NA
+time,Sanchez-Roige,2018,0,15.2,5
+time,Mahalingam (sample 5),2018,0.01,NA,NA
+time,Mahalingam (sample 6),2018,0.03,NA,NA
+time,Sparrow,2019,0.03,3.75,4
+time,Wolfe,2017,0.04,NA,NA
+time,Samanez-Larkin,2011,0.04,8,12
+time,Halfmann,2013,0.05,6,9
+time,Sheffer,2016,0.05,4,6
+time,Li (study 2),unpublished,0.06,NA,NA
+time,Bauer,2010,0.06,5.8,15
+time,Liu,2016,0.07,2.5714285714285716,7
+time,Chao,2009,0.08,10.692307692307692,13
+time,Whelan,2009,0.1,6.857142857142857,14
+time,Mahalingam (sample 4),2018,0.1,NA,NA
+time,Seaman,2018,0.12,11.6,5
+time,Gollner,2018,0.13,NA,NA
+time,Roalf,2012,0.14,9.181818181818182,11
+time,Kirby,2002,0.31,13.095238095238095,21
+time,Jimura,2011,0.34,12.083333333333334,12
+time,Buono,2015,0.35,NA,NA
+altruism,Bailey,2013,0.551213402394017,6.333333333333333,9
+altruism,Beadle,2015,0,19.875,8
+altruism,Freund: Exp 4,2014,0.605426916839721,13,9
+altruism,Gong,2019,0.921852724623188,NA,NA
+altruism,Hubbard,2016,1.77251240478261,11.166666666666666,6
+altruism,Pornpattananangkul,2019,0.518264161225095,5,5
+altruism,Roalf,2012,0.10622410902187,9.181818181818182,11
+altruism,Rosi,2019,0.638194185867676,4,3
+altruism,Sparrow: Exp 1,2018,0.858350729706717,5.5,4
+altruism,Sparrow: Exp 2,2018,0.587483925336821,5.5,4
+altruism,Sze,2012,0.529181234035289,26.545454545454547,11
