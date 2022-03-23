@@ -53,7 +53,7 @@ for (CurrMA in ma_list) {
   }
   
   
-  if (tolower(CurrMA) %like% "seaman") {
+  if (tolower(CurrMA) %like% "vnew") {
     
     ma_data <-data.frame(read_xlsx(cma_file, CurrMA))
     
