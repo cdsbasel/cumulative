@@ -28,7 +28,7 @@ This document showcases step-by-step the analyses described in the study *Age Di
 
 We first clean and format the data extracted from the studies included in the meta-analysis and calculate effect sizes. These steps are carried out by specific functions and the outputs are saved into preference-specific folders.
 
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 ### 1. FORMATTING & PROCESSING ####
 
 # 1A. formatting & processing the file from Covidence containing the extracted data
@@ -60,7 +60,7 @@ source("code/functions/compute_es_seaman_time.R")
 
 ### Running the data processing workflow
 Each set of studies goes through the same processing stages
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 
 preferences <- c("risk", "time", "social")
 
@@ -79,12 +79,12 @@ for (pref in preferences) {
 ```
 
 ### Exploration & Data Visualisation
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 # Using outputs from 4 to summarize output
 source("code/functions/table_es_pref_overview.R")
 ```
 
-```{r, EVAL=FALSE, echo=FALSE, warning=FALSE, fig.height= 3, fig.width=9}
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, fig.height= 3, fig.width=9}
 # read workflow output
 dat <- bind_rows(read_csv("data/summary/risk/effect_sizes_risk.csv",
                           col_types = cols()),
@@ -123,7 +123,7 @@ dat %>%
 ```
 
 #### Effect Size Overview Table
-```{r,EVAL=FALSE, echo=FALSE, warning=FALSE}
+```{r,eval=TRUE, echo=FALSE, warning=FALSE}
 
 
 
@@ -144,7 +144,7 @@ table1
 
 For each economic preference, we use the output of the data processing workflow to run several analyses. The outputs are saved in saved into preference-specific folders. 
 
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 ### 4. RUN CMA & MA####
 
 # 4A. Using output from 3A to conduct the MLMA + sensitivity analyses
@@ -163,7 +163,7 @@ source("code/functions/conduct_leave1out.R")
 
 ### Multilevel Meta-Analysis (MLMA)
 We use the effect sizes to fit a three-level meta-analysis model with random effects at the study and estimate level in which we account for the dependence of effect sizes by letting the sampling errors within studies to be correlated with a correlation coefficient of 'rho'. We also apply robust variance estimation (RVE) with small-sample adjustment.
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 rho = .5
 
 preferences <- c("risk", "time", "social")
@@ -188,7 +188,7 @@ for (pref in preferences) {
 
 
 Additional analyses for risk: Splitting by domain and task type
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 
 rho = .5
 pref = "risk"
@@ -246,7 +246,7 @@ for (typ in types) {
 
 ### Sensitivity Analyses
 As it is difficult to know exactly the correlation of sampling errors within clusters, we also run sensitivity analyses for each set of effect sizes, by specifying different values of 'rho'.
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 
 rho_vec <- seq(from = .1, to = .9, by = .1)
 preferences <- c("time", "risk", "social")
@@ -271,7 +271,7 @@ for (pref in preferences) {
 
 To check for publication bias, we run an Egger's regression test with either the standard error or the incerse sample size as the precision metric.
 
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 rho = .5
 preferences <- c("time", "risk", "social")
 for (pref in preferences) {
@@ -339,7 +339,7 @@ for (pref in preferences) {
 
 To check for evidence of p-hacking, we conduct a pcurve test for each set of effect sizes.
 
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 
 preferences <- c("time", "risk", "social")
 for (pref in preferences) {
@@ -367,7 +367,7 @@ for (pref in preferences) {
 
 For the study-level cumulative meta-analysis, we added the effect size(s) of one study after the other in order of year of publication, and each time we fit the same three-level model specified above.
 
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 
 rho = .5 # set correlation for variances 
 
@@ -391,7 +391,7 @@ for (pref in preferences) {
 
 ##### Additional analyses for risk
 Additional analyses for risk: Splitting risk by domain and task type
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 rho = .5
 pref = "risk"
 dat <- read_csv(sprintf("data/summary/%s/effect_sizes_%s.csv", pref, pref),
@@ -445,7 +445,7 @@ for (typ in types) {
 #### Year Level 
 
 For the year-level cumulative meta-analysis, we added the effect size(s)publish in one same year after the next, and each time we fit the same three-level model specified above.
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 
 rho = .5 # set correlation for variances 
 
@@ -471,7 +471,7 @@ for (pref in preferences) {
 ##### Additional analyses for risk
 Additional analyses for risk: Splitting risk by domain and task type
 
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 rho = .5
 pref = "risk"
 dat <- read_csv(sprintf("data/summary/%s/effect_sizes_%s.csv", pref, pref),
@@ -523,7 +523,7 @@ for (typ in types) {
 ### Leave-One-Out Analysis
 To explore whether some studies are more influential than others, we fit the three-level model by omitting one study at a time.
 
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 rho = .5 # set correlation for variances 
 
 preferences <- c("time", "risk", "social")
@@ -545,13 +545,13 @@ for (pref in preferences) {
 
 ### Meta-Regressions
 Here we fit several three-level meta-regression models to inversotgatre the role of different moderators.
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 source("code/01_meta_regressions.R")
 ```
 
 #### Covariate overview
 Below is a list of the number of effect sizes (for each econ. preference) broken down into the different levels of the categorical moderator that were included in the meta-regressions
-```{r, EVAL=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
 
 covariates <- c("incentivization", "domain", "task_type", "cor_type", "study_design" )
@@ -589,7 +589,7 @@ for (pref in preferences) {
 
 ### Temporal Trends: Effect Sizes
 To assess if effect sizes and year of publication are linked, we fit a three-level meta regression with year of publication as the predictor.
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 rho = .5
 preferences <- c("time", "risk", "social")
 
@@ -627,7 +627,7 @@ for (pref in preferences) {
 
 ##### Additional risk analyses
 Additional analyses for risk: Splitting risk by domain and task type.
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 
 pref = "risk"
 dat <- read_csv(sprintf("data/summary/%s/effect_sizes_%s.csv", pref, pref),
@@ -707,7 +707,7 @@ for (typ in types) {
 
 ### Temporal Trends: Sample Sizes
 To assess if sample sizes and year of publication are linked, we fit a simple linear with year of publication as the predictor and sample size as the dependent variable.
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 
 # source function to create data frame with sample sizes
 source("code/functions/table_sample_sizes.R")
@@ -739,7 +739,7 @@ for (pref in preferences) {
 
 ### Proteus Phenomenon: Time Preference
 We followed the approach by Koricheva et al. (2013) and compared the effect size and variance of the first study with the mean effect size and variance of the rest of the studies.
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 # get data
 dat <- read_csv("data/summary/time/effect_sizes_time.csv",col_types = cols())
 
@@ -776,7 +776,7 @@ p_val
 
 ## PLOTTING
 Here we use the data processing and analysis output and create forest plots and other figures to either display results, have an overview of effect sizes, or illustrate the absence/presence of publication bias.
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 ### 5. PLOT CMA & MA ####
 
 # Plotting CMA results
@@ -813,7 +813,7 @@ source("code/functions/plot_sensitivity_rho.R")
 
 
 ### Plot Effect Sizes By Year: MA + CMA + Temporal Trends (Figure 1)
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 # cma plots
 cma_p <- plot_year_cma(m_list = c("output/risk/cma_year_risk.rds",
                                   "output/time/cma_year_time.rds",
@@ -846,7 +846,7 @@ ggsave("figures/es_year.png", plot = p, width = 17, height = 12, units = "cm", d
 
 
 #### Additional plots for risk: Splitting by Domain & Task Type (Suppl. Figures)
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 ### DOMAIN
 
 # cma plots
@@ -920,7 +920,7 @@ ggsave("figures/es_risk_type_year.png", plot = p, width = 25, height = 11, units
 
 ### Overview of Effect Sizes (Suppl. Figure)
 
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 
 dat <- bind_rows(read_csv("data/summary/risk/effect_sizes_risk.csv",
                           col_types = cols()),
@@ -942,7 +942,7 @@ ggsave("figures/es_overview.png", plot = p, width = 15, height = 10, units = "cm
 
 
 ##### Additional plots for risk: Splitting by Domain & Task Type (Suppl. Figures)
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 ### DOMAIN
 dat <-read_csv("data/summary/risk/effect_sizes_risk.csv",
                col_types = cols())%>% 
@@ -975,7 +975,7 @@ ggsave("figures/es_risk_task_overview.png", plot = p, width = 15, height = 10, u
 
 
 ### CMA + (ML)MA study-level forestplots (Suppl. Figure)
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, fig.height= 20, fig.width=12}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, fig.height= 20, fig.width=12}
 
 # cma plots
 cma_p_r <- plot_forestplot_cma(m = read_rds("output/risk/cma_study_risk.rds"))
@@ -1041,7 +1041,7 @@ ggsave("figures/es_study.png", plot = p, width = 30, height = 40, units = "cm", 
 
 ### Overview of Sample Sizes (Suppl. Figure)
 
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 # source function to create data frame with sample sizes
 source("code/functions/table_sample_sizes.R")
 
@@ -1070,7 +1070,7 @@ ggsave("figures/samplesize_overview.png", plot = p, width = 15, height = 10, uni
 
 ### Temporal Trends: Sample size
 
-```{r}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 p <- plot_temp_trend_sample(m_list = c("output/risk/temp_trend_sample_risk.rds",
                                        "output/time/temp_trend_sample_time.rds",
                                        "output/social/temp_trend_sample_social.rds"))
@@ -1081,7 +1081,7 @@ ggsave("figures/temp_trend_sample.png", plot = p, width = 15, height = 15, units
 
 
 ### Leave-one-out forestplots (Suppl. Figure)
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, fig.height= 20, fig.width= 7}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, fig.height= 20, fig.width= 7}
 # cma plots
 r_p <- plot_forestplot_leave1out(m = read_rds("output/risk/leave1out_study_risk.rds"))
 
@@ -1121,7 +1121,7 @@ ggsave("figures/leave1out.png", plot = p, width = 12, height = 35, units = "cm",
 
 
 ### Funnel plots (Suppl. Figure)
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, fig.height= 4, fig.width=11}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, fig.height= 4, fig.width=11}
 
 # to merge plots
 library(patchwork)
@@ -1168,7 +1168,7 @@ ggsave("figures/funnel_plot.png", plot = p, width = 30, height = 17, units = "cm
 ```
 
 ### P-curve plots (Suppl. Figure)
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, fig.height= 5, fig.width=14}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, fig.height= 5, fig.width=14}
 r_p <- plot_pcurve(pcurve = read_rds("output/risk/pcurve_risk.rds"))
 
 
@@ -1199,7 +1199,7 @@ ggsave("figures/pcurve.png", plot = p, width = 35, height = 12, units = "cm", dp
 
 ### Sensitivty analyses (Suppl. Figure)
 
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, fig.height= 3, fig.width=9}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, fig.height= 3, fig.width=9}
 r_p <- plot_sensitivity_rho(dat = read_rds("output/risk/mlma_sensitivity_rho_risk.rds"))
 
 
@@ -1225,7 +1225,7 @@ ggsave("figures/sensitivty_rho.png", plot = p, width = 25, height = 7, units = "
 
 
 ## TABLES
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 ### 5. TABLES ####
 
 # Summarize p_curve output
@@ -1237,7 +1237,7 @@ source("code/functions/table_egger.R")
 
 
 ### Egger's test result (Suppl. Table)
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 
 table_egger(egger = read_rds("output/social/egger_social.rds")) %>% 
   write_csv("output/social/egger_social_format.csv")
@@ -1250,7 +1250,7 @@ table_egger(egger = read_rds("output/time/egger_time.rds")) %>%
 ```
 
 ### Pcurve results (Suppl. Table)
-```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 
 table_pcurve(pcurve = read_rds("output/social/pcurve_social.rds")) %>% 
   write_csv("output/social/pcurve_social_format.csv")
