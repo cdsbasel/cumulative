@@ -1,0 +1,13 @@
+filename,variable,group_id,mean,sd,n,r,se,error_type,plot_type
+figure_1.png,prct_yes,young_no_risk,96.64268585131896,5.087099145226974,18,NA,1.1990407673860943,se,mean_error
+figure_1.png,prct_yes,old_no_risk,94.24460431654677,9.156778461408456,18,NA,2.158273381294947,se,mean_error
+figure_1.png,prct_yes,young_low_risk,88.00959232613911,14.24387760663543,18,NA,3.3573141486810414,se,mean_error
+figure_1.png,prct_yes,old_low_risk,76.97841726618708,26.45291555518024,18,NA,6.235011990407685,se,mean_error
+figure_1.png,prct_yes,young_med_risk,53.956834532374124,22.383236238998638,18,NA,5.275779376498804,se,mean_error
+figure_1.png,prct_yes,old_med_risk,48.920863309352534,30.52259487136175,18,NA,7.194244604316545,se,mean_error
+figure_1.png,prct_yes,young_high_risk,16.067146282973646,12.209037948544719,18,NA,2.877697841726622,se,mean_error
+figure_1.png,prct_yes,old_high_risk,11.270983213429279,14.243877606635506,18,NA,3.357314148681059,se,mean_error
+figure_1.png,prct_yes,young_very_high_risk,2.87769784172664,5.087099145226944,18,NA,1.1990407673860872,se,mean_error
+figure_1.png,prct_yes,old_very_high_risk,2.87769784172664,5.087099145226959,18,NA,1.1990407673860908,se,mean_error
+figure_1.png,prct_yes,young_inf_risk,0.7194244604316751,4.069679316181573,18,NA,0.959232613908874,se,mean_error
+figure_1.png,prct_yes,old_inf_risk,0.7194244604316751,4.069679316181573,18,NA,0.959232613908874,se,mean_error

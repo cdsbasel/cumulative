@@ -1,0 +1,7 @@
+filename,variable,group_id,mean,sd,n,r,se,error_type,plot_type
+figure_s2.png,mistakes,young_ram,10.315789473684212,7.368421052631589,49,NA,1.05263157894737,se,mean_error
+figure_s2.png,mistakes,old_ram,10.175438596491226,7.007361033143327,59,NA,0.9122807017543906,se,mean_error
+figure_s2.png,mistakes,young_rsm,9.684210526315791,9.333333333333325,49,NA,1.3333333333333321,se,mean_error
+figure_s2.png,mistakes,old_rsm,12.561403508771932,8.085416576703809,59,NA,1.05263157894737,se,mean_error
+figure_s2.png,mistakes,young_cm,3.6491228070175445,5.894736842105257,49,NA,0.8421052631578938,se,mean_error
+figure_s2.png,mistakes,old_cm,4.350877192982457,5.390277717802535,59,NA,0.7017543859649127,se,mean_error

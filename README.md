@@ -1,5 +1,5 @@
-# Cumulative meta-analyses of age differences in economic preferences
-This repository contains all the scripts and data files used to conduct the anaylses reported in Bagaïni et al. (2022)
+# Age Differences in Economic Preferences: Cumulative meta-analyses of risk, time, and social preferences (Bagaïni et al., 2022)
+This repository contains all the scripts and data files used to conduct the anaylses reported in the manuscript
 
  ## Files & Folders
  - Bagaini_etal_workflow: Contains all the data pre-processing, processing, analysis and plotting steps that are reproted in the paper.

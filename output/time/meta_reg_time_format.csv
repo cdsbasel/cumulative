@@ -1,0 +1,8 @@
+moderator,est,se,tval,pval,ci95
+dec_diff,0.013,0.012,1.101,0.284," [-0.012, 0.037]"
+cor_typeCOR,-0.03,0.023,-1.336,0.191," [-0.076, 0.016]"
+cor_typeRPB,-0.098,0.065,-1.518,0.148," [-0.235, 0.038]"
+study_designcontinuous,-0.03,0.023,-1.336,0.191," [-0.076, 0.016]"
+study_designextreme_group,-0.098,0.065,-1.518,0.148," [-0.235, 0.038]"
+incentivizationhypothetical,-0.018,0.019,-0.949,0.348," [-0.057, 0.021]"
+incentivizationincentivized,-0.181,0.095,-1.913,0.081," [-0.389, 0.027]"

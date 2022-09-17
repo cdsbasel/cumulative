@@ -1,0 +1,5 @@
+filename,variable,group_id,mean,sd,n,r,se,error_type,plot_type
+figure_2.png,reward_index,young_gains,69.84536082474226,30.927835051546367,36,NA,5.154639175257728,se,mean_error
+figure_2.png,reward_index,old_gains,68.04123711340205,32.47422680412379,36,NA,5.412371134020631,se,mean_error
+figure_2.png,reward_index,young_losses,80.92783505154637,26.28865979381453,36,NA,4.381443298969089,se,mean_error
+figure_2.png,reward_index,old_losses,89.17525773195875,17.01030927835052,36,NA,2.835051546391753,se,mean_error

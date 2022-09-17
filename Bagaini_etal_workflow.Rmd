@@ -1,5 +1,5 @@
 ---
-title: "Analysis Workflow of Cumulative Meta-Analyis of Age Differences in Economic Preferences"
+title: "Analysis Workflow of Age Differences in Economic Preferences: Cumulative meta-analyses of risk, time, and social preferences"
 author: "Alexandra Bagaïni, Yunrui Liu, Arzie Bajrami, Gayoung Son, Loreen Tisdall, Rui Mata"
 date: "8/1/2022"
 output:
@@ -21,14 +21,14 @@ library(dmetar) # to conduct p-curve test
 ```
 
 
-This document showcases step-by-step the analyses described in the study *Cumulative Meta-Analyis of Age Differences in Economic Preferences*. All the functions that are sourced in this script can be found in the "code/functions/" folder. 
+This document showcases step-by-step the analyses described in the study *Age Differences in Economic Preferences: Cumulative meta-analyses of risk, time, and social preferences*. All the functions that are sourced in this script can be found in the "code/functions/" folder. 
 
 
 ## DATA PROCESSING
 
 We first clean and format the data extracted from the studies included in the meta-analysis and calculate effect sizes. These steps are carried out by specific functions and the outputs are saved into preference-specific folders.
 
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 ### 1. FORMATTING & PROCESSING ####
 
 # 1A. formatting & processing the file from Covidence containing the extracted data
@@ -60,9 +60,9 @@ source("code/functions/compute_es_seaman_time.R")
 
 ### Running the data processing workflow
 Each set of studies goes through the same processing stages
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 
-preferences <- c( "risk", "social", "time")
+preferences <- c("risk", "time", "social")
 
 
 for (pref in preferences) {
@@ -72,19 +72,19 @@ for (pref in preferences) {
   processing_plot_data(preference = pref)
   processing_table_data(preference = pref)
   merge_processed_data(preference = pref)
-   if (pref == "time" ) {compute_es_seaman_time()} 
+  if (pref == "time" ) {compute_es_seaman_time()} 
   compute_es(preference = pref)
 }
 
 ```
 
 ### Exploration & Data Visualisation
-```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
 # Using outputs from 4 to summarize output
 source("code/functions/table_es_pref_overview.R")
 ```
 
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, fig.height= 3, fig.width=9}
+```{r, EVAL=FALSE, echo=FALSE, warning=FALSE, fig.height= 3, fig.width=9}
 # read workflow output
 dat <- bind_rows(read_csv("data/summary/risk/effect_sizes_risk.csv",
                           col_types = cols()),
@@ -123,7 +123,7 @@ dat %>%
 ```
 
 #### Effect Size Overview Table
-```{r,eval=TRUE, echo=FALSE, warning=FALSE}
+```{r,EVAL=FALSE, echo=FALSE, warning=FALSE}
 
 
 
@@ -144,21 +144,18 @@ table1
 
 For each economic preference, we use the output of the data processing workflow to run several analyses. The outputs are saved in saved into preference-specific folders. 
 
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 ### 4. RUN CMA & MA####
 
 # 4A. Using output from 3A to conduct the MLMA + sensitivity analyses
 source("code/functions/conduct_mlma.R")
 source("code/functions/conduct_sensitivity_rho.R")
 
-# 4B. Using output from 3A to detect selective reporting (i.e., Egger's Test)
-source("code/functions/conduct_egger_t.R")
-
-# 4C. Using output from 3A to conduct the CMA
+# 4B. Using output from 3A to conduct the CMA
 source("code/functions/conduct_cma.R") # by study
 source("code/functions/conduct_cma_year.R") # by year
 
-# 4D. Using output from 3A to conduct the leave-one-out analysis
+# 4C. Using output from 3A to conduct the leave-one-out analysis
 source("code/functions/conduct_leave1out.R")
 
 ```
@@ -166,10 +163,10 @@ source("code/functions/conduct_leave1out.R")
 
 ### Multilevel Meta-Analysis (MLMA)
 We use the effect sizes to fit a three-level meta-analysis model with random effects at the study and estimate level in which we account for the dependence of effect sizes by letting the sampling errors within studies to be correlated with a correlation coefficient of 'rho'. We also apply robust variance estimation (RVE) with small-sample adjustment.
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 rho = .5
 
-preferences <- c("risk", "social", "time")
+preferences <- c("risk", "time", "social")
 
 for (pref in preferences) {
   
@@ -189,8 +186,9 @@ for (pref in preferences) {
 
 ##### Additional risk analyses
 
+
 Additional analyses for risk: Splitting by domain and task type
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 
 rho = .5
 pref = "risk"
@@ -248,7 +246,7 @@ for (typ in types) {
 
 ### Sensitivity Analyses
 As it is difficult to know exactly the correlation of sampling errors within clusters, we also run sensitivity analyses for each set of effect sizes, by specifying different values of 'rho'.
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 
 rho_vec <- seq(from = .1, to = .9, by = .1)
 preferences <- c("time", "risk", "social")
@@ -271,26 +269,68 @@ for (pref in preferences) {
 
 ### Egger's regression test
 
-To check for publication bias, we run an Egger's regression test
+To check for publication bias, we run an Egger's regression test with either the standard error or the incerse sample size as the precision metric.
 
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 rho = .5
-
 preferences <- c("time", "risk", "social")
-
 for (pref in preferences) {
-  
-  # read effect size datasets
-  dat <- read_csv(sprintf("data/summary/%s/effect_sizes_%s.csv", pref, pref),
-                  col_types = cols())
-  
-  # run meta-regression with "precision" as a predictor
-  # *precision* metric used can have an effect of whether we get a non-zero slope or not
-  egger <- conduct_egger_t(dat = dat, rho = rho)
-  egger <- robust(egger, cluster = study_id, clubSandwich = TRUE)
+  egger_df <- NULL
+  for (preci in c("se", "invn")) {
+    
+    # read effect size datasets
+    dat <- read_csv(sprintf("data/summary/%s/effect_sizes_%s.csv", pref, pref),
+                    col_types = cols())
+    dat <- escalc(yi = cor_yi, vi = cor_vi, data = dat)
+    dat$study_id <- as.character(dat$study_id)
+    dat$es_id <- as.character(dat$es_id)
+    
+    # compute a "precision" index (standard error or inverse sample size)
+    
+    if (preci == "se") {
+      dat$precision <- sqrt(dat$cor_vi)
+    } 
+    if (preci == "invn") {
+      dat$precision <- 1/dat$n_incl_es
+    } 
+    
+    # run meta-regression with "precision" as a predictor
+    
+    ### create approx. V matrix assuming that the effect sizes within studies
+    ###  are correlated with a correlation coefficient of value 'rho'
+    V_mat <- vcalc(vi = vi,
+                   cluster = study_id,
+                   obs = es_id,
+                   data = dat,
+                   rho = rho)
+    
+    ### Egger's Test: fit multilevel model using the approximate V matrix + 
+    ### predictor to represent precision 
+    egger <- rma.mv(yi ~ 1 + precision,  
+                    V = V_mat,
+                    random = ~ 1| study_id/es_id, 
+                    data = dat)
+    
+    # apply RVE
+    egger <- robust(egger, cluster = study_id, clubSandwich = TRUE)
+    
+    
+    # could also use broom::tidy()
+    res_df <- tibble(precision_indc = preci,
+                     moderator = rownames(egger$b),
+                     estimate = egger$b[,1],
+                     se = egger$se,
+                     tval = egger$zval,
+                     ci_lb = egger$ci.lb,
+                     ci_ub = egger$ci.ub,
+                     pval = egger$pval)
+    
+    
+    egger_df <- bind_rows(egger_df,res_df)
+  }
   
   # save output
-  write_rds(egger, sprintf("output/%s/egger_%s.rds", pref, pref))
+  write_rds(egger_df, sprintf("output/%s/egger_%s.rds", pref ,pref))
 }
 ```
 
@@ -299,7 +339,7 @@ for (pref in preferences) {
 
 To check for evidence of p-hacking, we conduct a pcurve test for each set of effect sizes.
 
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 
 preferences <- c("time", "risk", "social")
 for (pref in preferences) {
@@ -327,7 +367,7 @@ for (pref in preferences) {
 
 For the study-level cumulative meta-analysis, we added the effect size(s) of one study after the other in order of year of publication, and each time we fit the same three-level model specified above.
 
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 
 rho = .5 # set correlation for variances 
 
@@ -351,7 +391,7 @@ for (pref in preferences) {
 
 ##### Additional analyses for risk
 Additional analyses for risk: Splitting risk by domain and task type
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 rho = .5
 pref = "risk"
 dat <- read_csv(sprintf("data/summary/%s/effect_sizes_%s.csv", pref, pref),
@@ -405,7 +445,7 @@ for (typ in types) {
 #### Year Level 
 
 For the year-level cumulative meta-analysis, we added the effect size(s)publish in one same year after the next, and each time we fit the same three-level model specified above.
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 
 rho = .5 # set correlation for variances 
 
@@ -431,7 +471,7 @@ for (pref in preferences) {
 ##### Additional analyses for risk
 Additional analyses for risk: Splitting risk by domain and task type
 
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 rho = .5
 pref = "risk"
 dat <- read_csv(sprintf("data/summary/%s/effect_sizes_%s.csv", pref, pref),
@@ -483,8 +523,8 @@ for (typ in types) {
 ### Leave-One-Out Analysis
 To explore whether some studies are more influential than others, we fit the three-level model by omitting one study at a time.
 
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
-rho = .3 # set correlation for variances 
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+rho = .5 # set correlation for variances 
 
 preferences <- c("time", "risk", "social")
 
@@ -505,13 +545,13 @@ for (pref in preferences) {
 
 ### Meta-Regressions
 Here we fit several three-level meta-regression models to inversotgatre the role of different moderators.
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
 source("code/01_meta_regressions.R")
 ```
 
 #### Covariate overview
 Below is a list of the number of effect sizes (for each econ. preference) broken down into the different levels of the categorical moderator that were included in the meta-regressions
-```{r, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+```{r, EVAL=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
 
 
 covariates <- c("incentivization", "domain", "task_type", "cor_type", "study_design" )
@@ -533,7 +573,7 @@ for (pref in preferences) {
                 pref = unique(dat$pref),
                 predictor = covar) %>% 
       rename("level" = all_of(covar))
-
+    
     df <- bind_rows(df, dt)
   }
   
@@ -547,11 +587,9 @@ for (pref in preferences) {
 
 
 
-### Temporal Trends
+### Temporal Trends: Effect Sizes
 To assess if effect sizes and year of publication are linked, we fit a three-level meta regression with year of publication as the predictor.
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
-# read workflow output
-
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
 rho = .5
 preferences <- c("time", "risk", "social")
 
@@ -582,12 +620,14 @@ for (pref in preferences) {
   
   write_rds(temp_m, sprintf("output/%s/temp_trend_%s.rds", pref, pref))
 }
+
+
 ```
 
 
 ##### Additional risk analyses
 Additional analyses for risk: Splitting risk by domain and task type.
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 
 pref = "risk"
 dat <- read_csv(sprintf("data/summary/%s/effect_sizes_%s.csv", pref, pref),
@@ -665,12 +705,41 @@ for (typ in types) {
 ```
 
 
+### Temporal Trends: Sample Sizes
+To assess if sample sizes and year of publication are linked, we fit a simple linear with year of publication as the predictor and sample size as the dependent variable.
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+
+# source function to create data frame with sample sizes
+source("code/functions/table_sample_sizes.R")
+
+
+preferences <- c("time", "risk", "social")
+
+
+for (pref in preferences) {
+  
+  # read effect size dataset
+  dat <- read_csv(sprintf("data/summary/%s/effect_sizes_%s.csv", pref, pref),
+                  col_types = cols())
+  
+  
+  dat_n <- table_sample_sizes(dat = dat)
+  
+  
+  # fit a simple linear regression model
+  temp_m <- lm(n_incl_es ~ 1 + year_of_publication, data = dat_n)
+  
+  temp_m$data <- dat_n
+  write_rds(temp_m, sprintf("output/%s/temp_trend_sample_%s.rds", pref, pref))
+}
+```
+
 
 
 
 ### Proteus Phenomenon: Time Preference
 We followed the approach by Koricheva et al. (2013) and compared the effect size and variance of the first study with the mean effect size and variance of the rest of the studies.
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
 # get data
 dat <- read_csv("data/summary/time/effect_sizes_time.csv",col_types = cols())
 
@@ -707,7 +776,7 @@ p_val
 
 ## PLOTTING
 Here we use the data processing and analysis output and create forest plots and other figures to either display results, have an overview of effect sizes, or illustrate the absence/presence of publication bias.
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
 ### 5. PLOT CMA & MA ####
 
 # Plotting CMA results
@@ -720,6 +789,7 @@ source("code/functions/plot_year_ma.R")
 
 # Plotting temporal trends
 source("code/functions/plot_temp_trend.R")
+source("code/functions/plot_temp_trend_sample.R")
 
 # Plotting leave-one-out results
 source("code/functions/plot_forestplot_leave1out.R")
@@ -742,24 +812,27 @@ source("code/functions/plot_sensitivity_rho.R")
 
 
 
-### Plot Effect Sizes By Year (Figure 1)
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+### Plot Effect Sizes By Year: MA + CMA + Temporal Trends (Figure 1)
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
 # cma plots
 cma_p <- plot_year_cma(m_list = c("output/risk/cma_year_risk.rds",
                                   "output/time/cma_year_time.rds",
-                                  "output/social/cma_year_social.rds"))
+                                  "output/social/cma_year_social.rds"))+
+  labs(title = "C. Cumulative Effect Sizes")
 
 
 # ma_year plots
 ma_p <- plot_year_ma(m_list = c("output/risk/mlma_risk.rds",
                                 "output/time/mlma_time.rds",
-                                "output/social/mlma_social.rds"))
+                                "output/social/mlma_social.rds")) +
+  labs(title = "B. Effect Sizes by Year")
 
 
 # temporal trends
 temp_p <- plot_temp_trend(m_list = c("output/risk/temp_trend_risk.rds",
                                      "output/time/temp_trend_time.rds",
-                                     "output/social/temp_trend_social.rds"))
+                                     "output/social/temp_trend_social.rds")) +
+  labs(title = "A. Individual Effect Sizes")
 
 # merge plots
 library(patchwork)
@@ -768,32 +841,35 @@ p <-  temp_p+
   (cma_p + theme(strip.text = element_text(color = "white"))) 
 
 
-ggsave("figures/es_year.png", plot = p, width = 25, height = 15, units = "cm", dpi = 600)
+ggsave("figures/es_year.png", plot = p, width = 17, height = 12, units = "cm", dpi = 600)
 ```
 
 
 #### Additional plots for risk: Splitting by Domain & Task Type (Suppl. Figures)
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
 ### DOMAIN
 
 # cma plots
 cma_p <- plot_year_cma(m_list = c("output/risk/cma_year_risk_loss.rds",
                                   "output/risk/cma_year_risk_gain.rds",
-                                  "output/risk/cma_year_risk_mixed.rds"))
+                                  "output/risk/cma_year_risk_mixed.rds"))+
+  labs(title = "C. Cumulative Effect Sizes")
 
 
 # ma_year plots
 ma_p <- plot_year_ma(m_list = c("output/risk/mlma_risk_loss.rds",
                                 "output/risk/mlma_risk_gain.rds",
-                                "output/risk/mlma_risk_mixed.rds"))
+                                "output/risk/mlma_risk_mixed.rds")) +
+  labs(title = "B. Effect Sizes by Year")
 
 
 
 
-# ma_year plots
+# temporal trend with effect sizes plots
 temp_p <- plot_temp_trend(m_list= c("output/risk/temp_trend_risk_loss.rds",
                                     "output/risk/temp_trend_risk_gain.rds",
-                                    "output/risk/temp_trend_risk_mixed.rds"))
+                                    "output/risk/temp_trend_risk_mixed.rds")) +
+  labs(title = "A. Individual Effect Sizes")
 
 # merge plots
 library(patchwork)
@@ -809,19 +885,22 @@ ggsave("figures/es_risk_year.png", plot = p, width = 25, height = 15, units = "c
 
 # cma plots
 cma_p <- plot_year_cma(m_list = c("output/risk/cma_year_risk_experience.rds",
-                                  "output/risk/cma_year_risk_description.rds"))
+                                  "output/risk/cma_year_risk_description.rds"))+
+  labs(title = "C. Cumulative Effect Sizes")
 
 
 # ma_year plots
 ma_p <- plot_year_ma(m_list = c("output/risk/mlma_risk_experience.rds",
-                                "output/risk/mlma_risk_description.rds"))
+                                "output/risk/mlma_risk_description.rds")) +
+  labs(title = "B. Effect Sizes by Year")
 
 
 
 
-# ma_year plots
+# trend plots
 temp_p <- plot_temp_trend(m_list= c("output/risk/temp_trend_risk_experience.rds",
-                                    "output/risk/temp_trend_risk_description.rds"))
+                                    "output/risk/temp_trend_risk_description.rds")) +
+  labs(title = "A. Individual Effect Sizes")
 
 # merge plots
 library(patchwork)
@@ -841,7 +920,7 @@ ggsave("figures/es_risk_type_year.png", plot = p, width = 25, height = 11, units
 
 ### Overview of Effect Sizes (Suppl. Figure)
 
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
 
 dat <- bind_rows(read_csv("data/summary/risk/effect_sizes_risk.csv",
                           col_types = cols()),
@@ -851,24 +930,30 @@ dat <- bind_rows(read_csv("data/summary/risk/effect_sizes_risk.csv",
                           col_types = cols())) %>% 
   group_by(pref) %>% 
   mutate(pref = paste0(pref, "\n(", as.character(n()), ")")) %>% 
-  ungroup()
+  ungroup() %>% 
+  rename(val = cor_yi)
 
-p <- plot_raincloud_plot(dat)
+p <- plot_raincloud_plot(dat) +
+  geom_vline(xintercept = 0, color = "grey20", linetype = "dashed")
+
 
 ggsave("figures/es_overview.png", plot = p, width = 15, height = 10, units = "cm", dpi = 600)
 ```
 
 
 ##### Additional plots for risk: Splitting by Domain & Task Type (Suppl. Figures)
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
 ### DOMAIN
 dat <-read_csv("data/summary/risk/effect_sizes_risk.csv",
                col_types = cols())%>% 
   group_by(domain) %>% 
   mutate(pref = paste0(pref, ": ", domain, "\n(", as.character(n()), ")")) %>% 
-  ungroup()
+  ungroup()%>% 
+  rename(val = cor_yi)
 
-p <- plot_raincloud_plot(dat)
+p <- plot_raincloud_plot(dat)+ 
+  geom_vline(xintercept = 0, color = "grey20", linetype = "dashed")
+
 
 
 ggsave("figures/es_risk_domain_overview.png", plot = p, width = 15, height = 10, units = "cm", dpi = 600)
@@ -878,9 +963,11 @@ dat <-read_csv("data/summary/risk/effect_sizes_risk.csv",
                col_types = cols())%>% 
   group_by(task_type) %>% 
   mutate(pref = paste0(pref, ": ", task_type, "\n(", as.character(n()), ")")) %>% 
-  ungroup()
+  ungroup()%>% 
+  rename(val = cor_yi)
 
-p <- plot_raincloud_plot(dat)
+p <- plot_raincloud_plot(dat)+
+  geom_vline(xintercept = 0, color = "grey20", linetype = "dashed") 
 
 ggsave("figures/es_risk_task_overview.png", plot = p, width = 15, height = 10, units = "cm", dpi = 600)
 
@@ -888,7 +975,7 @@ ggsave("figures/es_risk_task_overview.png", plot = p, width = 15, height = 10, u
 
 
 ### CMA + (ML)MA study-level forestplots (Suppl. Figure)
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, fig.height= 20, fig.width=12}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, fig.height= 20, fig.width=12}
 
 # cma plots
 cma_p_r <- plot_forestplot_cma(m = read_rds("output/risk/cma_study_risk.rds"))
@@ -908,17 +995,7 @@ ma_p_a <- plot_forestplot_ma(m = read_rds("output/social/mlma_social.rds"))
 library(patchwork)
 
 # social
-p <- ((ma_p_a + 
-         theme(plot.margin = unit(c(0,15,0,0), "pt"), 
-               plot.title = element_text(color = "grey15",
-                                         family = "Arial",
-                                         face = "bold",
-                                         size = 10),
-               axis.title.x = element_blank())+ 
-         ggtitle("social")) +
-        (cma_p_a + 
-           theme(plot.margin = unit(c(0,0,0,15), "pt"),
-                 axis.title.x = element_blank())))/
+p <- 
   # risk
   ((ma_p_r + 
       theme(plot.margin = unit(c(0,15,0,0), "pt"), 
@@ -937,11 +1014,23 @@ p <- ((ma_p_a +
             plot.title = element_text(color = "grey15",
                                       family = "Arial",
                                       face = "bold",
-                                      size = 10))+ 
+                                      size = 10),
+            axis.title.x = element_blank())+ 
       ggtitle("Time")) +
      (cma_p_t + 
-        theme(plot.margin = unit(c(0,0,0,15), "pt")))) +
-  plot_layout(heights = c(.5, 1.25,1.25))
+        theme(plot.margin = unit(c(0,0,0,15), "pt"),
+              axis.title.x = element_blank())))/
+  # social
+  ((ma_p_a + 
+      theme(plot.margin = unit(c(0,15,0,0), "pt"), 
+            plot.title = element_text(color = "grey15",
+                                      family = "Arial",
+                                      face = "bold",
+                                      size = 10))+ 
+      ggtitle("Social")) +
+     (cma_p_a + 
+        theme(plot.margin = unit(c(0,0,0,15), "pt"))))+
+  plot_layout(heights = c(1.25,1.25, .5))
 
 
 ggsave("figures/es_study.png", plot = p, width = 30, height = 40, units = "cm", dpi = 600)
@@ -950,8 +1039,49 @@ ggsave("figures/es_study.png", plot = p, width = 30, height = 40, units = "cm", 
 ```
 
 
+### Overview of Sample Sizes (Suppl. Figure)
+
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+# source function to create data frame with sample sizes
+source("code/functions/table_sample_sizes.R")
+
+
+dat <- bind_rows(read_csv("data/summary/risk/effect_sizes_risk.csv",
+                          col_types = cols()),
+                 read_csv("data/summary/time/effect_sizes_time.csv",
+                          col_types = cols()),
+                 read_csv("data/summary/social/effect_sizes_social.csv",
+                          col_types = cols())) 
+
+
+dat_n <- table_sample_sizes(dat) %>% 
+  group_by(pref) %>% 
+  mutate(pref = paste0(pref, "\n(", as.character(n()), " studies)")) %>% 
+  ungroup()%>% 
+  mutate(val = n_incl_es)
+
+p <- plot_raincloud_plot(dat_n) +
+  labs(y = "", x = "Sample Size (log10)") +
+  scale_x_log10()
+
+ggsave("figures/samplesize_overview.png", plot = p, width = 15, height = 10, units = "cm", dpi = 600)
+```
+
+
+### Temporal Trends: Sample size
+
+```{r}
+p <- plot_temp_trend_sample(m_list = c("output/risk/temp_trend_sample_risk.rds",
+                                       "output/time/temp_trend_sample_time.rds",
+                                       "output/social/temp_trend_sample_social.rds"))
+
+ggsave("figures/temp_trend_sample.png", plot = p, width = 15, height = 15, units = "cm", dpi = 600)
+
+```
+
+
 ### Leave-one-out forestplots (Suppl. Figure)
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, fig.height= 20, fig.width= 7}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, fig.height= 20, fig.width= 7}
 # cma plots
 r_p <- plot_forestplot_leave1out(m = read_rds("output/risk/leave1out_study_risk.rds"))
 
@@ -970,17 +1100,17 @@ p <-  (r_p + labs(title = "Risk")+
                                          family = "Arial",
                                          face = "bold",
                                          size = 10))) +
-  (a_p + labs(title = "Social")+ 
-     theme(plot.margin = unit(c(0,30,0,0), "pt"),
-           plot.title = element_text(color = "grey15",
-                                     family = "Arial",
-                                     face = "bold",
-                                     size = 10)))  +
-  (t_p + labs(title = "Time") + theme(plot.title = element_text(color = "grey15",
+  (t_p + labs(title = "Time") + theme(plot.margin = unit(c(0,30,0,0), "pt"),
+                                      plot.title = element_text(color = "grey15",
                                                                 family = "Arial",
                                                                 face = "bold",
                                                                 size = 10))) +
-  plot_layout(heights = c(1.25,.5, 1.25))
+  (a_p + labs(title = "Social")+ 
+     theme(plot.title = element_text(color = "grey15",
+                                     family = "Arial",
+                                     face = "bold",
+                                     size = 10))) +
+  plot_layout(heights = c(1.25,1.25, .5))
 
 
 
@@ -991,7 +1121,7 @@ ggsave("figures/leave1out.png", plot = p, width = 12, height = 35, units = "cm",
 
 
 ### Funnel plots (Suppl. Figure)
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, fig.height= 4, fig.width=11}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, fig.height= 4, fig.width=11}
 
 # to merge plots
 library(patchwork)
@@ -999,21 +1129,21 @@ library(patchwork)
 
 # contour-enhanced funnel plots
 a_p <- plot_contour_funnelplot(m = read_rds("output/social/mlma_social.rds"),
-                       ref = 0)
+                               ref = 0)
 
 r_p <- plot_contour_funnelplot(m = read_rds("output/risk/mlma_risk.rds"),
-                       ref = 0)
+                               ref = 0)
 
 
 t_p <- plot_contour_funnelplot(m = read_rds("output/time/mlma_time.rds"),
-                       ref = 0)
+                               ref = 0)
 
 
-pA <-    (a_p + labs(title = "Social") + 
-           theme(plot.margin = unit(c(0,30,0,0), "pt"), legend.position = "none")) +
-  (r_p + labs(title = "Risk", y = "")+ 
+pA <-    (r_p + labs(title = "Risk") + 
+            theme(plot.margin = unit(c(0,30,0,0), "pt"), legend.position = "none")) +
+  (t_p + labs(title = "Time", y = "")+ 
      theme(plot.margin = unit(c(0,30,0,0), "pt"), legend.position = "none")) +
-  (t_p + labs(title = "Time", y = ""))
+  (a_p + labs(title = "Social", y = ""))
 
 
 # plotting inverse sample size vs. effect size
@@ -1023,26 +1153,22 @@ r_p <- plot_funnelplot(m = read_rds("output/risk/mlma_risk.rds"))
 
 t_p <- plot_funnelplot(m = read_rds("output/time/mlma_time.rds"))
 
-pB <-    (a_p + 
-           theme(plot.margin = unit(c(0,30,0,0), "pt"), legend.position = "none")) +
-  (r_p + labs(y = "")+ 
+pB <-    (r_p + 
+            theme(plot.margin = unit(c(0,30,0,0), "pt"), legend.position = "none")) +
+  (t_p + labs(y = "")+ 
      theme(plot.margin = unit(c(0,30,0,0), "pt"), legend.position = "none")) +
-  (t_p + labs(y = ""))
+  (a_p + labs(y = ""))
 
 
 p <- pA/pB
 
 ggsave("figures/funnel_plot.png", plot = p, width = 30, height = 17, units = "cm", dpi = 600)
 
+
 ```
 
-
-
-
-
-
 ### P-curve plots (Suppl. Figure)
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, fig.height= 5, fig.width=14}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, fig.height= 5, fig.width=14}
 r_p <- plot_pcurve(pcurve = read_rds("output/risk/pcurve_risk.rds"))
 
 
@@ -1054,11 +1180,11 @@ a_p <- plot_pcurve(pcurve = read_rds("output/social/pcurve_social.rds"))
 # merge plots
 library(patchwork)
 
-p <-   (a_p + labs(title = "Social")+ 
+p <-   (r_p + labs(title = "Risk")+ 
           theme(plot.margin = unit(c(0,30,0,0), "pt"), legend.position = "none")) +
-  (r_p + labs(title = "Risk", y = "")+ 
+  (t_p + labs(title = "Time", y = "")+ 
      theme(plot.margin = unit(c(0,30,0,0), "pt"), legend.position = "none")) +
-  (t_p + labs(title = "Time", y = ""))
+  (a_p + labs(title = "Social", y = ""))
 
 
 
@@ -1073,7 +1199,7 @@ ggsave("figures/pcurve.png", plot = p, width = 35, height = 12, units = "cm", dp
 
 ### Sensitivty analyses (Suppl. Figure)
 
-```{r, eval=FALSE, echo=TRUE, warning=FALSE, fig.height= 3, fig.width=9}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE, fig.height= 3, fig.width=9}
 r_p <- plot_sensitivity_rho(dat = read_rds("output/risk/mlma_sensitivity_rho_risk.rds"))
 
 
@@ -1087,9 +1213,9 @@ library(patchwork)
 
 p <- (r_p + labs(title = "Risk")+ 
         theme(plot.margin = unit(c(0,30,0,0), "pt"), legend.position = "none")) +
-  (a_p + labs(title = "Social", y = "") +
+  (t_p + labs(title = "Time", y = "") +
      theme(plot.margin = unit(c(0,30,0,0), "pt"), legend.position = "none"))+
-  (t_p + labs(title = "Time", y = "")) 
+  (a_p + labs(title = "Social", y = "")) 
 
 
 
@@ -1099,17 +1225,32 @@ ggsave("figures/sensitivty_rho.png", plot = p, width = 25, height = 7, units = "
 
 
 ## TABLES
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 ### 5. TABLES ####
 
-# Using outputs from 5 to summarize p_curve output
+# Summarize p_curve output
 source("code/functions/table_pcurve.R")
+
+# Summarize egger output
+source("code/functions/table_egger.R")
 ```
 
 
+### Egger's test result (Suppl. Table)
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
+
+table_egger(egger = read_rds("output/social/egger_social.rds")) %>% 
+  write_csv("output/social/egger_social_format.csv")
+
+table_egger(egger = read_rds("output/risk/egger_risk.rds")) %>% 
+  write_csv("output/risk/egger_risk_format.csv")
+
+table_egger(egger = read_rds("output/time/egger_time.rds")) %>% 
+  write_csv("output/time/egger_time_format.csv")
+```
 
 ### Pcurve results (Suppl. Table)
-```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+```{r, EVAL=FALSE, echo=TRUE, warning=FALSE}
 
 table_pcurve(pcurve = read_rds("output/social/pcurve_social.rds")) %>% 
   write_csv("output/social/pcurve_social_format.csv")
@@ -1120,4 +1261,3 @@ table_pcurve(pcurve = read_rds("output/risk/pcurve_risk.rds")) %>%
 table_pcurve(pcurve = read_rds("output/time/pcurve_time.rds")) %>% 
   write_csv("output/time/pcurve_time_format.csv")
 ```
-

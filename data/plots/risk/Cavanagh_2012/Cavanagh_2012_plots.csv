@@ -1,0 +1,9 @@
+filename,variable,group_id,mean,sd,n,r,se,error_type,plot_type
+figure_2a.jpeg,avg. pumps,young_risk_low,28.151815181518156,12.662261447690364,23,NA,2.640264026402644,se,mean_error
+figure_2a.jpeg,avg. pumps,old_risk_low,30.627062706270628,10.219372158753588,29,NA,1.8976897689768961,se,mean_error
+figure_2a.jpeg,avg. pumps,young_risk_high,14.125412541254128,4.748348042883876,23,NA,0.9900990099009892,se,mean_error
+figure_2a.jpeg,avg. pumps,old_risk_high,17.92079207920792,6.664807929621931,29,NA,1.2376237623762414,se,mean_error
+figure_2b.jpeg,explosions,young_risk_low,18.33333333333333,4.196352582898646,23,NA,0.8750000000000036,se,mean_error
+figure_2b.jpeg,explosions,old_risk_low,18.458333333333325,5.160782940170579,29,NA,0.9583333333333357,se,mean_error
+figure_2b.jpeg,explosions,young_risk_high,19.04166666666666,3.5968736424845393,23,NA,0.75,se,mean_error
+figure_2b.jpeg,explosions,old_risk_high,22.541666666666664,5.833928541062392,29,NA,1.0833333333333357,se,mean_error

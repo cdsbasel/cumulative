@@ -1,0 +1,106 @@
+"Study.Identifier","Intervention","Authors.name","Email","Year","Design","correct_data_extracted","Incentive","Magnitude.of.Time.Delay","Measure","condition","age_mean","age_range","age_sd","n","correlation","mean","sd","tvalue","df"
+"Samanez-Larkin 2011","Younger","gregory samanez-larkin","g.samanezlark@duke.edu","2011","extreme group","","real","weeks","proportion",NA,22,"19-26",NA,12,NA,0.46,NA,0.2,NA
+"Samanez-Larkin 2011","Older","gregory samanez-larkin","g.samanezlark@duke.edu","2011","extreme group","","real","weeks","proportion",NA,73.4,"63-85",NA,13,NA,0.44,NA,0.2,NA
+"Kirby 2002","Age","kris kirby","kkirby@williams.edu","2002","continuous age","Yes","real","days","parameter",NA,27.4,"10-80",NA,154,0.3,NA,NA,NA,NA
+"Sparrow 2019","Younger","sparrow et al","jspaniol@psych.ryerson.ca","2018","extreme group","No mean or sd but we can extract from barplot","real","days","proportion",NA,21,"18-30",3.44,36,NA,0.699300699300699,0.293706293706294,NA,NA
+"Sparrow 2019","Older","sparrow et al","jspaniol@psych.ryerson.ca","2018","extreme group","No mean or sd but we can extract from barplot","real","days","proportion",NA,70.11,"65-85",4.91,36,NA,0.680652680652681,0.335664335664336,NA,NA
+"Roalf 2012","Younger","roalf et al","","2012","extreme group","yes","real ","days","parameter ",NA,30.14,"21–45 ",5.53,29,NA,0.01,0.03,NA,NA
+"Roalf 2012","Older","roalf et al","","2012","extreme group","yes","real ","days","parameter ",NA,71.3,"65–85 ",4.36,25,NA,0.02,0.04,NA,NA
+"Sanchez-Roige 2018","Age","sanchez-roige","aap@ucsd.edu","2018","continuous age","yes","hypothetical","days","parameter",NA,53.79,"18-101",16.08,23664,0.001,NA,NA,NA,NA
+"Seaman 2018","Age","kendra seaman","kendra.seaman@duke.edu","2018","continuous age","","real","weeks","parameter",NA,49.71,"22-83",17.92,89,0.12,NA,NA,NA,NA
+"Löckenhoff 2011","Age","corinna löckenhoff","CEL72@cornell.edu","2011","continuous age","Yes","real","days","parameter",NA,52,"19-91",20.5,98,0.33,NA,NA,NA,NA
+"Tschernegg 2015","Age","melanie tschernegg","martin.kronbichler@sbg.ac.at","2015","continuous age","yes","hypothetical","months","proportion",NA,25.2192857142857,"19-44",NA,70,-0.097,NA,NA,NA,NA
+"Stoeckel 2013","Age","luke stoeckel","lstoeckel@partners.org","2012","continuous age","yes","real","days","parameter",NA,33.4,"19-49",9.8,19,-0.585,NA,NA,NA,NA
+"Bauer 2010","Younger","michal bauer","bauerm@fsv.cuni.cz","2009","extreme group","Yes","hypothetical","years","proportion",NA,24.017,"20-29",NA,291,NA,3.989,2.805,NA,NA
+"Bauer 2010","Older","michal bauer","bauerm@fsv.cuni.cz","2009","extreme group","Yes","hypothetical","years","proportion",NA,39.909,"30-74",NA,241,NA,4.339,2.757,NA,NA
+"Garza 2016","Younger","kimberly garza","kbl0005@auburn.edu","2016","extreme group","yes","hypothetical","days/weeks/months/years","parameter ",NA,27.5,"21-34",NA,152,NA,0.37,0.27,NA,NA
+"Garza 2016","Middle_1","kimberly garza","kbl0005@auburn.edu","2016","extreme group","yes","hypothetical","days/weeks/months/years","parameter ",NA,42,"35-49",NA,176,NA,0.37,0.25,NA,NA
+"Garza 2016","Middle_2","kimberly garza","kbl0005@auburn.edu","2016","extreme group","yes","hypothetical","days/weeks/months/years","parameter ",NA,57,"50-64",NA,139,NA,0.38,0.25,NA,NA
+"Garza 2016","Older","kimberly garza","kbl0005@auburn.edu","2016","extreme group","yes","hypothetical","days/weeks/months/years","parameter ",NA,70.5,"65-76",NA,9,NA,0.46,0.2,NA,NA
+"Eppinger 2012","Younger","ben eppinger","ben.eppinger@concordia.ca","2012","extreme group","Yes","real","weeks","proportion",NA,20.9,"18-28",3,15,NA,26.8,8.13326502703558,NA,NA
+"Eppinger 2012","Older","ben eppinger","ben.eppinger@concordia.ca","2012","extreme group","Yes","real","weeks","proportion",NA,69.7,"65-80",4.4,15,NA,13.3,5.42217668469038,NA,NA
+"Gollner 2018","Age","lars göllner","lars.goellner@uni-siegen.de","2018","continuous age","Yes","hypothetical","days","parameter",NA,46.4831683168317,"9-101",NA,96,0.134,NA,NA,NA,NA
+"Halfmann 2016","Younger","kameko halfmann","kameko-halfmann@uiowa.edu","2016","extreme group","missing standard deviation (standard error given)","hypothetical","days","parameter",NA,21,"",NA,77,NA,0.018,0.0789746794865291,NA,NA
+"Halfmann 2016","Older","kameko halfmann","kameko-halfmann@uiowa.edu","2016","extreme group","missing standard deviation (standard error given)","hypothetical","days","parameter",NA,77,"",NA,36,NA,0.003,0.03,NA,NA
+"Buono 2015","Younger","frank buono","fbuono@siu.edu","2015","extreme group","Yes","Hypothetical","years","Parameter",NA,22.5,"18-27",NA,20,NA,0.404,0.258,NA,NA
+"Buono 2015","Older","frank buono","fbuono@siu.edu","2015","extreme group","Yes","Hypothetical","years","Parameter",NA,50,"45-55",NA,18,NA,0.61,0.312,NA,NA
+"Bickel 2014","Age ","warren bickel","wkbickel@vtc.vt.edu","2014","continuous age","Yes","hypothetical","days","parameter",NA,31.64,"18-82",11.25,1163,-0.0466,NA,NA,NA,NA
+"Boyle 2012","Age","patricia boyle","Patricia_Boyle@rush.edu","2012","continuous age","Yes","hypothetical","months","parameter",NA,83.1,"60-98.8",6.7,388,-0.035,NA,NA,NA,NA
+"Sheffer 2016","Age","christine sheffer","csheffer@med.cuny.edu","2016","continuous age","","hypothetical","days","parameter",NA,34,"18-77",11,1122,0.05,NA,NA,NA,NA
+"Hampton 2018","Age","william hampton","william.hampton@temple.edu","2018","continuous age","Yes","hypothetical","years","parameter","1 days",41,"25-65",NA,2564,0.05,NA,NA,NA,NA
+"Hampton 2018","Age","william hampton","william.hampton@temple.edu","2018","continuous age","Yes","hypothetical","years","parameter","7 days",41,"25-65",NA,2564,0.04,NA,NA,NA,NA
+"Hampton 2018","Age","william hampton","william.hampton@temple.edu","2018","continuous age","Yes","hypothetical","years","parameter","30 days",41,"25-65",NA,2564,0.02,NA,NA,NA,NA
+"Hampton 2018","Age","william hampton","william.hampton@temple.edu","2018","continuous age","Yes","hypothetical","years","parameter","180 days",41,"25-65",NA,2564,0.06,NA,NA,NA,NA
+"Hampton 2018","Age","william hampton","william.hampton@temple.edu","2018","continuous age","Yes","hypothetical","years","parameter","365 days",41,"25-65",NA,2564,0.04,NA,NA,NA,NA
+"Johnson 2015","Age ","patrick johnson","pastejohn@jhmi.edu","2015","continuous age","Missing Age Mean","hypothetical","hours","parameter","$1",35.5662857142857,"",NA,197,-0.21,NA,NA,NA,NA
+"Johnson 2015","Age ","patrick johnson","pastejohn@jhmi.edu","2015","continuous age","Missing Age Mean","hypothetical","hours","parameter","$2",35.5662857142857,"",NA,197,-0.24,NA,NA,NA,NA
+"Wolfe 2017","Age","marcus wolfe","mtwolfe@ou.edu","2017","continuous age","Yes","hypothetical","years","proportion",NA,36.9217,"15-64",11.7042,13198,-0.0396,NA,NA,NA,NA
+"Reimers 2009","Age","stian reimers","s.reimers@ucl.ac.uk","2009","continuous age","Yes","hypothetical","months","proportion",NA,NA,"21-65",NA,42863,-0.05,NA,NA,NA,NA
+"Li 2013","Older","ye li","ye.li@ucr.edu","2013","extreme group","Yes","hypothetical","months ","parameter","$100, 12 mo",66.39,"60-82",4.93,163,NA,0.72,0.15,NA,NA
+"Li 2013","Older","ye li","ye.li@ucr.edu","2013","extreme group","Yes","hypothetical","months ","parameter","$115, 3 mo",66.39,"60-82",4.93,163,NA,0.56,0.26,NA,NA
+"Li 2013","Older","ye li","ye.li@ucr.edu","2013","extreme group","Yes","hypothetical","months ","parameter","$55, 3 mo",66.39,"60-82",4.93,163,NA,0.46,0.25,NA,NA
+"Li 2013","Older","ye li","ye.li@ucr.edu","2013","extreme group","Yes","hypothetical","months ","parameter","$60, 4 mo",66.39,"60-82",4.93,163,NA,0.48,0.29,NA,NA
+"Li 2013","Older","ye li","ye.li@ucr.edu","2013","extreme group","Yes","hypothetical","months ","parameter","$75, 3 mo",66.39,"60-82",4.93,163,NA,0.54,0.28,NA,NA
+"Li 2013","Younger","ye li","ye.li@ucr.edu","2013","extreme group","Yes","hypothetical","months ","parameter","$100, 12 mo",24.76,"18-29",2.91,173,NA,0.7,0.15,NA,NA
+"Li 2013","Younger","ye li","ye.li@ucr.edu","2013","extreme group","Yes","hypothetical","months ","parameter","$115, 3 mo",24.76,"18-29",2.91,173,NA,0.54,0.24,NA,NA
+"Li 2013","Younger","ye li","ye.li@ucr.edu","2013","extreme group","Yes","hypothetical","months ","parameter","$55, 3 mo",24.76,"18-29",2.91,173,NA,0.44,0.24,NA,NA
+"Li 2013","Younger","ye li","ye.li@ucr.edu","2013","extreme group","Yes","hypothetical","months ","parameter","$60, 4 mo",24.76,"18-29",2.91,173,NA,0.43,0.27,NA,NA
+"Li 2013","Younger","ye li","ye.li@ucr.edu","2013","extreme group","Yes","hypothetical","months ","parameter","$75, 3 mo",24.76,"18-29",2.91,173,NA,0.45,0.26,NA,NA
+"Liu 2016","Older","lu-lu liu","wangyazsu@gmail.com ","2016","extreme group","Yes","hypothetical","months","parameter","Ln(k) large",68.63,"61-87",5.46,192,NA,-3.89,1.81,NA,NA
+"Liu 2016","Older","lu-lu liu","wangyazsu@gmail.com ","2016","extreme group","Yes","hypothetical","months","parameter","Ln(k) mean",68.63,"61-87",5.46,192,NA,-3.58,1.66,NA,NA
+"Liu 2016","Older","lu-lu liu","wangyazsu@gmail.com ","2016","extreme group","Yes","hypothetical","months","parameter","Ln(k) medium",68.63,"61-87",5.46,192,NA,-3.52,1.81,NA,NA
+"Liu 2016","Older","lu-lu liu","wangyazsu@gmail.com ","2016","extreme group","Yes","hypothetical","months","parameter","Ln(k) small",68.63,"61-87",5.46,192,NA,-3.32,1.82,NA,NA
+"Liu 2016","Younger","lu-lu liu","wangyazsu@gmail.com ","2016","extreme group","Yes","hypothetical","months","parameter","Ln(k) large",21.67,"18-30",2.68,351,NA,-4.57,2.01,NA,NA
+"Liu 2016","Younger","lu-lu liu","wangyazsu@gmail.com ","2016","extreme group","Yes","hypothetical","months","parameter","Ln(k) mean",21.67,"18-30",2.68,351,NA,-4.21,1.9,NA,NA
+"Liu 2016","Younger","lu-lu liu","wangyazsu@gmail.com ","2016","extreme group","Yes","hypothetical","months","parameter","Ln(k) medium",21.67,"18-30",2.68,351,NA,-4.19,2.05,NA,NA
+"Liu 2016","Younger","lu-lu liu","wangyazsu@gmail.com ","2016","extreme group","Yes","hypothetical","months","parameter","Ln(k) small",21.67,"18-30",2.68,351,NA,-3.87,1.97,NA,NA
+"Green 1994","Younger","leonard green","","1994","extreme group","Missing standard deviation","hypothetical","months/years","parameter","$1,000",20.3,"",NA,12,NA,NA,NA,4.852,12
+"Green 1994","Older","leonard green","","1994","extreme group","Missing standard deviation","hypothetical","months/years","parameter","$1,000",67.9,"",NA,12,NA,NA,NA,4.852,12
+"Jimura 2011","Younger","koji jimura","jimura@austin.utexas.edu","2011","extreme group","Missing standard deviation","hypothetical","weeks/months/years","parameter",NA,20,"",NA,20,NA,0.92,NA,2.14,38
+"Jimura 2011","Older","koji jimura","jimura@austin.utexas.edu","2011","extreme group","Missing standard deviation","hypothetical","weeks/months/years","parameter",NA,71,"60-84",7.5,20,NA,4.11,NA,2.14,38
+"Whelan 2009","Younger","robert whelan"," l.mchugh@swansea.ac.uk","2009","extreme group","Missing standard deviation, possible to calculate them from raw data (see Zöe's r script from last year)","hypothetical","years","parameter","£100",46,"",3.4,16,NA,0.618625,0.245577923817811,NA,NA
+"Whelan 2009","Older","robert whelan"," l.mchugh@swansea.ac.uk","2009","extreme group","Missing standard deviation, possible to calculate them from raw data (see Zöe's r script from last year)","hypothetical","years","parameter","£100",73,"",4.12,10,NA,0.7304,0.191462906184055,NA,NA
+"Whelan 2009","Younger","robert whelan"," l.mchugh@swansea.ac.uk","2009","extreme group","Missing standard deviation, possible to calculate them from raw data (see Zöe's r script from last year)","hypothetical","years","parameter","£1,000",46,"",3.4,16,NA,0.7735,0.206714940598561,NA,NA
+"Whelan 2009","Older","robert whelan"," l.mchugh@swansea.ac.uk","2009","extreme group","Missing standard deviation, possible to calculate them from raw data (see Zöe's r script from last year)","hypothetical","years","parameter","£1,000",73,"",4.12,10,NA,0.7588,0.150255929814581,NA,NA
+"Liu 2016","Middle","lu-lu liu","wangyazsu@gmail.com ","2016","extreme group","Yes","hypothetical","months","parameter","Ln(k) large",43.27,"31-60",6.74,745,NA,-4.22,1.92,NA,NA
+"Liu 2016","Middle","lu-lu liu","wangyazsu@gmail.com ","2016","extreme group","Yes","hypothetical","months","parameter","Ln(k) mean",43.27,"31-60",6.74,745,NA,-3.93,1.76,NA,NA
+"Liu 2016","Middle","lu-lu liu","wangyazsu@gmail.com ","2016","extreme group","Yes","hypothetical","months","parameter","Ln(k) medium",43.27,"31-60",6.74,745,NA,-3.93,1.88,NA,NA
+"Liu 2016","Middle","lu-lu liu","wangyazsu@gmail.com ","2016","extreme group","Yes","hypothetical","months","parameter","Ln(k) small",43.27,"31-60",6.74,745,NA,-3.64,1.8,NA,NA
+"Eppinger 2018","Younger","ben eppinger","ben.eppinger@concordia.ca","2018","extreme group","yes","real","weeks","proportion","Session 1",24.8,"",2.5,25,NA,16.9565217391304,5.79710144927549,NA,NA
+"Eppinger 2018","Older","ben eppinger","ben.eppinger@concordia.ca","2018","extreme group","yes","real","weeks","proportion","Session 1",71.2,"",5.6,25,NA,15.4347826086957,4.3478260869565,NA,NA
+"Eppinger 2018","Younger","ben eppinger","ben.eppinger@concordia.ca","2018","extreme group","yes","real","weeks","proportion","Session 2: Low",24.8,"",2.5,25,NA,0.192771084,0.542168675,NA,NA
+"Eppinger 2018","Older","ben eppinger","ben.eppinger@concordia.ca","2018","extreme group","yes","real","weeks","proportion","Session 2: Low",71.2,"",5.6,25,NA,-3.33e-16,0.301204820000002,NA,NA
+"Eppinger 2018","Younger","ben eppinger","ben.eppinger@concordia.ca","2018","extreme group","yes","real","weeks","proportion","Session 2: High",24.8,"",2.5,25,NA,0.638554217,1.26506024,NA,NA
+"Eppinger 2018","Older","ben eppinger","ben.eppinger@concordia.ca","2018","extreme group","yes","real","weeks","proportion","Session 2: High",71.2,"",5.6,25,NA,-0.777108434,1.174698795,NA,NA
+"Mahalingam 2018 Sample 3","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical/real","year","parameter","X1.month..1000.",36.16,"18-72",12.11,189,0.021,NA,NA,NA,NA
+"Mahalingam 2018 Sample 3","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical/real","year","parameter","X6.months..1000.",36.16,"18-72",12.11,189,-0.016,NA,NA,NA,NA
+"Mahalingam 2018 Sample 3","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical/real","year","parameter","X1.year.1000",36.16,"18-72",12.11,189,0.015,NA,NA,NA,NA
+"Mahalingam 2018 Sample 3","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical/real","year","parameter","mean..1000.",36.16,"18-72",12.11,189,-0.124,NA,NA,NA,NA
+"Mahalingam 2018 Sample 3","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical/real","year","parameter","X1.month..100.",36.16,"18-72",12.11,189,0.021,NA,NA,NA,NA
+"Mahalingam 2018 Sample 3","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical/real","year","parameter","real.reward",36.16,"18-72",12.11,189,-0.051,NA,NA,NA,NA
+"Mahalingam 2018 Sample 4","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","X1.month..1000.",38.01,"18-74",13.42,208,0.019,NA,NA,NA,NA
+"Mahalingam 2018 Sample 4","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","X6.months..1000.",38.01,"18-74",13.42,208,0.069,NA,NA,NA,NA
+"Mahalingam 2018 Sample 4","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","X1.year.1000",38.01,"18-74",13.42,208,0.089,NA,NA,NA,NA
+"Mahalingam 2018 Sample 4","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","mean..1000.",38.01,"18-74",13.42,208,0.093,NA,NA,NA,NA
+"Mahalingam 2018 Sample 4","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","X1.month..100.",38.01,"18-74",13.42,208,0.242,NA,NA,NA,NA
+"Mahalingam 2018 Sample 5","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","X1.month..1000.",27.81,"18-79",18.71,151,0.003,NA,NA,NA,NA
+"Mahalingam 2018 Sample 5","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","X6.months..1000.",27.81,"18-79",18.71,151,0.047,NA,NA,NA,NA
+"Mahalingam 2018 Sample 5","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","X1.year.1000",27.81,"18-79",18.71,151,-0.026,NA,NA,NA,NA
+"Mahalingam 2018 Sample 5","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","mean..1000.",27.81,"18-79",18.71,151,0.023,NA,NA,NA,NA
+"Mahalingam 2018 Sample 5","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","X1.month..100.",27.81,"18-79",18.71,151,-0.006,NA,NA,NA,NA
+"Mahalingam 2018 Sample 6","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","X1.month..1000.",35.79,"18-74",11.5,420,-0.007,NA,NA,NA,NA
+"Mahalingam 2018 Sample 6","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","X6.months..1000.",35.79,"18-74",11.5,420,0.036,NA,NA,NA,NA
+"Mahalingam 2018 Sample 6","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","X1.year.1000",35.79,"18-74",11.5,420,0.083,NA,NA,NA,NA
+"Mahalingam 2018 Sample 6","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","mean..1000.",35.79,"18-74",11.5,420,0.04,NA,NA,NA,NA
+"Mahalingam 2018 Sample 6","Age","vaishali mahalingam","vm298@cam.ac.uk","2018","continuous age","Yes","hypothetical","year","parameter","X1.month..100.",35.79,"18-74",11.5,420,-0.011,NA,NA,NA,NA
+"Sparrow 2018 Study 1","Younger","erika sparrow","jspaniol@psych.ryerson.ca","2018","extreme group","","real","days","proportion",NA,25.28,"18-35",5.22,32,NA,0.519774011299435,0.372862332829066,NA,48.66
+"Sparrow 2018 Study 1","Older","erika sparrow","jspaniol@psych.ryerson.ca","2018","extreme group","","real","days","proportion",NA,70.57,"65-85",4.88,30,NA,0.853107344632768,0.216613440821257,NA,48.66
+"Sparrow 2018 Study 2","Younger","erika sparrow","jspaniol@psych.ryerson.ca","2018","extreme group","","real","days","proportion",NA,20.84,"18-30",2.67,31,NA,0.737556561085973,0.277128542946287,NA,48.66
+"Sparrow 2018 Study 2","Older","erika sparrow","jspaniol@psych.ryerson.ca","2018","extreme group","","real","days","proportion",NA,71.35,"65-97",6.96,23,NA,0.760180995475113,0.303808331793567,NA,48.66
+"Chao 2009","age",NA,NA,"2009","continuous age",NA,"hypothetical","days","parameter",NA,46.52,"15 - 91",15.086280590953,175,0.0775894664085864,NA,NA,NA,NA
+"Lee 2018","age",NA,NA,"2018","continuous age",NA,"hypothetical","days","parameter",NA,26.7874787129157,"18 - 91.5",9.10005378638174,11157,-0.0712496735395659,NA,NA,NA,NA
+"Li unpublished Study 2","age",NA,NA,NA,"continuous age",NA,"hypothetical","days","parameter",NA,45.5185783521809,"18 - 86",16.2814314565207,619,0.0621715946797776,NA,NA,NA,NA
+"O'Hora 2016","age",NA,NA,"2016","continuous age",NA,"hypothetical","years","parameter",NA,30.9279711884754,"15 - 80",12.0971467487465,840,-0.0136062460941943,NA,NA,NA,NA
+"Sisso unpublished","age",NA,NA,NA,"continuous age",NA,"hypothetical","weeks","proportion",NA,49.3395437262357,"18 - 86",14.6424585638094,2630,-0.00737189256007966,NA,NA,NA,NA
+"Lempert unpublished","age",NA,NA,NA,"continuous age",NA,"real","days","parameter",NA,72.0675675675676,"58 - 93",6.82728426539994,74,-0.0695210519418726,NA,NA,NA,NA
+"Halfmann 2013","age",NA,NA,"2013","continuous age",NA,"hypothetical","weeks","parameter",NA,68.1875,"24 - 93",19.7426595569842,48,0.0486279277201258,NA,NA,NA,NA

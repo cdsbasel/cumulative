@@ -1,0 +1,5 @@
+filename,variable,group_id,mean,sd,n,r,se,error_type,plot_type
+figure_2.png,prop. risky choice,young_gain,0.34032634032634035,0.12509471202796074,20,NA,0.02797202797202808,se,mean_error
+figure_2.png,prop. risky choice,old_gain,0.2983682983682984,0.14594383069928726,20,NA,0.032634032634032695,se,mean_error
+figure_2.png,prop. risky choice,young_loss,0.710955710955711,0.10424559335663301,20,NA,0.023310023310023187,se,mean_error
+figure_2.png,prop. risky choice,old_loss,0.7692307692307694,0.10424559335663301,20,NA,0.023310023310023187,se,mean_error

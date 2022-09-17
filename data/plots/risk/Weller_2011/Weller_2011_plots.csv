@@ -1,0 +1,25 @@
+filename,variable,group_id,mean,sd,n,r,se,error_type,plot_type
+figure_1a.png,number risky choice,y_18_22_gain,16.941176470588232,5.425842861827587,358,NA,0.2867647058823515,se,mean_error
+figure_1a.png,number risky choice,m_25_44_gain,16.96323529411764,5.677737210103119,106,NA,0.5514705882352935,se,mean_error
+figure_1a.png,number risky choice,m_45_65_gain,15.419117647058819,6.02997217625147,61,NA,0.772058823529413,se,mean_error
+figure_1a.png,number risky choice,o_65_over_gain,14.669117647058819,7.408251530823228,61,NA,0.9485294117647065,se,mean_error
+figure_1b.png,number risky choice,y_18_22_loss,18.057692307692303,6.29763281641348,358,NA,0.3328402366863905,se,mean_error
+figure_1b.png,number risky choice,m_25_44_loss,18.235207100591715,6.625146614392513,106,NA,0.643491124260354,se,mean_error
+figure_1b.png,number risky choice,m_45_64_loss,18.678994082840234,6.412261198414511,61,NA,0.8210059171597663,se,mean_error
+figure_1b.png,number risky choice,o_65_over_loss,17.458579881656803,7.798696052125699,61,NA,0.998520710059168,se,mean_error
+figure_2a.png,prop. risky choice,y_18_22_gain_ra,0.7577656675749319,0.32479998351246586,358,NA,0.017166212534060032,se,mean_error
+figure_2a.png,prop. risky choice,y_18_22_gain_rd,0.47574931880108995,0.23199998822318899,358,NA,0.012261580381471404,se,mean_error
+figure_2a.png,prop. risky choice,m_25_44_gain_ra,0.8092643051771117,0.27772953241354476,106,NA,0.026975476839236956,se,mean_error
+figure_2a.png,prop. risky choice,m_25_44_gain_rd,0.3997275204359674,0.3534739503445112,106,NA,0.03433242506811973,se,mean_error
+figure_2a.png,prop. risky choice,m_45_64_gain_ra,0.7602179836512262,0.30645121344157006,61,NA,0.03923705722070858,se,mean_error
+figure_2a.png,prop. risky choice,m_45_64_gain_rd,0.3555858310626704,0.3064512134415683,61,NA,0.03923705722070836,se,mean_error
+figure_2a.png,prop. risky choice,o_65_over_gain_ra,0.6743869209809265,0.3447576151217641,61,NA,0.04414168937329688,se,mean_error
+figure_2a.png,prop. risky choice,o_65_over_gain_rd,0.40708446866485015,0.34475761512176584,61,NA,0.0441416893732971,se,mean_error
+figure_2b.png,prop. risky choice,y_18_22_loss_ra,0.7643835616438357,0.27992546524244394,358,NA,0.014794520547945167,se,mean_error
+figure_2b.png,prop. risky choice,y_18_22_loss_rd,0.5843835616438358,0.2799254652424419,358,NA,0.014794520547945056,se,mean_error
+figure_2b.png,prop. risky choice,m_25_44_loss_ra,0.8383561643835616,0.3046378233497504,106,NA,0.029589041095890223,se,mean_error
+figure_2b.png,prop. risky choice,m_25_44_loss_rd,0.48328767123287686,0.40618376446633503,106,NA,0.03945205479452041,se,mean_error
+figure_2b.png,prop. risky choice,m_45_64_loss_ra,0.8235616438356165,0.2696140984011608,61,NA,0.034520547945205426,se,mean_error
+figure_2b.png,prop. risky choice,m_45_64_loss_rd,0.4980821917808219,0.34664669794435093,61,NA,0.04438356164383572,se,mean_error
+figure_2b.png,prop. risky choice,o_65_over_loss_ra,0.7323287671232876,0.3273885480585532,61,NA,0.04191780821917812,se,mean_error
+figure_2b.png,prop. risky choice,o_65_over_loss_rd,0.5572602739726027,0.3659048478301487,61,NA,0.046849315068493325,se,mean_error

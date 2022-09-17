@@ -1,0 +1,3 @@
+filename,variable,group_id,mean,sd,n,r,se,error_type,plot_type
+Figure_2.png,prct_money_offered,old_no_descp,52.99145299145299,16.28423836175869,48,NA,2.3504273504273527,se,mean_error
+Figure_2.png,prct_money_offered,young_no_descp,45.61316684189397,15.069380963891364,48,NA,2.1750777890059254,se,mean_error

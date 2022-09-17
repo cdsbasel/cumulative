@@ -1,0 +1,14 @@
+level,k,pref,predictor
+hypothetical,29,risk,incentivization
+incentivized,111,risk,incentivization
+unknown,30,risk,incentivization
+gain,90,risk,domain
+loss,42,risk,domain
+mixed,38,risk,domain
+description,126,risk,task_type
+experience,41,risk,task_type
+mixed,3,risk,task_type
+COR,56,risk,cor_type
+RPB,114,risk,cor_type
+continuous,30,risk,study_design
+extreme_group,140,risk,study_design

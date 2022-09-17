@@ -1,0 +1,17 @@
+filename,variable,group_id,mean,sd,n,r,se,error_type,plot_type
+figure_4_gains.jpeg,prop. risky choice,young_p_10,0.46713615023474186,0.4008520977678236,40,NA,0.06338028169014098,se,mean_error
+figure_4_gains.jpeg,prop. risky choice,young_p_20,0.5422535211267605,0.3711593497850208,40,NA,0.05868544600938963,se,mean_error
+figure_4_gains.jpeg,prop. risky choice,young_p_90,0.7370892018779344,0.4008520977678222,40,NA,0.06338028169014076,se,mean_error
+figure_4_gains.jpeg,prop. risky choice,old_p_10,0.3380281690140845,0.39080100979637133,41,NA,0.061032863849765306,se,mean_error
+figure_4_gains.jpeg,prop. risky choice,old_p_20,0.32863849765258213,0.3757702017272796,41,NA,0.05868544600938963,se,mean_error
+figure_4_gains.jpeg,prop. risky choice,old_p_80,0.6220657276995305,0.3607393936581882,41,NA,0.05633802816901401,se,mean_error
+figure_4_gains.jpeg,prop. risky choice,old_p_90,0.6150234741784038,0.4058318178654617,41,NA,0.06338028169014076,se,mean_error
+figure_4_gains.jpeg,prop. risky choice,young_p_80,0.6770367301850316,0.3589420211879307,40,NA,0.05675371674491392,se,mean_error
+figure_4_losses.jpeg,prop. risky choice,young_p_10,0.3908045977011496,0.4216370213557831,40,NA,0.06666666666666654,se,mean_error
+figure_4_losses.jpeg,prop. risky choice,young_p_20,0.35862068965517246,0.39255860608986787,40,NA,0.06206896551724139,se,mean_error
+figure_4_losses.jpeg,prop. risky choice,young_p_80,0.7793103448275862,0.2907841526591617,40,NA,0.04597701149425293,se,mean_error
+figure_4_losses.jpeg,prop. risky choice,young_p_90,0.7333333333333333,0.31986256792507833,40,NA,0.0505747126436783,se,mean_error
+figure_4_losses.jpeg,prop. risky choice,old_p_10,0.29885057471264376,0.4121551233290102,41,NA,0.06436781609195391,se,mean_error
+figure_4_losses.jpeg,prop. risky choice,old_p_20,0.3540229885057473,0.3532758199962958,41,NA,0.05517241379310356,se,mean_error
+figure_4_losses.jpeg,prop. risky choice,old_p_80,0.781609195402299,0.3091163424967581,41,NA,0.0482758620689655,se,mean_error
+figure_4_losses.jpeg,prop. risky choice,old_p_90,0.7333333333333333,0.35327581999629437,41,NA,0.055172413793103336,se,mean_error
