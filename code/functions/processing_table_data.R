@@ -12,8 +12,8 @@
 #' processing_table_data(preference = 'risk')
 
 
-library(tidyverse) # for data wrangling
-library(janitor)  # for renaming column names
+# library(tidyverse) # for data wrangling
+# library(janitor)  # for renaming column names
 
 
 processing_table_data <- function(preference) {

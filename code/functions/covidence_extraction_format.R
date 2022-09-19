@@ -12,10 +12,10 @@
 
 
 
-library(tidyverse) # data wrangling
-library(janitor) # clean column names
-library(readxl) # open excel file
-
+# library(tidyverse) # data wrangling
+# library(janitor) # clean column names
+# library(readxl) # open excel file
+# 
 
 covidence_extraction_format <- function(preference) {
   

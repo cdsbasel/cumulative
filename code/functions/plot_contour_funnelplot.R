@@ -8,8 +8,8 @@
 #' plot_contour_funnelplot(m = read_rds("output/risk/mlma_risk.rds"), ref = 0)
 
 
-library(tidyverse)  # for plotting
-library(patchwork) # for combining plots
+# library(tidyverse)  # for plotting
+# library(patchwork) # for combining plots
 
 plot_contour_funnelplot <- function(m, ref) {
   

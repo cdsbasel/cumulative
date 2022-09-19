@@ -15,13 +15,38 @@ fontsize: 10pt
 
 ```{r setup, include=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse) # opening/saving files and data wrangling 
+library(tidyverse) # opening/saving files and data wrangling and plotting
 library(metafor) # for egger's test
 library(dmetar) # to conduct p-curve test
+library(janitor) # clean var names
+library(esc) # compute effect sizes
+library(readxl) # open xlsx file
+library(haven) # for reading certain data files
+library(foreign) # for reading certain data files
+library(effectsize )# compute effect sizes
+library(patchwork) # for combining plots
+library(data.table) # for data wrangling
+```
+
+This document showcases step-by-step the analyses described in the study *Age Differences in Economic Preferences: Cumulative meta-analyses of risk, time, and social preferences*. All the functions that are sourced in this script can be found in the "code/functions/" folder. 
+
+###  Required packages
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
+# LOADING ALL REQUIRED PACKAGES (FOR SCRIPTS + FUNCTIONS + PLOTTING)
+library(tidyverse) # opening/saving files and data wrangling and plotting
+library(metafor) # for egger's test
+library(dmetar) # to conduct p-curve test
+library(janitor) # clean var names
+library(esc) # compute effect sizes
+library(readxl) # open xlsx file
+library(haven) # for reading certain data files
+library(foreign) # for reading certain data files
+library(effectsize )# compute effect sizes
+library(patchwork) # for combining plots
+library(data.table) # for data wrangling
 ```
 
 
-This document showcases step-by-step the analyses described in the study *Age Differences in Economic Preferences: Cumulative meta-analyses of risk, time, and social preferences*. All the functions that are sourced in this script can be found in the "code/functions/" folder. 
 
 
 ## DATA PROCESSING
@@ -240,6 +265,18 @@ for (typ in types) {
 }
 
 
+```
+
+
+
+
+
+##### Additional social analyses
+
+Running the re-analysis of the Sparrow et al. (2021) dataset.
+
+```{r}
+source("code/01_sparrow_ma_reanalysis.R")
 ```
 
 
@@ -835,7 +872,6 @@ temp_p <- plot_temp_trend(m_list = c("output/risk/temp_trend_risk.rds",
   labs(title = "A. Individual Effect Sizes")
 
 # merge plots
-library(patchwork)
 p <-  temp_p+ 
   ( ma_p+ theme(strip.text = element_text(color = "white")))+
   (cma_p + theme(strip.text = element_text(color = "white"))) 
@@ -872,7 +908,6 @@ temp_p <- plot_temp_trend(m_list= c("output/risk/temp_trend_risk_loss.rds",
   labs(title = "A. Individual Effect Sizes")
 
 # merge plots
-library(patchwork)
 p <- temp_p + 
   ( ma_p+ theme(strip.text = element_text(color = "white")))+
   (cma_p + theme(strip.text = element_text(color = "white"))) 
@@ -903,7 +938,6 @@ temp_p <- plot_temp_trend(m_list= c("output/risk/temp_trend_risk_experience.rds"
   labs(title = "A. Individual Effect Sizes")
 
 # merge plots
-library(patchwork)
 p <- temp_p+ 
   (ma_p + theme(strip.text = element_text(color = "white")))+
   (cma_p + theme(strip.text = element_text(color = "white"))) 
@@ -992,7 +1026,7 @@ ma_p_t <- plot_forestplot_ma(m = read_rds("output/time/mlma_time.rds"))
 
 ma_p_a <- plot_forestplot_ma(m = read_rds("output/social/mlma_social.rds"))
 # merge plots
-library(patchwork)
+
 
 # social
 p <- 
@@ -1092,7 +1126,7 @@ a_p <- plot_forestplot_leave1out(m = read_rds("output/social/leave1out_study_soc
 
 
 # merge plots
-library(patchwork)
+
 
 p <-  (r_p + labs(title = "Risk")+ 
          theme(plot.margin = unit(c(0,30,0,0), "pt"),
@@ -1124,7 +1158,7 @@ ggsave("figures/leave1out.png", plot = p, width = 12, height = 35, units = "cm",
 ```{r, eval=TRUE, echo=TRUE, warning=FALSE, fig.height= 4, fig.width=11}
 
 # to merge plots
-library(patchwork)
+
 
 
 # contour-enhanced funnel plots
@@ -1178,7 +1212,6 @@ t_p <- plot_pcurve(pcurve = read_rds("output/time/pcurve_time.rds"))
 a_p <- plot_pcurve(pcurve = read_rds("output/social/pcurve_social.rds"))
 
 # merge plots
-library(patchwork)
 
 p <-   (r_p + labs(title = "Risk")+ 
           theme(plot.margin = unit(c(0,30,0,0), "pt"), legend.position = "none")) +
@@ -1209,7 +1242,7 @@ t_p <- plot_sensitivity_rho(dat = read_rds("output/time/mlma_sensitivity_rho_tim
 a_p <- plot_sensitivity_rho(dat = read_rds("output/social/mlma_sensitivity_rho_social.rds"))
 
 # merge plots
-library(patchwork)
+
 
 p <- (r_p + labs(title = "Risk")+ 
         theme(plot.margin = unit(c(0,30,0,0), "pt"), legend.position = "none")) +
@@ -1261,3 +1294,11 @@ table_pcurve(pcurve = read_rds("output/risk/pcurve_risk.rds")) %>%
 table_pcurve(pcurve = read_rds("output/time/pcurve_time.rds")) %>% 
   write_csv("output/time/pcurve_time_format.csv")
 ```
+
+
+```{r}
+# clear environment
+rm(list = ls()) 
+```
+
+

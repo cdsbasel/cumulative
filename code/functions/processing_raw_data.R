@@ -6,12 +6,12 @@
 #' @examples
 #' processing_raw_data(preference = 'risk')
 
-
-library(tidyverse) # for data wrangling
-library(haven) # for reading certain data files
-library(foreign) # for reading certain data files
-library(readxl) # for reading certain data files
-library(janitor) # for cleaning up column names
+# 
+# library(tidyverse) # for data wrangling
+# library(haven) # for reading certain data files
+# library(foreign) # for reading certain data files
+# library(readxl) # for reading certain data files
+# library(janitor) # for cleaning up column names
 
 
 processing_raw_data <- function(preference) {

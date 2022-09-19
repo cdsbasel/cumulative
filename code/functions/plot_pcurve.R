@@ -6,7 +6,7 @@
 #' plot_pcurve(pcurve = read_rds("output/social/pcurve_social.rds"))
 
 
-library(tidyverse)  # for data wrangling and plotting 
+# library(tidyverse)  # for data wrangling and plotting 
 
 
 plot_pcurve <- function(pcurve) {

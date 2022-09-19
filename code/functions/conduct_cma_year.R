@@ -9,9 +9,9 @@
 #' conduct_cma_year(dat = risk_es, rho = .5, rve = TRUE)
 
 
-library(tidyverse) # for data wrangling
-library(metafor) # compute effect sizes
-
+# library(tidyverse) # for data wrangling
+# library(metafor) # compute effect sizes
+# 
 
 conduct_cma_year <- function(dat, rho, rve) {
   

@@ -1506,6 +1506,21 @@ div.tocify {
 
 
 <p>This document showcases step-by-step the analyses described in the study <em>Age Differences in Economic Preferences: Cumulative meta-analyses of risk, time, and social preferences</em>. All the functions that are sourced in this script can be found in the “code/functions/” folder.</p>
+<div id="required-packages" class="section level3">
+<h3>Required packages</h3>
+<pre class="r"><code># LOADING ALL REQUIRED PACKAGES (FOR SCRIPTS + FUNCTIONS + PLOTTING)
+library(tidyverse) # opening/saving files and data wrangling and plotting
+library(metafor) # for egger&#39;s test
+library(dmetar) # to conduct p-curve test
+library(janitor) # clean var names
+library(esc) # compute effect sizes
+library(readxl) # open xlsx file
+library(haven) # for reading certain data files
+library(foreign) # for reading certain data files
+library(effectsize )# compute effect sizes
+library(patchwork) # for combining plots
+library(data.table) # for data wrangling</code></pre>
+</div>
 <div id="data-processing" class="section level2">
 <h2>DATA PROCESSING</h2>
 <p>We first clean and format the data extracted from the studies included in the meta-analysis and calculate effect sizes. These steps are carried out by specific functions and the outputs are saved into preference-specific folders.</p>
@@ -1654,6 +1669,85 @@ for (typ in types) {
   # save output
   write_rds(mlma, sprintf(&quot;output/%s/mlma_%s_%s.rds&quot;, pref, pref, typ))
 }</code></pre>
+</div>
+<div id="additional-social-analyses" class="section level5">
+<h5>Additional social analyses</h5>
+<p>Running the re-analysis of the Sparrow et al. (2021) dataset.</p>
+<pre class="r"><code>source(&quot;code/01_sparrow_ma_reanalysis.R&quot;)</code></pre>
+<pre><code>## New names:
+## • `Std Err` -&gt; `Std Err...14`
+## • `Std Err` -&gt; `Std Err...16`
+## • `Std Err` -&gt; `Std Err...18`</code></pre>
+<pre><code>## [[1]]
+## [1] &quot;Reported overall effect size&quot;
+## 
+## [[2]]
+## 
+## Random-Effects Model (k = 16; tau^2 estimator: REML)
+## 
+## tau^2 (estimated amount of total heterogeneity): 0.0171 (SE = 0.0227)
+## tau (square root of estimated tau^2 value):      0.1309
+## I^2 (total heterogeneity / total variability):   27.38%
+## H^2 (total variability / sampling variability):  1.38
+## 
+## Test for Heterogeneity:
+## Q(df = 15) = 25.2440, p-val = 0.0468
+## 
+## Model Results:
+## 
+## estimate      se    zval    pval   ci.lb   ci.ub      
+##   0.6064  0.0645  9.4072  &lt;.0001  0.4801  0.7327  *** 
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## 
+## [[1]]
+## [1] &quot;Corrected overall effect size&quot;
+## 
+## [[2]]
+## 
+## Random-Effects Model (k = 16; tau^2 estimator: REML)
+## 
+## tau^2 (estimated amount of total heterogeneity): 0.2123 (SE = 0.0986)
+## tau (square root of estimated tau^2 value):      0.4608
+## I^2 (total heterogeneity / total variability):   82.37%
+## H^2 (total variability / sampling variability):  5.67
+## 
+## Test for Heterogeneity:
+## Q(df = 15) = 92.2075, p-val &lt; .0001
+## 
+## Model Results:
+## 
+## estimate      se    zval    pval   ci.lb   ci.ub      
+##   0.4764  0.1305  3.6513  0.0003  0.2207  0.7321  *** 
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## 
+## [[1]]
+## [1] &quot;Corrected &amp; Converted overall effect size&quot;
+## 
+## [[2]]
+## 
+## Random-Effects Model (k = 16; tau^2 estimator: REML)
+## 
+## tau^2 (estimated amount of total heterogeneity): 0.0491 (SE = 0.0217)
+## tau (square root of estimated tau^2 value):      0.2217
+## I^2 (total heterogeneity / total variability):   85.67%
+## H^2 (total variability / sampling variability):  6.98
+## 
+## Test for Heterogeneity:
+## Q(df = 15) = 137.0977, p-val &lt; .0001
+## 
+## Model Results:
+## 
+## estimate      se    zval    pval   ci.lb   ci.ub      
+##   0.2353  0.0610  3.8542  0.0001  0.1156  0.3549  *** 
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 </div>
 <div id="sensitivity-analyses" class="section level3">
@@ -2199,7 +2293,6 @@ temp_p &lt;- plot_temp_trend(m_list = c(&quot;output/risk/temp_trend_risk.rds&qu
   labs(title = &quot;A. Individual Effect Sizes&quot;)
 
 # merge plots
-library(patchwork)
 p &lt;-  temp_p+ 
   ( ma_p+ theme(strip.text = element_text(color = &quot;white&quot;)))+
   (cma_p + theme(strip.text = element_text(color = &quot;white&quot;))) 
@@ -2233,7 +2326,6 @@ temp_p &lt;- plot_temp_trend(m_list= c(&quot;output/risk/temp_trend_risk_loss.rd
   labs(title = &quot;A. Individual Effect Sizes&quot;)
 
 # merge plots
-library(patchwork)
 p &lt;- temp_p + 
   ( ma_p+ theme(strip.text = element_text(color = &quot;white&quot;)))+
   (cma_p + theme(strip.text = element_text(color = &quot;white&quot;))) 
@@ -2264,7 +2356,6 @@ temp_p &lt;- plot_temp_trend(m_list= c(&quot;output/risk/temp_trend_risk_experie
   labs(title = &quot;A. Individual Effect Sizes&quot;)
 
 # merge plots
-library(patchwork)
 p &lt;- temp_p+ 
   (ma_p + theme(strip.text = element_text(color = &quot;white&quot;)))+
   (cma_p + theme(strip.text = element_text(color = &quot;white&quot;))) 
@@ -2342,7 +2433,7 @@ ma_p_t &lt;- plot_forestplot_ma(m = read_rds(&quot;output/time/mlma_time.rds&quo
 
 ma_p_a &lt;- plot_forestplot_ma(m = read_rds(&quot;output/social/mlma_social.rds&quot;))
 # merge plots
-library(patchwork)
+
 
 # social
 p &lt;- 
@@ -2431,7 +2522,7 @@ a_p &lt;- plot_forestplot_leave1out(m = read_rds(&quot;output/social/leave1out_s
 
 
 # merge plots
-library(patchwork)
+
 
 p &lt;-  (r_p + labs(title = &quot;Risk&quot;)+ 
          theme(plot.margin = unit(c(0,30,0,0), &quot;pt&quot;),
@@ -2458,7 +2549,7 @@ ggsave(&quot;figures/leave1out.png&quot;, plot = p, width = 12, height = 35, uni
 <div id="funnel-plots-suppl.-figure" class="section level3">
 <h3>Funnel plots (Suppl. Figure)</h3>
 <pre class="r"><code># to merge plots
-library(patchwork)
+
 
 
 # contour-enhanced funnel plots
@@ -2509,7 +2600,6 @@ t_p &lt;- plot_pcurve(pcurve = read_rds(&quot;output/time/pcurve_time.rds&quot;)
 a_p &lt;- plot_pcurve(pcurve = read_rds(&quot;output/social/pcurve_social.rds&quot;))
 
 # merge plots
-library(patchwork)
 
 p &lt;-   (r_p + labs(title = &quot;Risk&quot;)+ 
           theme(plot.margin = unit(c(0,30,0,0), &quot;pt&quot;), legend.position = &quot;none&quot;)) +
@@ -2533,7 +2623,7 @@ t_p &lt;- plot_sensitivity_rho(dat = read_rds(&quot;output/time/mlma_sensitivity
 a_p &lt;- plot_sensitivity_rho(dat = read_rds(&quot;output/social/mlma_sensitivity_rho_social.rds&quot;))
 
 # merge plots
-library(patchwork)
+
 
 p &lt;- (r_p + labs(title = &quot;Risk&quot;)+ 
         theme(plot.margin = unit(c(0,30,0,0), &quot;pt&quot;), legend.position = &quot;none&quot;)) +
@@ -2576,6 +2666,8 @@ table_pcurve(pcurve = read_rds(&quot;output/risk/pcurve_risk.rds&quot;)) %&gt;%
 
 table_pcurve(pcurve = read_rds(&quot;output/time/pcurve_time.rds&quot;)) %&gt;% 
   write_csv(&quot;output/time/pcurve_time_format.csv&quot;)</code></pre>
+<pre class="r"><code># clear environment
+rm(list = ls()) </code></pre>
 </div>
 </div>
 

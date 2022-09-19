@@ -10,10 +10,10 @@
 #' @examples
 #' compute_es(preference = 'risk')
 
-library(tidyverse) # for data wrangling
-library(metafor) # compute effect sizes
-library(effectsize )# compute effect sizes
-
+# library(tidyverse) # for data wrangling
+# library(metafor) # compute effect sizes
+# library(effectsize )# compute effect sizes
+# 
 
 compute_es <- function(preference) {
   

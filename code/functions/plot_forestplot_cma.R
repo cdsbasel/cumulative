@@ -7,11 +7,11 @@
 
 
 # PACKAGES ----------------------------------------------------------------
-
-
-library(tidyverse)
-library(metafor)
-library(data.table)
+# 
+# 
+# library(tidyverse)
+# library(metafor)
+# library(data.table)
 
 
 # READ DATA ---------------------------------------------------------------

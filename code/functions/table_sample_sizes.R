@@ -5,7 +5,7 @@
 #' @examples
 #' table_es_pref_overview(dat = read_csv("data/summary/risk/effect_sizes_risk.csv",col_types = cols()))
 
-
+# library(tidyverse)
 
 table_sample_sizes <- function(dat) {
   

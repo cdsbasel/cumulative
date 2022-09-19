@@ -12,10 +12,8 @@
 
 # PACKAGES ----------------------------------------------------------------
 
-library(tidyverse)
-library(metafor)
-
-
+library(tidyverse) # for data wrangling
+library(metafor) # for meta-regressions
 
 # RISK --------------------------------------------------------------------
 
@@ -151,7 +149,7 @@ df_format <- df %>%
   select(moderator, est,se,tval, pval, ci95) %>% 
   write_csv("output/risk/meta_reg_risk_format.csv")
 
-
+print("Meta-regression results with risk pref. effect sizes saved in output/risk/")
 
 # TIME --------------------------------------------------------------------
 
@@ -258,7 +256,7 @@ df_format <- df %>%
   select(moderator, est,se,tval, pval, ci95) %>% 
   write_csv("output/time/meta_reg_time_format.csv")
 
-
+print("Meta-regression results with time pref. effect sizes saved in output/time/")
 
 # SOCIAL --------------------------------------------------------------------
 
@@ -366,5 +364,7 @@ df_format <- df %>%
   select(moderator, est,se,tval, pval, ci95) %>% 
   write_csv("output/social/meta_reg_social_format.csv")
 
-# clear environment
-rm(list = ls()) 
+
+print("Meta-regression results with social pref. effect sizes saved in output/social/")
+
+

@@ -11,9 +11,9 @@
 
 
 
-library(tidyverse) # for data wrangling
-library(metafor) # compute effect sizes
-
+# library(tidyverse) # for data wrangling
+# library(metafor) # compute effect sizes
+# 
 
 conduct_leave1out <- function(dat, rho, rve) {
   

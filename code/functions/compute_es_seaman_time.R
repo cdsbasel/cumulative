@@ -16,9 +16,9 @@
 #' compute_es_seaman_time()
 
 
-library(tidyverse) # for data wrangling
-library(metafor) # for effect size calculations
-library(esc) # for effect size calculations
+# library(tidyverse) # for data wrangling
+# library(metafor) # for effect size calculations
+# library(esc) # for effect size calculations
 
 
 

@@ -5,7 +5,7 @@
 #' @examples
 #' table_egger(egger = read_rds("output/social/pcurve_social.rds"))
 
-library(tidyverse)  # for data wrangling 
+# library(tidyverse)  # for data wrangling 
 
 table_egger <- function(egger) {
   

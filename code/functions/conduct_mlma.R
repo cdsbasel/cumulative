@@ -11,8 +11,8 @@
 
 
 
-library(tidyverse) # for data wrangling
-library(metafor) # compute effect sizes
+# library(tidyverse) # for data wrangling
+# library(metafor) # compute effect sizes
 
 
 conduct_mlma <- function(dat, rho) {

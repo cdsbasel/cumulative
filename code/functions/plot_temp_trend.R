@@ -8,10 +8,10 @@
 #' @examples
 #' plot_temp_trend(m_list = c("output/risk/temp_trend_risk.rds", "output/time/temp_trend_time.rds", "output/social/temp_trend_social.rds"))
 
-
-
-library(tidyverse) # for plotting a data wrangling
-library(metafor) # model predictions
+# 
+# 
+# library(tidyverse) # for plotting a data wrangling
+# library(metafor) # model predictions
 
 
 

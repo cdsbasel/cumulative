@@ -14,9 +14,9 @@
 #' processing_plot_data(preference = 'risk')
 
 
-library(tidyverse) # for data wrangling
-library(janitor) # for cleaning up column names
-
+# library(tidyverse) # for data wrangling
+# library(janitor) # for cleaning up column names
+# 
 
 
 processing_plot_data <- function(preference) {
