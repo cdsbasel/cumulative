@@ -1,5 +1,0 @@
-outcome,correl,min_age,max_age,n
-auc_cd_large,-0.11942265110031056,40,70,41
-auc_cd_small,-0.1727786477663178,40,70,41
-auc_td_large,-0.21888729266102608,40,70,41
-auc_td_small,-0.07651011632410727,40,70,41
