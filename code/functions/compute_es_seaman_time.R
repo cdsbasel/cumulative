@@ -35,10 +35,14 @@ compute_es_seaman_time <- function(){
   dt <- read_csv("data/summary/time/clean_study_seaman_data_time.csv", col_types = cols())
   
   dt <- dt %>% 
-    filter(!grepl("Middle", Intervention))  # remove middle-aged comparisons
-  
+    filter(!grepl("Middle", Intervention)) %>%   # remove middle-aged comparisons
+    # remove studies with data collected in fMRI
+    filter(!grepl("Saman|Seaman 2018|Stoeckel 2013|Eppinger 2012|Sheffer",Study.Identifier )) %>% 
+    filter(!grepl("Session 2",condition)) # Eppinger 2018 Session 2 
   # make interaction term for study + conditions
   dt$conditionID <- interaction(dt$Study.Identifier, dt$condition)
+  
+  
   
   # CALC EFFECT SIZES: SMD --------------------------------------------------
   
@@ -70,11 +74,11 @@ compute_es_seaman_time <- function(){
   # Reversals  #
   dm <- reverse_es(dm, 'Garza 2016')
   dm <- reverse_es(dm, 'Li 2013')
-  dm <- reverse_es(dm, 'Sparrow 2019')
+  # dm <- reverse_es(dm, 'Sparrow 2019')
   dm <- reverse_es(dm, 'Sparrow 2018 Study 1')
   dm <- reverse_es(dm, 'Sparrow 2018 Study 2')
-  
-  
+  dm <- reverse_es(dm, 'Whelan 2009') # not in orignal script
+
   
   dat_smd <- dm
   
@@ -115,7 +119,6 @@ compute_es_seaman_time <- function(){
   dat_stats <- ds
   
   
-  
   # CALC EFFECT SIZES: CONT. -------------------------------------------------
   
   
@@ -125,6 +128,25 @@ compute_es_seaman_time <- function(){
   
   #not applicable here
   #dc <- escalc(measure = 'ZCOR', ri = correlation, ni = n, data = dc, var.names = c('fishers_z', 'var_fishers_z'))
+  
+  
+  # mutate Gollner separately (reports Kendall's tau) +
+  # mutate Löckenhoff + Johnson + Reimers separately (report Spearman's rho) +
+  # conversion formula from:
+  #  Walker, David A. (2003) "JMASM9: Converting Kendall’s Tau For Correlational Or 
+  #  Meta-Analytic Analyses," Journal of Modern Applied Statistical Methods: Vol. 2 : Iss. 2 , Article 26.
+  #  DOI: 10.22237/jmasm/1067646360
+  #  Rupinski, M. T., & Dunlap, W. P. (1996). Approximating Pearson Product-Moment Correlations 
+  #  from Kendall’s Tau and Spearman’s Rho. Educational and Psychological Measurement, 56(3), 
+  #  419–429. doi:10.1177/0013164496056003004
+  dc <- dc %>% 
+    mutate(correlation = case_when(grepl( "Löckenhoff|Johnson|Reimers" , Study.Identifier) ~  2*sin(correlation*(pi/6)),
+                                   grepl( "Gollner"  , Study.Identifier) ~  sin(.5*pi*correlation),
+                                      TRUE ~ correlation))
+  
+
+
+  
   
   dc <- escalc(measure = 'COR',
                ri = correlation, 
@@ -143,7 +165,6 @@ compute_es_seaman_time <- function(){
   
   
   dat_cont <- dc
-  
   
   
   # COMBINE ROWS ------------------------------------------------------------
@@ -171,7 +192,12 @@ compute_es_seaman_time <- function(){
     mutate(first_author = gsub("-","",first_author),
            n_incl_es = case_when(!is.na(total_n) ~ total_n,
                                  TRUE ~ young_total_n + old_total_n),
-           pref = "time") %>% 
+           pref = "time",
+           reversed_es = case_when(first_author %in% c('Garza 2016', 'Li 2013',
+                                                      'Sparrow 2018 Study 1',
+                                                      'Sparrow 2018 Study 2', 'Green 1994', "Whelan 2009",
+                                                      'Löckenhoff 2011','Hampton 2018','Wolfe 2017') ~ 1,
+                                  TRUE ~0)) %>% 
     separate(age_range_Younger, c("young_age_min", "young_age_max"), "-") %>% # cannot separate one row
     separate(age_range_Older, c("old_age_min", "old_age_max"), "-") %>% # cannot separate one row
     separate(age_range, c("age_min", "age_max"), "-") %>% 
@@ -187,6 +213,7 @@ compute_es_seaman_time <- function(){
     rowwise() %>% 
     mutate(year_of_publication = parse_number(first_author),
            source = "Seaman",
+           domain_frame = "gain",
            task_type = "description",
            first_author = gsub("[1900-9999]{4}","",first_author),
            sample_code = case_when(grepl("Sample", first_author) ~ unlist(str_split(first_author, "  ",2))[2],
@@ -223,6 +250,9 @@ compute_es_seaman_time <- function(){
       title_of_article = paste0(first_author, as.character(year_of_publication))) %>% 
     ungroup() %>% 
     select(-year_of_pub_temp) 
+  
+  
+
   
   
   write_csv(dat_seaman, "data/summary/time/effect_sizes_seaman_time.csv")

@@ -32,7 +32,8 @@ plot_forestplot_leave1out <- function(m) {
   ## colors
   fill_col <- case_when(preference == "risk" ~ "#2AB7CA",
                         preference == "social" ~ "#D5573B",
-                        preference == "time" ~ "#4D5382")
+                        preference == "time" ~ "#4D5382",
+                        preference == "effort" ~ "#9F7131")
   
   
   
@@ -55,7 +56,7 @@ plot_forestplot_leave1out <- function(m) {
                           as.character(format(round(ci.ub, 3), nsmall = 3)),
                           "]" )) %>% 
     select(y, label) %>%
-    mutate(x = max(dat$ci.ub)+.15)
+    mutate(x = max(dat$ci.ub)+.175)
   
   # headers
   title_text <- tibble(x = unique(c(study_text$x, estim_text$x)),
@@ -69,13 +70,13 @@ plot_forestplot_leave1out <- function(m) {
     # add titles and labels
     geom_text(data = study_text, aes(x = x, y = y, label = label), 
               vjust = .5, hjust = 1,
-              color = "grey15", family = "Arial", size = 2) +
+              color = "grey15", family = "Arial", size = 1.75) +
     geom_text(data = estim_text, aes(x = x, y = y, label = label),
               vjust = .5, hjust = 0,
-              color = "grey15", family = "Arial", size = 2) +
+              color = "grey15", family = "Arial", size = 1.75) +
     geom_text(data = ci_text, aes(x = x, y = y, label = label),
               vjust = .5, hjust = 0,
-              color = "grey15", family = "Arial", size = 2) +
+              color = "grey15", family = "Arial", size = 1.75) +
     geom_text(data = title_text, aes(x = x, y = y, label = label), 
               hjust = c(1,0), color = "grey15", family = "Arial",
               size = 3, fontface = "bold" ) +
@@ -98,7 +99,9 @@ plot_forestplot_leave1out <- function(m) {
     labs(x = "Pooled estimate") +
     theme(panel.grid = element_blank(),
           plot.title.position = "plot",
-          axis.text.x = element_blank(),
+          axis.text.x = element_text(color = "grey15",
+                                     family = "Arial",
+                                     size = 8),
           axis.text.y = element_blank(),
           axis.title.y = element_blank(),
           axis.title.x = element_text(color = "grey15",
@@ -110,20 +113,18 @@ plot_forestplot_leave1out <- function(m) {
   
   
   
-  if(preference != "social") {
-    p <- p + scale_x_continuous(breaks = c(-.1,0,.1)) +  
-      theme(axis.text.x = element_text(color = "grey15",
-                                       family = "Arial",
-                                       size = 8))
-  } 
-  
-  if(preference == "social") {
-    p <- p + scale_x_continuous(breaks = c(-.2,0,.2))  +  
-      theme(axis.text.x = element_text(color = "grey15",
-                                       family = "Arial",
-                                       size = 8))
+  if(!preference %in% c("social", "effort")) {
+    p <- p + scale_x_continuous(breaks = c(-.1,0,.1))
   }
   
+  if(preference == "social") {
+    p <- p + scale_x_continuous(breaks = c(-.2,0,.2))
+  }
+  
+  
+  if(preference == "effort") {
+    p <- p + scale_x_continuous(breaks = c(-.1,0,.5))
+  }
   
   return(p)
   

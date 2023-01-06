@@ -1,10 +1,12 @@
 level,k,pref,predictor
 hypothetical,16,social,incentivization
-incentivized,9,social,incentivization
+incentivized,11,social,incentivization
 unknown,1,social,incentivization
-NA,26,social,domain
-description,26,social,task_type
-COR,12,social,cor_type
+NA,28,social,domain
+description,28,social,task_type
+COR,14,social,cor_type
 RPB,14,social,cor_type
-continuous,8,social,study_design
+continuous,10,social,study_design
 extreme_group,18,social,study_design
+in-person,21,social,study_context
+online,7,social,study_context

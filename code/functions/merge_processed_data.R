@@ -48,7 +48,7 @@ merge_processed_data <- function(preference) {
     plot_dat <- read_csv("data/plots/risk/processed_plot_data_risk.csv", col_types = cols())
     table_dat <- read_csv("data/tables/risk/processed_table_data_risk.csv", col_types = cols())
     raw_dat <- read_csv("data/raw_data/risk/processed_raw_data_risk.csv", col_types = cols())
-    
+ 
     
     # RISK: COMBINE DATA ------------------------------------------------------------
     
@@ -158,6 +158,10 @@ merge_processed_data <- function(preference) {
     f_covidence_dat <- calc_prop_female(f_covidence_dat)
     
     
+    
+   
+    
+    
   }
   
   
@@ -171,6 +175,7 @@ merge_processed_data <- function(preference) {
     covidence_dat <- read_csv("data/covidence/time_ageing_formated.csv", col_types = cols())
     plot_dat <- read_csv("data/plots/time/processed_plot_data_time.csv", col_types = cols())
     raw_dat <- read_csv("data/raw_data/time/processed_raw_data_time.csv", col_types = cols())
+    table_dat <- read_csv("data/tables/time/processed_table_data_time.csv", col_types = cols())
     
     
     # TIME: COMBINE DATA ------------------------------------------------------------
@@ -202,14 +207,28 @@ merge_processed_data <- function(preference) {
     r_covidence_dat <- bind_rows(r_covidence_dat, skylark_raw_dat)
     
     
-    # plot data (only 1 study)
-    basic_vars <-  c("outcome_num")
+    # plot data (> 1 studies)
+    basic_vars <-  c("first_author", "year_of_publication", "outcome_num")
+    
     
     p_covidence_dat <- covidence_dat %>% 
+      mutate(std_lab = paste0(first_author, as.character(year_of_publication))) %>% 
       # select in the covidence data the relevant studies
-      filter(first_author %in% unique(plot_dat$first_author)) %>% 
+      filter(std_lab %in% unique(paste0(plot_dat$first_author, as.character(plot_dat$year_of_publication)))) %>% 
       select(all_of(c(basic_vars, setdiff(colnames(covidence_dat), colnames(plot_dat))))) %>% 
       left_join(plot_dat, by = basic_vars)
+    
+    
+    # table data (only 1 study)
+    basic_vars <-  c("outcome_num")
+    
+    t_covidence_dat <- covidence_dat %>% 
+      # select in the covidence data the relevant studies
+      filter(first_author %in% unique(table_dat$first_author)) %>% 
+      select(all_of(c(basic_vars, setdiff(colnames(covidence_dat), colnames(table_dat))))) %>% 
+      left_join(table_dat, by = basic_vars)
+    
+    
     
     
     # covidence data 
@@ -233,8 +252,8 @@ merge_processed_data <- function(preference) {
     # TIME: FINAL DATA --------------------------------------------------------------
     
     f_covidence_dat <- covidence_dat %>% 
-      filter(!first_author %in% c(unique(raw_dat$first_author),unique(plot_dat$first_author))) %>% 
-      bind_rows(p_covidence_dat, r_covidence_dat)%>% 
+      filter(!first_author %in% c(unique(raw_dat$first_author),unique(plot_dat$first_author),unique(table_dat$first_author))) %>% 
+      bind_rows(p_covidence_dat, r_covidence_dat, t_covidence_dat)%>% 
       # adding sample sizes where needed
       mutate(young_total_n = case_when(is.na(young_total_n) & !is.na(young_n_female)  & !is.na(young_n_male)~ young_n_female + young_n_male,
                                        TRUE ~ young_total_n),
@@ -246,8 +265,7 @@ merge_processed_data <- function(preference) {
       # standardize comparison labels
       mutate(dv_type_of_comparison = case_when(grepl("sd",tolower(dv_type_of_comparison)) ~ "extreme group (m + sd)",
                                                grepl("both",tolower(dv_type_of_comparison)) ~ "both",
-                                               grepl("cont",tolower(dv_type_of_comparison)) ~ "age continuous",
-                                               grepl("prop",tolower(dv_type_of_comparison)) ~ "extreme group (ratio)"),
+                                               grepl("cont",tolower(dv_type_of_comparison)) ~ "age continuous"),
              domain_frame = tolower(domain_frame),
              incentivization = tolower(incentivization),
              source_of_outcome = case_when(grepl("raw|osf|data", tolower(dv_summary_stats_in_figure)) ~ "raw data",
@@ -352,7 +370,78 @@ merge_processed_data <- function(preference) {
     
   }
   
-  
+  if (preference == "effort") {
+    
+    
+    # EFFORT: DATA --------------------------------------------------------------------
+    
+    covidence_dat <- read_csv("data/covidence/effort_ageing_formated.csv", col_types = cols())
+    plot_dat <- read_csv("data/plots/effort/processed_plot_data_effort.csv", col_types = cols())
+    raw_dat <- read_csv("data/raw_data/effort/processed_raw_data_effort.csv", col_types = cols())
+    
+    
+    # EFFORT: COMBINE DATA ------------------------------------------------------------
+    
+    #raw data (> 1 studies)
+    basic_vars <-  c("first_author", "year_of_publication","title_of_article","outcome_num")
+    
+    r_covidence_dat <- covidence_dat %>% 
+      # select in the covidence data the relevant studies
+      filter(first_author %in% unique(raw_dat$first_author)) %>% 
+      select(all_of(c(basic_vars, setdiff(colnames(covidence_dat), colnames(raw_dat))))) %>% 
+      left_join(raw_dat, by = basic_vars)
+    
+    
+    # plot data (> 1 studies)
+    basic_vars <-  c("first_author", "year_of_publication","title_of_article","outcome_num")
+    
+    p_covidence_dat <- covidence_dat %>% 
+      # select in the covidence data the relevant studies
+      filter(first_author %in% unique(plot_dat$first_author)) %>% 
+      select(all_of(c(basic_vars, setdiff(colnames(covidence_dat), colnames(plot_dat))))) %>% 
+      left_join(plot_dat, by = basic_vars)
+    
+    
+    
+    # EFFORT: FINAL DATA --------------------------------------------------------------
+    
+    f_covidence_dat <- covidence_dat %>% 
+      filter(!first_author %in% c(unique(raw_dat$first_author),unique(plot_dat$first_author))) %>% 
+      bind_rows(p_covidence_dat, r_covidence_dat) %>% 
+      # adding sample sizes where needed
+      mutate(young_total_n = case_when(is.na(young_total_n) & !is.na(young_n_female)  & !is.na(young_n_male)~ young_n_female + young_n_male,
+                                       TRUE ~ young_total_n),
+             old_total_n = case_when(is.na(old_total_n ) & !is.na(old_n_female)  & !is.na(old_n_male)~ old_n_female + old_n_male,
+                                     TRUE ~ old_total_n),
+             total_n = case_when(is.na(total_n ) & !is.na(old_total_n)  & !is.na(young_total_n)~ young_total_n + old_total_n,
+                                 TRUE ~ total_n)) %>% 
+      rowwise() %>% 
+      # standardize labels
+      mutate(dv_type_of_comparison = case_when(grepl("extr",tolower(dv_type_of_comparison)) ~ "extreme group (m + sd)",
+                                               grepl("both",tolower(dv_type_of_comparison)) ~ "both",
+                                               grepl("cont",tolower(dv_type_of_comparison)) ~ "age continuous"),
+             domain_frame = tolower(domain_frame),
+             incentivization = tolower(incentivization),
+             task_type = tolower(task_type),
+             effort_type = tolower(effort_type),
+             study_context =  case_when(grepl("person", tolower(study_context)) ~ "in person",
+                                        grepl("line", tolower(study_context)) ~ "online"),
+             source_of_outcome = case_when(grepl("raw|osf|data", tolower(dv_summary_stats_in_figure)) ~ "raw data",
+                                           grepl("figure", tolower(dv_summary_stats_in_figure)) ~ "figure",
+                                           grepl("table", tolower(dv_summary_stats_in_figure)) ~ "table",
+                                           is.na(dv_summary_stats_in_figure) ~ "directly from article"),
+             task_type = case_when(grepl("descrip", task_type) ~ "description",
+                                   grepl("exp", task_type) ~ "experience",
+                                   grepl("mix", task_type) ~ "mixed"),
+             incentivization = case_when(grepl("inc", incentivization) ~ "incentivized",
+                                         TRUE ~ incentivization))%>% 
+      ungroup()
+    
+    
+    # where possible calculate prop. of female participants
+    f_covidence_dat <- calc_prop_female(f_covidence_dat)
+    
+  }
   
   # SAVE OUTPUT -------------------------------------------------------------
   

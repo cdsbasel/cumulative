@@ -1,0 +1,15 @@
+﻿choice_cat,num_a_choices,age_group,n
+"0 A choices, dr5 [0.00, 5.08]",0,young,5
+"1 A choice, dr5 [5.08, 10.25]",1,young,7
+"2 A choices, dr5 [10.25, 15.55]",2,young,5
+"3 A choices, dr5 [15.55, 21.00]",3,young,4
+"4 A choices, dr5 [21.00, 26.55]",4,young,3
+"5 A choices, dr5 [26.55, 32.22]",5,young,1
+"6 A choices, dr . 32.22",6,young,1
+"0 A choices, dr5 [0.00, 5.08]",0,old,2
+"1 A choice, dr5 [5.08, 10.25]",1,old,3
+"2 A choices, dr5 [10.25, 15.55]",2,old,5
+"3 A choices, dr5 [15.55, 21.00]",3,old,2
+"4 A choices, dr5 [21.00, 26.55]",4,old,3
+"5 A choices, dr5 [26.55, 32.22]",5,old,4
+"6 A choices, dr . 32.22",6,old,9

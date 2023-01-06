@@ -22,8 +22,9 @@ plot_forestplot_cma <- function(m) {
   ## colors
   fill_col <- case_when(preference == "risk" ~ "#2AB7CA",
                         preference == "social" ~ "#D5573B",
-                        preference == "time" ~ "#4D5382")
-  
+                        preference == "time" ~ "#4D5382",
+                        preference == "effort" ~ "#9F7131")
+ 
   
   
   ## data

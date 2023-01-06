@@ -25,7 +25,8 @@ plot_forestplot_ma <- function(m) {
   #colors
   fill_col <- case_when(preference == "risk" ~ "#2AB7CA",
                         preference == "social" ~ "#D5573B",
-                        preference == "time" ~ "#4D5382")
+                        preference == "time" ~ "#4D5382",
+                        preference == "effort" ~ "#9F7131")
   
 
   ## for visualization purposes, aggregate effect sizes using the vcov matrix
@@ -101,22 +102,22 @@ plot_forestplot_ma <- function(m) {
     # add titles and labels
     geom_text(data = study_text, aes(x = x, y = y, label = label), 
               vjust = .5, hjust = 1,
-              color = "grey15", family = "Arial", size = 2) +
+              color = "grey15", family = "Arial", size = 1.75) +
     geom_text(data = knum_text, aes(x = x, y = y, label = label), 
               vjust = .5, hjust = .5,
-              color = "grey15", family = "Arial", size = 2) +
+              color = "grey15", family = "Arial", size = 1.75) +
     geom_text(data = estim_text, aes(x = x, y = y, label = label),
               vjust = .5, hjust = 0,
-              color = "grey15", family = "Arial", size = 2) +
+              color = "grey15", family = "Arial", size = 1.75) +
     geom_text(data = ci_text, aes(x = x, y = y, label = label),
               vjust = .5, hjust = 0,
-              color = "grey15", family = "Arial", size = 2) +
+              color = "grey15", family = "Arial", size = 1.75) +
     geom_text(data = pooled_text, aes(x = x, y = y, label = label), 
               hjust = c(1,0,0), color = "grey15", family = "Arial",
               size = 2.5, fontface = "bold" ) +
     geom_text(data = title_text, aes(x = x, y = y, label = label), 
               hjust = c(1,0,0), color = "grey15", family = "Arial",
-              size = 3, fontface = "bold" ) +
+              size = 2.5, fontface = "bold" ) +
     # add lines
     geom_segment(data = dat, aes(x = -3.5, y = -.25, xend = 3.5, yend = -.25), 
                  linetype = "solid", color = "grey15", size = 0.5) +

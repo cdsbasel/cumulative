@@ -83,11 +83,15 @@ dtB$vi <- esc_chisq(chisq = dtB$chi_squared, totaln =  dtB$total_n,  es.type = "
 # put data together
 dtC <- bind_rows(dtA,dtB)
 
+# converted estimate (published effect)
+conv_rep_rma <- rma(yi = abs(yi),
+                     vi = vi,
+                     data = dtC)
+
 # converted estimate
 conv_corr_rma <- rma(yi = yi,
                      vi = vi,
                      data = dtC)
-
 
 
 print(list("Corrected & Converted overall effect size",conv_corr_rma ))

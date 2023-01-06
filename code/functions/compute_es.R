@@ -28,6 +28,10 @@ compute_es <- function(preference) {
                   col_types = cols())
   
   
+  context_dat <- read_csv(sprintf("data/summary/%s/study_context_%s.csv",preference, preference), col_types = cols())
+  
+  
+  
   
   dat <- dat %>% 
     # adding SDs where needed
@@ -81,10 +85,14 @@ compute_es <- function(preference) {
   
   cor_dat <-  cor_dat %>% 
     # calculate age difference in decades
-    mutate(dec_diff = case_when(!is.na(age_min) &!is.na(age_max)~ .1*(age_max -age_min)),
+    mutate(age_min = case_when(dv_type_of_comparison == "both" ~ young_age_min,
+                               TRUE ~ age_min), # in case age min/max info is unavailable
+           age_max = case_when(dv_type_of_comparison == "both" ~ old_age_max,
+                               TRUE ~ age_max),   # in case age min/max info is unavailable
            cor_type = "COR",
            study_design = case_when(dv_type_of_comparison == "both" ~"extreme_group",
-                                    dv_type_of_comparison == "age continuous" ~ "continuous"))
+                                    dv_type_of_comparison == "age continuous" ~ "continuous")) %>% 
+    mutate(dec_diff =  .1*(age_max -age_min))
   
   
   # bind data frames
@@ -114,8 +122,8 @@ compute_es <- function(preference) {
       group_by(title_of_article) %>% 
       mutate(
         year_of_pub_temp = case_when(
-          first_author == "Horn" & grepl("strat", title_of_article) ~ paste0(as.character(year_of_publication),"a"),
-          first_author == "Horn" & !grepl("strat", title_of_article) ~ paste0(as.character(year_of_publication),"b"),
+          first_author == "Horn" & grepl("thetic", title_of_article) ~ paste0(as.character(year_of_publication),"a"),
+          first_author == "Horn" & !grepl("thetic", title_of_article) ~ paste0(as.character(year_of_publication),"b"),
           TRUE ~ as.character(year_of_publication)),
         sample_code = tolower(sample_code),
         paper_section = tolower(paper_section),
@@ -126,18 +134,28 @@ compute_es <- function(preference) {
           length(unique(sample_code))!= 1 & grepl("single", paper_section) ~ paste0(first_author, " ", sample_code, " (", year_of_pub_temp, ")"),
           # multiple-study papers (each with a single sample each)
           length(unique(sample_code))== 1 & !grepl("single", paper_section) ~ paste0(first_author, " ", paper_section, " (", year_of_pub_temp, ")"),
-          # multiple-study papers with several samples
-          TRUE ~  paste0(first_author, " ", paper_section, " ",sample_code, " (", year_of_pub_temp, ")"))) %>% 
+          # multiple-study papers (each with a multiple samples)
+          length(unique(sample_code))!= 1 & !grepl("single", paper_section) ~ paste0(first_author, " ", paper_section, " ", sample_code, " (", year_of_pub_temp, ")"))) %>%
       group_by(study_label) %>% 
       # assign a number to each study
       mutate(study_id = cur_group_id()) %>% 
       ungroup() %>% 
       select(-c(year_of_pub_temp)) %>% 
       # reverse effect sizes
-      mutate(reversed_es = case_when(study_label %in% c("Westbrook (2012)", "Herman (2018)") ~ 1, 
-                                     TRUE ~0 ),
+      rowwise() %>% 
+      mutate(reversed_es = case_when(study_label %in% c("Westbrook (2012)", "Herman (2018)", "Sproten experiment 2 (2018)",
+                                                        "Albert (2012)", "Fawns-Ritchie (2022)", "Seaman (2016)", 
+                                                        "Wood (2016)", "Bickel (2014)"  ) ~ 1,
+                                     study_label == "Kurnianingsih (2015)" & domain_frame == "gain" ~ 1, 
+                                     study_label == "Samanez-Larkin study 2 (2011)" & grepl("Risk-aversion", dv_description) ~ 1,
+                                     TRUE ~ 0 ),
              cor_yi = case_when(reversed_es == 1  ~ cor_yi*-1, 
-                                reversed_es == 0 ~cor_yi ))
+                                reversed_es == 0 ~cor_yi )) %>% 
+      ungroup()
+    
+    
+    # merge with study context data
+    es_dat <- es_dat %>% left_join(context_dat, by = c("study_label", "year_of_publication",  "title_of_article" ))
     
     
   }
@@ -161,18 +179,30 @@ compute_es <- function(preference) {
           # single-study multiple-sample papers
           length(unique(sample_code))!= 1 & grepl("single", paper_section) ~ paste0(first_author, " ", sample_code, " (", year_of_pub_temp, ")"),
           # multiple-study papers (each with a single sample each)
-          length(unique(sample_code))== 1 & !grepl("single", paper_section) ~ paste0(first_author, " ", paper_section, " (", year_of_pub_temp, ")"))) %>% 
+          length(unique(sample_code))== 1 & !grepl("single", paper_section) ~ paste0(first_author, " ", paper_section, " (", year_of_pub_temp, ")"),
+        # multiple-study papers (each with a multiple samples)
+        length(unique(sample_code))!= 1 & !grepl("single", paper_section) ~ paste0(first_author, " ", paper_section, " ", sample_code, " (", year_of_pub_temp, ")"))) %>% 
       group_by(study_label) %>%  
       # assign a number to each study
       mutate(study_id = cur_group_id()) %>% 
       ungroup() %>% 
       select(-c(year_of_pub_temp)) %>% 
       # reverse effect sizes
-      mutate(reversed_es = case_when(study_label %in% c("Mok experiment 1 (2020)", "Lamichhane (2020)",
-                                                        "Bixter (2019)", "Sparrow (2019)","Fawns-Ritchie (2022)") ~ 1, 
+      rowwise() %>% 
+      mutate(reversed_es = case_when(study_label %in% c("Mok experiment 1 (2020)",
+                                                        "Bixter (2019)", 
+                                                        "Skylark study 1b (2020)" ,
+                                                        "Skylark study 2b (2020)" ,
+                                                        "Ciaramelli (2021)", 
+                                                        "Halilova (2022)", 
+                                                        "Tunney (2022)",
+                                                        "Westbrook experiment 2 (2013)",
+                                                        "Fiorenzato (2022)") | grepl("Skylark study 1b|Skylark study 2b", study_label) ~ 1, 
+                                     study_label == "Löckenhoff (2020)"  & grepl("sequence trend scores", dv_description) ~1,
                                      TRUE ~0 ),
              cor_yi = case_when(reversed_es == 1  ~ cor_yi*-1, 
-                                reversed_es == 0 ~cor_yi ))
+                                reversed_es == 0 ~cor_yi )) %>% 
+      ungroup()
     
     
     es_dat_bagaini <- es_dat_bagaini %>% 
@@ -210,6 +240,32 @@ compute_es <- function(preference) {
       ungroup() %>% 
       mutate(study_id = study_id + max(es_dat_bagaini$study_id))
     
+    # attach gender information
+    dt_gender <- read_csv("data/summary/time/seaman_gender_info.csv", col_types = cols()) %>% 
+      select(-c(study_es_id, pref)) %>% 
+      distinct(study_label,prop_female, young_prop_female, old_prop_female)%>% 
+      mutate(temp_label = str_replace(tolower(study_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(prop_female = if_else(prop_female > 1, prop_female/100, prop_female),
+             young_prop_female = if_else(young_prop_female > 1, young_prop_female/100, young_prop_female),
+             old_prop_female = if_else(old_prop_female > 1, old_prop_female/100, old_prop_female)) %>% 
+      select(-study_label)
+    
+    es_dat_seaman <- es_dat_seaman %>% 
+      mutate(temp_label = str_replace(tolower(study_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      left_join(dt_gender, by = c("temp_label")) %>% 
+      select(-temp_label)
+    
+    
+    
+    
     
     
     es_dat <- es_dat_bagaini %>% 
@@ -217,7 +273,27 @@ compute_es <- function(preference) {
       mutate(es_id = 1:n()) %>% 
       group_by(title_of_article) %>% 
       mutate(pub_id = cur_group_id()) %>% 
-      ungroup() 
+      ungroup() %>% 
+      mutate(temp_label = str_replace(tolower(study_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", ""))
+    
+    
+    
+    # merge with study context data
+    context_dat <- context_dat %>%
+      mutate(temp_label = str_replace(tolower(study_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      mutate(temp_label = str_replace(tolower(temp_label)," ", "")) %>% 
+      select(-c(study_label, year_of_publication, author_extract, title_of_article))
+    
+    es_dat <- es_dat %>% left_join(context_dat, by = c("temp_label"))
+    
+    
     
   }
   
@@ -244,38 +320,127 @@ compute_es <- function(preference) {
           # single-study multiple-sample papers
           length(unique(sample_code))!= 1 & grepl("single", paper_section) ~ paste0(first_author, " ", sample_code, " (", year_of_pub_temp, ")"),
           # multiple-study papers (each with a single sample each)
-          length(unique(sample_code))== 1 & !grepl("single", paper_section) ~ paste0(first_author, " ", paper_section, " (", year_of_pub_temp, ")"))) %>% 
+          length(unique(sample_code))== 1 & !grepl("single", paper_section) ~ paste0(first_author, " ", paper_section, " (", year_of_pub_temp, ")"),
+          # multiple-study papers (each with a multiple samples)
+          length(unique(sample_code))!= 1 & !grepl("single", paper_section) ~ paste0(first_author, " ", paper_section, " ", sample_code, " (", year_of_pub_temp, ")"))) %>%
       group_by(study_label) %>% 
       # assign a number to each study label
       mutate(study_id = cur_group_id()) %>% 
       ungroup() %>% 
       select(-c(year_of_pub_temp)) %>% 
-      # no effect sizes to reverse
-      mutate(reversed_es = 0)
+      # reverse effect sizes
+      rowwise() %>% 
+      mutate(reversed_es = case_when(study_label == "Gong (2019)" & dv_units ==  "Discount rate" ~ 1, 
+                                     TRUE ~0 ),
+             cor_yi = case_when(reversed_es == 1  ~ cor_yi*-1, 
+                                reversed_es == 0 ~cor_yi )) %>% 
+      ungroup()
+    
+    
+    # merge with study context data
+    es_dat <- es_dat %>% left_join(context_dat, by = c("study_label", "year_of_publication",  "title_of_article" ))
     
     
     
   }
   
   
+  
+  
+  # EFFORT: MERGE ES ------------------------------------------------------
+  
+  
+  if (preference == "effort") {
+    
+    
+    # bind data frames
+    es_dat <- es %>% 
+      # create unique study/sample labels
+      group_by(title_of_article) %>% 
+      mutate(
+        year_of_pub_temp =  as.character(year_of_publication),
+        sample_code = tolower(sample_code),
+        paper_section = tolower(paper_section),
+        study_label = case_when(
+          # single-study single-sample papers
+          length(unique(sample_code))== 1 & grepl("single", paper_section) ~ paste0(first_author, " (", year_of_pub_temp, ")"),
+          # single-study multiple-sample papers
+          length(unique(sample_code))!= 1 & grepl("single", paper_section) ~ paste0(first_author, " ", sample_code, " (", year_of_pub_temp, ")"),
+          # multiple-study papers (each with a single sample each)
+          length(unique(sample_code))== 1 & !grepl("single", paper_section) ~ paste0(first_author, " ", paper_section, " (", year_of_pub_temp, ")"),
+          # multiple-study papers (each with a multiple samples)
+          length(unique(sample_code))!= 1 & !grepl("single", paper_section) ~ paste0(first_author, " ", paper_section, " ", sample_code, " (", year_of_pub_temp, ")"))) %>%
+      group_by(study_label) %>% 
+      # assign a number to each study label
+      mutate(study_id = cur_group_id()) %>% 
+      ungroup() %>% 
+      select(-c(year_of_pub_temp)) %>% 
+      # reverse effect sizes
+      rowwise() %>% 
+      mutate(reversed_es = case_when(study_label %in% c("Hess (2021)", "McLaughlin (2021)",
+                                                        "Westbrook experiment 2 (2013)", "Westbrook experiment 1 (2013)") ~ 1, 
+                                     TRUE ~ 0),
+             cor_yi = case_when(reversed_es == 1  ~ cor_yi*-1, 
+                                reversed_es == 0 ~ cor_yi )) %>% 
+      ungroup()
+    
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
   # SAVE OUTPUT ------------------------------------------------------------
   
-  # keep certain variables 
-  es_dat <- es_dat %>% 
-    rename(domain = domain_frame) %>% 
-    group_by(study_label) %>% 
-    mutate(study_es_id = 1:n()) %>% # create id for effect sizes within each study
-    ungroup() %>% 
-    select(pref, pub_id, study_id, study_label, study_es_id, es_id, first_author, year_of_publication, title_of_article, paper_section, # pub
-           task_name, task_type, domain, incentivization, dv_units, dv_description, # outcome
-           sample_code, total_n, young_total_n, old_total_n, n_incl_es, # sample
-           prop_female, young_prop_female, old_prop_female,
-           age_min,mean_age,age_max, young_age_min, young_mean_age, young_age_max, old_age_min, old_mean_age, old_age_max, 
-           dec_diff,
-           dv_young_mean, dv_young_sd, dv_old_mean, dv_old_sd, dv_correlation,
-           cor_yi, cor_vi, cor_type, study_design, reversed_es, source_of_outcome, # effect size values
-           author_extract
-    )
+  
+  if (preference != "effort") {
+    
+    # keep certain variables 
+    es_dat <- es_dat %>% 
+      rename(domain = domain_frame) %>% 
+      group_by(study_label) %>% 
+      mutate(study_es_id = 1:n()) %>% # create id for effect sizes within each study
+      ungroup() %>% 
+      select(pref, pub_id, study_id, study_label, study_es_id, es_id, first_author, year_of_publication,
+             title_of_article, paper_section, study_context, # pub
+             task_name, task_type, domain, incentivization, dv_units, dv_description, # outcome
+             sample_code, total_n, young_total_n, old_total_n, n_incl_es, # sample
+             prop_female, young_prop_female, old_prop_female,
+             age_min,mean_age,age_max, young_age_min, young_mean_age, young_age_max, old_age_min, old_mean_age, old_age_max, 
+             dec_diff,
+             dv_young_mean, dv_young_sd, dv_old_mean, dv_old_sd, dv_correlation,
+             cor_yi, cor_vi, cor_type, study_design, reversed_es, source_of_outcome, # effect size values
+             author_extract
+      )
+  }
+  
+  
+  
+  if (preference == "effort") {
+    
+    # keep certain variables 
+    es_dat <- es_dat %>% 
+      rename(domain = domain_frame) %>% 
+      group_by(study_label) %>% 
+      mutate(study_es_id = 1:n()) %>% # create id for effect sizes within each study
+      ungroup() %>% 
+      select(pref, pub_id, study_id, study_label, study_es_id, es_id, first_author, year_of_publication,
+             title_of_article, paper_section, study_context, # pub
+             task_name, task_type, effort_type, domain, incentivization, dv_units, dv_description, # outcome
+             sample_code, total_n, young_total_n, old_total_n, n_incl_es, # sample
+             prop_female, young_prop_female, old_prop_female,
+             age_min,mean_age,age_max, young_age_min, young_mean_age, young_age_max, old_age_min, old_mean_age, old_age_max, 
+             dec_diff,
+             dv_young_mean, dv_young_sd, dv_old_mean, dv_old_sd, dv_correlation,
+             cor_yi, cor_vi, cor_type, study_design, reversed_es, source_of_outcome, # effect size values
+             author_extract
+      )
+  }
+  
   
   
   

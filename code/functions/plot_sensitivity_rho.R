@@ -34,7 +34,7 @@ plot_sensitivity_rho <- function(dat){
                                family = "Arial",
                                face = "bold",
                                size = 9)) +
-    scale_x_continuous(limits = c(-.15,.3)) 
+    coord_cartesian(xlim  = c(-.55,.55)) 
   
   return(p)
   

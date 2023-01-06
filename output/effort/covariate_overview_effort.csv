@@ -1,0 +1,13 @@
+level,k,pref,predictor
+hypothetical,1,effort,incentivization
+incentivized,22,effort,incentivization
+gain,17,effort,domain
+loss,6,effort,domain
+description,23,effort,task_type
+COR,3,effort,cor_type
+RPB,20,effort,cor_type
+continuous,1,effort,study_design
+extreme_group,22,effort,study_design
+in person,23,effort,study_context
+cognitive,9,effort,effort_type
+physical,14,effort,effort_type

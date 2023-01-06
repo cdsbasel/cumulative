@@ -94,10 +94,45 @@ processing_table_data <- function(preference) {
   }
   
   
-  # NO TABLE DATA FOR TIME OR SOCIAL PREFERENCE
+
+# TIME: ALBERT 2012 -------------------------------------------------------
+
+  if (preference == "time") {
+    
+  
+  data_albert <- function() {
+    dat <- read_csv("data/tables/time/Albert_2012/table3.csv",
+                    col_types = cols())
+    
+    
+    
+    dat_albert <- dat %>% 
+      # expanding df to have the number of "A" choices for each participant
+      uncount(n) %>% 
+      group_by(age_group) %>% 
+      summarise(mean = mean(num_a_choices),
+                sd = sd(num_a_choices)) %>% 
+      mutate(outcome_num = 1) %>% 
+      pivot_wider(outcome_num,
+                  names_from = age_group,
+                  values_from = c(mean, sd),
+                  names_glue = paste0("dv_","{age_group}_{.value}")) %>% 
+      mutate(first_author = "Albert",
+             year_of_publication = "2012",
+             title_of_article = "Differences in risk aversion between young and older adults")
+    
+    return(dat_albert)
+    
+    
+
+  }
+  
+  dat_pref <- data_albert()
+  
+  }
   
   # SAVE OUTPUT -------------------------------------------------------------
-  if (preference == "risk") {
+  if (preference %in% c("risk", "time")) {
     
     write_csv(dat_pref, sprintf("data/tables/%s/processed_table_data_%s.csv", preference, preference)) 
     

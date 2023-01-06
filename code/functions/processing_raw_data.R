@@ -60,10 +60,10 @@ processing_raw_data <- function(preference) {
       dat <- read_csv("data/raw_data/risk/Gaechter_2021/GJH.csv",
                       col_types = cols())
       
-      # Which lotteries did people accept? 1 = accept all, ..., 7 = reject all
+      # Which lotteries did people accept? 1 = reject all, ..., 7 = accept all 
       dat <- dat %>% 
-        select(respondent, lotteryrescaled, age, female) %>% 
-        filter(!is.na(lotteryrescaled) & age %in% c(1,3,6)) %>% 
+        select(respondent, lotterychoice, age, female) %>% 
+        filter(!is.na(lotterychoice) & age %in% c(1,3,6)) %>% 
         mutate(age_group = case_when(age == 1	~	"18-24",
                                      age == 3	~	"35-44",
                                      age == 6	~ "65+")) 
@@ -73,8 +73,8 @@ processing_raw_data <- function(preference) {
       
       dat_y <- dat %>% 
         filter(age == 1) %>% 
-        summarise(dv_young_mean = mean(lotteryrescaled),
-                  dv_young_sd = sd(lotteryrescaled),
+        summarise(dv_young_mean = mean(lotterychoice),
+                  dv_young_sd = sd(lotterychoice),
                   young_age_min = 18,
                   young_age_max = 24,
                   young_total_n = n(),
@@ -83,8 +83,8 @@ processing_raw_data <- function(preference) {
       
       dat_m <- dat %>% 
         filter(age == 3) %>% 
-        summarise(dv_middle_mean = mean(lotteryrescaled),
-                  dv_middle_sd = sd(lotteryrescaled),
+        summarise(dv_middle_mean = mean(lotterychoice),
+                  dv_middle_sd = sd(lotterychoice),
                   middle_age_min = 35,
                   middle_age_max = 44,
                   middle_total_n = n(),
@@ -94,8 +94,8 @@ processing_raw_data <- function(preference) {
       
       dat_o <- dat %>% 
         filter(age == 6) %>% 
-        summarise(dv_old_mean = mean(lotteryrescaled),
-                  dv_old_sd = sd(lotteryrescaled),
+        summarise(dv_old_mean = mean(lotterychoice),
+                  dv_old_sd = sd(lotterychoice),
                   old_age_min = 65,
                   old_age_max = NA,
                   old_total_n = n(),
@@ -105,8 +105,8 @@ processing_raw_data <- function(preference) {
         mutate(outcome_num = 1,
                # dv_units = "Lottery choice category",
                first_author = "Gaechter",
-               year_of_publication = "2021",
-               # dv_description = "Point when participants switch between the risky and the safe option. Higher values indicate more loss aversion",
+               year_of_publication = "2022",
+               # dv_description = "Point when participants switch between the risky and the safe option.",
                title_of_article = "Individual-level loss aversion in riskless and risky choices")
       
       return(dat_gaechter)
@@ -114,10 +114,10 @@ processing_raw_data <- function(preference) {
     }
     
     
-    # RISK: HORN 2021 ---------------------------------------------------------
+    # RISK: HORN 2022A ---------------------------------------------------------
     
-    horn2021_data <- function() {
-
+    horn2022a_data <- function() {
+      
       dat <- read.csv2("data/raw_data/risk/Horn_2021/Dataset.Real.Hypothetical.Rewards.HornFreund.csv", header = TRUE, sep = ";", dec = ",")
       
       dat <- dat %>% 
@@ -195,12 +195,12 @@ processing_raw_data <- function(preference) {
         left_join(dat_o, by = "outcome_num")%>% 
         left_join(dat_cor, by = "outcome_num")%>% 
         mutate(first_author = "Horn",
-               year_of_publication = "2021",
+               year_of_publication = "2022",
                title_of_article = "Adult age differences in monetary decisions with real and hypothetical reward")
       
       
       return(dat_horn)
-
+      
     }
     
     # RISK: SEAMAN 2018 -------------------------------------------------------
@@ -210,9 +210,11 @@ processing_raw_data <- function(preference) {
       
       dat <- read_csv("data/raw_data/risk/Seaman_2018/skew_la_long.csv",
                       col_types = cols())
-
-      # acceptance rate by gamble type
-      dat_cond <- dat %>% 
+      
+      # acceptance rate by gamble type (only consider the mixed trials,
+      #  as there was just one gain/loss trial for each gamble)
+      dat_condA <- dat %>%
+        filter(Domain == "Mixed") %>% 
         group_by(ResponseID, Age,Gender, Gamble) %>% 
         summarise(risky = mean(Accept),
                   .groups = "drop") %>% 
@@ -235,8 +237,33 @@ processing_raw_data <- function(preference) {
         select(-Gamble)
       
       
+      #acceptance rate by domain for gain/loss trial
+      dat_condB <- dat %>%
+        filter(Domain != "Mixed") %>% 
+        group_by(ResponseID, Age,Gender, Domain) %>% 
+        summarise(risky = mean(Accept),
+                  .groups = "drop") %>% 
+        group_by(Domain) %>% 
+        summarise(dv_correlation = cor(risky, Age),
+                  age_min = min(Age, na.rm = TRUE),
+                  mean_age = mean(Age, na.rm = TRUE),
+                  sd_age = sd(Age, na.rm = TRUE),
+                  age_max = max(Age, na.rm = TRUE),
+                  total_n = n(),
+                  prop_female =  mean(Gender == "Female"),
+                  .groups = "drop") %>%
+        ungroup() %>% 
+        mutate(outcome_num = case_when(Domain == "Gain" ~ 4,
+                                       Domain == "Loss" ~ 5)) %>% 
+        mutate(first_author = "Seaman",
+               year_of_publication = "2018",
+               title_of_article = "Individual Differences in Loss Aversion and Preferences for Skewed Risks Across Adulthood") %>% 
+        select(-Domain)
       
-      dat_seaman <- bind_rows(dat_cond)
+      
+      
+      
+      dat_seaman <- bind_rows(dat_condA, dat_condB)
       
       
       return(dat_seaman)
@@ -324,7 +351,7 @@ processing_raw_data <- function(preference) {
       
     }
     
-
+    
     # RISK: ZILKER 2020 -------------------------------------------------------
     
     zilker2020_data <- function() {
@@ -647,17 +674,228 @@ processing_raw_data <- function(preference) {
       
     }
     
+    
+    
+    
+    # RISK: HORN 2022B ---------------------------------------------------------
+    
+    horn2022b_data <- function() {
+      
+      dat <- read.csv2("data/raw_data/risk/Horn_2022/Dataset.PayOnePayAll.csv", header = TRUE, sep = ";", dec = ",")
+      
+      dat <- dat %>% 
+        select(Age.Group, Age, Count, Gender, IncentiveCondition,
+               RKgain, RKmixed, RKloss) %>% 
+        pivot_longer(RKgain: RKloss, 
+                     names_to = "domain", values_to = "risky_choice_prop") %>% 
+        mutate(condition = paste0(IncentiveCondition, "_",domain)) %>% 
+        filter(!is.na(risky_choice_prop))
+      
+      
+      
+      dat_y <- dat %>% 
+        filter(Age.Group == "Younger") %>% 
+        group_by(condition) %>% 
+        summarise(dv_young_mean = mean(risky_choice_prop),
+                  dv_young_sd = sd(risky_choice_prop),
+                  young_age_min = min(Age),
+                  young_mean_age = mean(Age),
+                  young_sd_age = sd(Age),
+                  young_age_max = max(Age),
+                  young_total_n = n(),
+                  young_prop_female = mean(Gender == "female"),
+                  .groups = "drop") %>% 
+        ungroup() %>% 
+        mutate(outcome_num = case_when(grepl("All.*gain", condition)~ 1,
+                                       grepl("One.*gain", condition)~ 2,
+                                       grepl("All.*mix", condition)~ 3,
+                                       grepl("One.*mix", condition)~ 4,
+                                       grepl("All.*loss", condition)~ 5,
+                                       grepl("One.*loss", condition)~ 6)) %>% 
+        select(-c(condition))
+      
+      
+      dat_o <- dat %>% 
+        filter(Age.Group == "Older") %>% 
+        group_by(condition) %>% 
+        summarise(dv_old_mean = mean(risky_choice_prop),
+                  dv_old_sd = sd(risky_choice_prop),
+                  old_age_min = min(Age),
+                  old_mean_age = mean(Age),
+                  old_sd_age = sd(Age),
+                  old_age_max = max(Age),
+                  old_total_n = n(),
+                  old_prop_female = mean(Gender == "female"),
+                  .groups = "drop") %>% 
+        ungroup() %>% 
+        mutate(outcome_num = case_when(grepl("All.*gain", condition)~ 1,
+                                       grepl("One.*gain", condition)~ 2,
+                                       grepl("All.*mix", condition)~ 3,
+                                       grepl("One.*mix", condition)~ 4,
+                                       grepl("All.*loss", condition)~ 5,
+                                       grepl("One.*loss", condition)~ 6)) %>% 
+        select(-c(condition))
+      
+      
+      dat_cor <- dat %>% 
+        group_by(condition) %>% 
+        summarise(dv_correlation = cor(risky_choice_prop, Age),
+                  age_min = min(Age),
+                  mean_age = mean(Age),
+                  sd_age = sd(Age),
+                  age_max = max(Age),
+                  total_n = n(),
+                  prop_female = mean(Gender == "female"),
+                  .groups = "drop") %>% 
+        ungroup() %>% 
+        mutate(outcome_num = case_when(grepl("All.*gain", condition)~ 1,
+                                       grepl("One.*gain", condition)~ 2,
+                                       grepl("All.*mix", condition)~ 3,
+                                       grepl("One.*mix", condition)~ 4,
+                                       grepl("All.*loss", condition)~ 5,
+                                       grepl("One.*loss", condition)~ 6)) %>% 
+        select(-c(condition))
+      
+      
+      dat_horn <- dat_y %>% 
+        left_join(dat_o, by = "outcome_num")%>% 
+        left_join(dat_cor, by = "outcome_num")%>% 
+        mutate(first_author = "Horn",
+               year_of_publication = "2022",
+               title_of_article = "Pay One or Pay All? The Role of Incentive Schemes in Decision Making Across Adulthood")
+      
+      
+      return(dat_horn)
+      
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    # RISK: RODRIGUES ---------------------------------------------------------
+    rodrigues_data <- function() {
+      dat <- read_xlsx("data/raw_data/risk/Rodrigues_2022/Data_Rodrigues_Ruthenberg_Mussel_Hewig_2021.xlsx")
+      
+      
+      dat <- dat %>% 
+        select(`gain only not exploded`, `mixed not exploded`,
+               `count explosions gain only`, `count explosions mixed`,
+               age, gender) %>% 
+        mutate(id = 1:n()) %>% 
+        rename(gain_adjpumps = `gain only not exploded`,
+               mixed_adjpumps = `mixed not exploded`,
+               gain_explosions =  `count explosions gain only`,
+               mixed_explosions = `count explosions mixed`) %>% 
+        pivot_longer(cols  = -c(id, gender, age), names_to = "metric", values_to = "risk")
+      
+      
+      rodrigues_dat <- dat %>% 
+        group_by(metric) %>% 
+        summarise(dv_correlation = cor(risk, age),
+                  age_min = min(age),
+                  mean_age = mean(age),
+                  sd_age = sd(age),
+                  age_max = max(age),
+                  total_n = n(),
+                  prop_female = mean(gender == 4),
+                  .groups = "drop") %>% 
+        ungroup() %>% 
+        mutate(outcome_num = case_when(grepl("gain_adjpumps", metric)~ 1,
+                                       grepl("mixed_adjpumps", metric)~ 2,
+                                       grepl("gain_explosions", metric)~ 3,
+                                       grepl("mixed_explosions", metric)~ 4)) %>% 
+        select(-c(metric)) %>% 
+        mutate(first_author = "Rodrigues",
+               year_of_publication = "2022",
+               title_of_article = "Never mind losing the pound... still got the penny! The influence of trait greed on risky decision behavior in a mixed and gain only BART")
+      
+      
+      return(rodrigues_dat)
+      
+    }
+    
+    
+    # RISK: SEAMAN 2016 ---------------------------------------------------------
+    seaman2016_data <- function() {
+      dat <- read_csv("data/raw_data/risk/Seaman_2016/all_sublevel_data.csv", 
+                      col_types = cols())
+      
+      dat <- dat %>% filter(task == "Probability_money")
+      
+      seaman_dat  <- dat %>% 
+        filter(!is.na(Age) & !is.na(k)) %>% 
+        summarise(dv_correlation = cor(k, Age),
+                  age_min = min(Age),
+                  mean_age = mean(Age),
+                  sd_age = sd(Age),
+                  age_max = max(Age),
+                  total_n = n(),
+                  prop_female =  mean(Sex == "F"),
+                  .groups = "drop")%>% 
+        ungroup()  %>% 
+        mutate(outcome_num = 1,
+               first_author = "Seaman",
+               year_of_publication = "2016",
+               title_of_article = "Adult age differences in decision making across domains: Increased discounting of social and health-related rewards")
+      
+      
+      return(seaman_dat)
+    }
+    
+    
+    
+    # RISK: THRAILKILL 2022 -----------------------------------------------------
+    
+    thrailkill_data <- function() {
+      
+      dat <- read_xlsx("data/raw_data/risk/Thrailkill_2022/Thrailkill et al_Data_online.xlsx")
+      
+      dat_thrailkill <- dat %>% 
+        mutate(age = Age_inmonths/12) %>% 
+        filter(!is.na(age) & !is.na(MGT_mean) & !is.na(Gender_M_F_O)) %>% 
+        summarise(dv_correlation = cor(MGT_mean, age),
+                  age_min = min(age, na.rm = TRUE),
+                  mean_age = mean(age, na.rm = TRUE),
+                  sd_age = sd(age, na.rm = TRUE),
+                  age_max = max(age, na.rm = TRUE),
+                  total_n = n(),
+                  prop_female =  mean(Gender_M_F_O == 1),
+                  .groups = "drop")%>% 
+        mutate(outcome_num = 1,
+               # dv_units = "Risky choice",
+               first_author = "Thrailkill",
+               year_of_publication = "2022",
+               title_of_article = "Loss aversion and risk for cigarette smoking and other substance use")
+      
+      
+      return(dat_thrailkill)
+      
+      
+    }
+    
+    
+    
+    
+    
     # RISK: COMBINE RAW DATA --------------------------------------------------------
     
     dat_pref <- bind_rows(frey_data(),
                           gaechter_data(),
-                          horn2021_data(),
+                          horn2022a_data(),
                           seaman_data(),
                           pachur_data(),
                           zilker2020_data(),
                           zilker2021_data(),
                           rutledge_data(),
-                          mamerow_data())
+                          mamerow_data(),
+                          horn2022b_data(),
+                          seaman2016_data(),
+                          thrailkill_data(),
+                          rodrigues_data())
     
     
   }  
@@ -864,15 +1102,14 @@ processing_raw_data <- function(preference) {
     
     skylark_data <- function() {
       
-      # study 1B
+      # study 1A
       
-      dat1 <- read_csv("data/raw_data/time/Skylark_2021/Study_1B_data.csv", col_types = cols())
+      dat1A <- read_csv("data/raw_data/time/Skylark_2021/Study_1A_data.csv", col_types = cols())
       
       #data contains some (extreme) outliers, ideally would need to use non-parametric test, but for the comparison of other texts, we use pearson
       
-      dat1 <- dat1 %>% 
-        group_by(cond_num) %>% 
-        mutate(estimate = -1*estimate) %>%  # reverse "estimate" value such that higher values == greater time discounting
+      dat1A <- dat1A %>% 
+        group_by(cond) %>% 
         summarise(dv_correlation = cor(estimate, age),
                   age_min = min(age, na.rm = TRUE),
                   mean_age = mean(age, na.rm = TRUE),
@@ -881,25 +1118,47 @@ processing_raw_data <- function(preference) {
                   total_n = n(),
                   prop_female =  mean(gender == "Female"),
                   .groups = "drop")%>% 
-        mutate(outcome_num = 1:n(),
-               paper_section = "Study 1B",
-               sample_code = "Sample 1",
+        mutate(paper_section = "Study 1A",
+               sample_code = sprintf("Sample %d",
+                                     1:n()),
+               dv_units = "Expected reward",
+               dv_description = sprintf("Expected reward after %s",
+                                        as.character(cond))) %>% 
+        select(-cond)
+      
+      
+      
+      # study 1B
+      dat1B <- read_csv("data/raw_data/time/Skylark_2021/Study_1B_data.csv", col_types = cols())
+      
+      #data contains some (extreme) outliers, ideally would need to use non-parametric test, but for the comparison of other texts, we use pearson
+      
+      dat1B <- dat1B %>% 
+        group_by(cond_num) %>% 
+        summarise(dv_correlation = cor(estimate, age),
+                  age_min = min(age, na.rm = TRUE),
+                  mean_age = mean(age, na.rm = TRUE),
+                  sd_age = sd(age, na.rm = TRUE),
+                  age_max = max(age, na.rm = TRUE),
+                  total_n = n(),
+                  prop_female =  mean(gender == "Female"),
+                  .groups = "drop")%>% 
+        mutate(paper_section = "Study 1B",
+               sample_code = sprintf("Sample %d",
+                                     1:n()),
                dv_units = "Number of days",
                dv_description = sprintf("Number of days associated to an outcome of $%s",
-                                        as.character(cond_num)),
-               first_author = "Skylark",
-               year_of_publication = "2021",
-               title_of_article = "The delay-reward heuristic: What do people expect in intertemporal choice tasks?")
+                                        as.character(cond_num))) %>% 
+        select(-cond_num)
       
       
-      # study 2B
+      # study 2A
       
-      dat2 <- read_csv("data/raw_data/time/Skylark_2021/Study_2B_data.csv", col_types = cols())
+      dat2A <- read_csv("data/raw_data/time/Skylark_2021/Study_2A_data.csv", col_types = cols())
       
       
-      dat2 <- dat2 %>% 
+      dat2A <- dat2A %>% 
         filter(comp_fail == 0) %>% # only select respondent who passed the attention checks
-        mutate(estimate = -1*estimate) %>%  # reverse "estimate" value such that higher values == greater time discounting
         group_by(cond_num) %>% 
         summarise(dv_correlation = cor(estimate, age),
                   age_min = min(age, na.rm = TRUE),
@@ -909,25 +1168,54 @@ processing_raw_data <- function(preference) {
                   total_n = n(),
                   prop_female =  mean(gender == "Female"),
                   .groups = "drop") %>% 
-        mutate(outcome_num = 7:(n()+6),
-               paper_section = "Study 2B",
-               sample_code = "Sample 1",
+        mutate(paper_section = "Study 2A",
+               sample_code = sprintf("Sample %d",
+                                     1:n()),
+               dv_units = "Expected reward",
+               dv_description = sprintf("Expected reward after %s day(s)",
+                                        as.character(cond_num))) %>% 
+        select(-cond_num)
+      
+      
+      
+      
+      
+      # study 2B
+      
+      dat2B <- read_csv("data/raw_data/time/Skylark_2021/Study_2B_data.csv", col_types = cols())
+      
+      
+      dat2B <- dat2B %>% 
+        filter(comp_fail == 0) %>% # only select respondent who passed the attention checks
+        group_by(cond_num) %>% 
+        summarise(dv_correlation = cor(estimate, age),
+                  age_min = min(age, na.rm = TRUE),
+                  mean_age = mean(age, na.rm = TRUE),
+                  sd_age = sd(age, na.rm = TRUE),
+                  age_max = max(age, na.rm = TRUE),
+                  total_n = n(),
+                  prop_female =  mean(gender == "Female"),
+                  .groups = "drop") %>% 
+        mutate(paper_section = "Study 2B",
+               sample_code = sprintf("Sample %d",
+                                     1:n()),
                dv_units = "Number of days",
-               dv_description = sprintf("Number of days associated to an outcome of $%s",
-                                        as.character(cond_num)),
-               first_author = "Skylark",
-               year_of_publication = "2021",
-               title_of_article = "The delay-reward heuristic: What do people expect in intertemporal choice tasks?")
+               dv_description = sprintf("Number of days associated to an outcome of £%s",
+                                        as.character(cond_num))) %>% 
+        select(-cond_num)
       
       
       
-      dat_skylark <- bind_rows(dat1, dat2) %>% 
-        mutate(dv_type_of_comparison = "Age continuous",
+      dat_skylark <- bind_rows(dat1A, dat1B, dat2A, dat2B) %>% 
+        mutate(first_author = "Skylark",
+               year_of_publication = "2020",
+               title_of_article = "The delay-reward heuristic: What do people expect in intertemporal choice tasks?",
+               dv_type_of_comparison = "Age continuous",
                task_name = "Intertemporal choice task",
                task_type = "Descriptive",
                domain_frame = "gain",
-               incentivization = "Hypothetical") %>% 
-        select(-cond_num)
+               incentivization = "Hypothetical",
+               outcome_num = 1:n()) 
       
       return(dat_skylark)
       
@@ -950,7 +1238,7 @@ processing_raw_data <- function(preference) {
                   age_min = min(Age),
                   age_max = max(Age),
                   total_n = n(),
-                  prop_female = mean(`Gender (male)`),
+                  prop_female = 1 - mean(`Gender (male)`),
                   dv_correlation = cor(nSSchoices, Age), 
                   outcome_num = 1) %>% 
         mutate(first_author = "Martin",
@@ -975,10 +1263,10 @@ processing_raw_data <- function(preference) {
       
       dat_veillard <- dat %>% 
         summarise(dv_correlation = cor(logk_money, age),
-                  age_min = min(age, na.rm = TRUE),
-                  mean_age = mean(age, na.rm = TRUE),
-                  sd_age = sd(age, na.rm = TRUE),
-                  age_max = max(age, na.rm = TRUE),
+                  age_min = min(age),
+                  mean_age = mean(age),
+                  sd_age = sd(age),
+                  age_max = max(age),
                   total_n = n(),
                   prop_female =  mean(sex == "female"),
                   .groups = "drop")%>% 
@@ -994,6 +1282,99 @@ processing_raw_data <- function(preference) {
       
     }
     
+    # TIME: HALILOVA 2022 -----------------------------------------------------
+    
+    halilova_data <- function() {
+      
+      dat <- read_csv("data/raw_data/time/Halilova_2022/DecisionMaking_Vaccination_data.csv", col_types = cols())
+      
+      dat_halilova <- dat %>% 
+        filter(!is.na(age) & !is.na(AUC_reward_L) &!is.na(gender)) %>% # 510 rows with missing AUC data
+        summarise(dv_correlation = cor(AUC_reward_L, age),
+                  age_min = min(age, na.rm = TRUE),
+                  mean_age = mean(age, na.rm = TRUE),
+                  sd_age = sd(age, na.rm = TRUE),
+                  age_max = max(age, na.rm = TRUE),
+                  total_n = n(),
+                  prop_female =  mean(gender == "female"),
+                  .groups = "drop")%>% 
+        mutate(outcome_num = 1,
+               dv_units = "Area under the curve",
+               first_author = "Halilova",
+               year_of_publication = "2022",
+               title_of_article = "Short‑sighted decision‑making by those not vaccinated against COVID‑19")
+      
+      
+      return(dat_halilova)
+      
+      
+    }
+    
+    
+    
+    
+    # TIME: THRAILKILL 2022 -----------------------------------------------------
+    
+    thrailkill_data <- function() {
+      
+      dat <- read_xlsx("data/raw_data/time/Thrailkill_2022/Thrailkill et al_Data_online.xlsx")
+      
+      dat_thrailkill <- dat %>% 
+        mutate(age = Age_inmonths/12) %>% 
+        filter(!is.na(age) & !is.na(Discounting_lnK) & !is.na(Gender_M_F_O)) %>% 
+        summarise(dv_correlation = cor(Discounting_lnK, age),
+                  age_min = min(age, na.rm = TRUE),
+                  mean_age = mean(age, na.rm = TRUE),
+                  sd_age = sd(age, na.rm = TRUE),
+                  age_max = max(age, na.rm = TRUE),
+                  total_n = n(),
+                  prop_female =  mean(Gender_M_F_O == 1),
+                  .groups = "drop")%>% 
+        mutate(outcome_num = 1,
+               dv_units = "Discouting Rate",
+               first_author = "Thrailkill",
+               year_of_publication = "2022",
+               title_of_article = "Loss aversion and risk for cigarette smoking and other substance use ")
+      
+      
+      return(dat_thrailkill)
+      
+      
+    }
+    
+    
+    # TIME: SEAMAN 2016 ---------------------------------------------------------
+    seaman2016_data <- function() {
+      dat <- read_csv("data/raw_data/time/Seaman_2016/all_sublevel_data.csv", 
+                      col_types = cols())
+      
+      dat <- dat %>% filter(task == "Time_money")
+      
+      seaman_dat  <- dat %>% 
+        filter(!is.na(Age) & !is.na(k)) %>% 
+        summarise(dv_correlation = cor(k, Age),
+                  age_min = min(Age),
+                  mean_age = mean(Age),
+                  sd_age = sd(Age),
+                  age_max = max(Age),
+                  total_n = n(),
+                  prop_female =  mean(Sex == "F"),
+                  .groups = "drop")%>% 
+        ungroup()  %>% 
+        mutate(outcome_num = 1,
+               dv_units = "Discouting Rate",
+               first_author = "Seaman",
+               year_of_publication = "2016",
+               title_of_article = "Adult age differences in decision making across domains: Increased discounting of social and health-related rewards")
+      
+      
+      return(seaman_dat)
+    }
+    
+    
+    
+    
+    
     
     
     # TIME: COMBINE RAW DATA ----------------------------------------------
@@ -1001,9 +1382,12 @@ processing_raw_data <- function(preference) {
     dat_pref <- bind_rows(zilker_data(),
                           ciaramelli_data(),
                           seaman_data(),
+                          seaman2016_data(),
                           martin_data(),
                           veillard_data(),
-                          skylark_data())
+                          skylark_data(),
+                          halilova_data(),
+                          thrailkill_data())
     
     
     
@@ -1022,9 +1406,15 @@ processing_raw_data <- function(preference) {
       ## STUDY 1
       dat1 <- read_dta("data/raw_data/social/Hellmann_2021/Dataforanalysis_Prosocial behavior during the COVID19 pandemic_Study1.dta")
       
-      dat1_sum <- dat1 %>% 
-        select(participant, age, female, SVOangle_T2, dg_) %>% 
-        pivot_longer(SVOangle_T2:dg_, names_to = "outcome", values_to = "resp") %>% 
+      dat1_sum <- dat1 %>%
+        filter(!is.na(female) & !is.na(age)) %>% 
+        select(participant, age, female,SVOangle_T1, SVOangle_T2, dg_) %>% 
+        group_by(participant, age, female) %>% 
+        summarise(svo_t1 = mean(SVOangle_T1),
+                  svo_t2 = mean(SVOangle_T2),
+                  dg = sum(dg_), # sum amount donate across trials
+                  .groups = "drop") %>% 
+        pivot_longer(svo_t1:dg, names_to = "outcome", values_to = "resp") %>% 
         filter(!is.na(resp)) %>% 
         group_by(outcome) %>% 
         summarise(dv_correlation = cor(resp, age),
@@ -1035,9 +1425,10 @@ processing_raw_data <- function(preference) {
                   total_n = n(),
                   prop_female = mean(female),
                   .groups = "drop") %>% 
-        mutate(outcome_num = case_when(outcome == "dg_" ~ 2,
-                                       TRUE ~ 1),
-               dv_units = case_when(outcome == "dg_" ~ "Amount given",
+        mutate(outcome_num = case_when(outcome == "dg" ~ 2,
+                                       outcome == "svo_t2" ~ 1,
+                                       TRUE ~ 4),
+               dv_units = case_when(outcome == "dg" ~ "Amount given",
                                     TRUE ~ "SVO angle")) %>% 
         select(-outcome)
       
@@ -1046,8 +1437,11 @@ processing_raw_data <- function(preference) {
       
       dat2_sum <- dat2 %>% 
         select(participant, age,female, dg_) %>% 
-        pivot_longer(dg_, names_to = "outcome", values_to = "resp") %>% 
-        filter(!is.na(resp)) %>% 
+        filter(!is.na(dg_) & !is.na(female) & !is.na(age)) %>% 
+        group_by(participant, age,female) %>% 
+        summarise(dg = sum(dg_),
+                  .groups = "drop") %>% 
+        pivot_longer(dg, names_to = "outcome", values_to = "resp") %>% 
         group_by(outcome) %>% 
         summarise(dv_correlation = cor(resp, age),
                   age_min = min(age),
@@ -1204,8 +1598,9 @@ processing_raw_data <- function(preference) {
       dat1 <- dat1 %>% 
         select(CaseID, age, ppgender, v8_c_1:v8_c_10) %>% 
         pivot_longer(v8_c_1:v8_c_10, names_to = "outcome", values_to = "resp") %>% 
-        filter(resp >= 0) %>% 
-        mutate(resp = 10 - resp) %>% 
+        filter(resp >= 0) %>% # invalid response (?)
+        mutate(resp = 10 - resp) %>%  # participants are aksed to enter how many tickets to give themselves
+        #"Enter the number (between 0 and 10) in the blue box that you would like to be given to you. "
         # calculate for each ID the mean response
         group_by(CaseID,age,ppgender) %>% 
         summarise(given = mean(resp),
@@ -1231,11 +1626,11 @@ processing_raw_data <- function(preference) {
                   middle_prop_female = mean(ppgender == "Female"))  
       
       dat1_sum_o <- dat1 %>% 
-        filter(age == "Age 70-79") %>% 
+        filter(age %in% c("Age 70-79", "Age 80 or older")) %>% 
         summarise(dv_old_mean = mean(given),
                   dv_old_sd = sd(given),
                   old_age_min = 70,
-                  old_age_max = 79,
+                  old_age_max = NA,
                   old_total_n = n(),
                   old_prop_female =  mean(ppgender == "Female")) 
       
@@ -1261,15 +1656,299 @@ processing_raw_data <- function(preference) {
     }
     
     
+    
+    # SOCIAL: OLESZKIEWICZ 2020 -----------------------------------------------
+    
+    data_oleszkiewicz <- function() {
+      
+      dat <- read_xlsx("data/raw_data/social/Oleszkiewicz_2020/data_s2.xlsx")
+      
+      # from tables 1 & 2
+      female_prop <- tibble(n = c(74,100,99,97),
+              prct_female = c(50,53,46.5,52.6))
+      
+      
+      
+        
+        
+      dat_oleszkiewicz <- dat %>% 
+        filter(!is.na(Offer) &
+                 !is.na(Age)) %>% 
+        summarise(dv_correlation = cor(Offer, Age),
+                  age_min = min(Age),
+                  mean_age = mean(Age),
+                  sd_age = sd(Age),
+                  age_max = max(Age),
+                  total_n = n(),
+                  .groups = "drop") %>% 
+        ungroup() %>% 
+        mutate(outcome_num = 1,
+               prop_female = weighted.mean(female_prop$prct_female,female_prop$n)/100,
+               dv_units = "Amount given",
+               first_author = "Oleszkiewicz",
+               year_of_publication = "2020",
+               title_of_article = "Sensory impairment reduces money sharing in the Dictator Game regardless of the recipient’s sensory status")
+      
+      
+      return(dat_oleszkiewicz)
+      
+    }
+    
+    
     # SOCIAL: COMBINE RAW DATA-------------------------------------------------------------------------
     
     
     dat_pref <- bind_rows(data_hellmann(),
                           data_kettner(),
+                          data_oleszkiewicz(),
                           data_long())
     
     
   }
+  
+  
+  
+  if (preference == "effort") { 
+    
+    # EFFORT: LOCKWOOD 2021 ---------------------------------------------------
+    
+    lockwood_data <- function() {
+      
+      dat_k <- read_xlsx("data/raw_data/effort/Lockwood_2021/k_values_2k1b.xlsx")
+      dat_dem <- read_xlsx("data/raw_data/effort/Lockwood_2021/lme_data_PM_young_old_final.xlsx", sheet = "Sheet2")
+      
+      
+      dat_lockwood_cor <- dat_k %>% 
+        left_join(dat_dem, by = "ID") %>% 
+        filter(!is.na(Age)) %>% 
+        summarise(dv_correlation = cor(self_k, Age),
+                  age_min = min(Age),
+                  mean_age = mean(Age),
+                  sd_age = sd(Age),
+                  age_max = max(Age),
+                  total_n = n(),
+                  prop_female =  mean(Gender == 2),
+                  .groups = "drop")%>% 
+        ungroup() 
+      
+      
+      dat_lockwood_y <- dat_k %>% 
+        left_join(dat_dem, by = "ID") %>% 
+        filter(!is.na(Age)) %>%  
+        filter(group == "young") %>% 
+        summarise(dv_young_mean = mean(self_k),
+                  dv_young_sd = sd(self_k),
+                  young_age_min = min(Age),
+                  young_mean_age = mean(Age),
+                  young_sd_age = sd(Age),
+                  young_age_max = max(Age),
+                  young_total_n = n(),
+                  young_prop_female = mean(Gender == 2),
+                  .groups = "drop") %>% 
+        ungroup()
+      
+      
+      dat_lockwood_o <- dat_k %>% 
+        left_join(dat_dem, by = "ID")%>% 
+        filter(!is.na(Age)) %>% 
+        filter(group == "old") %>% 
+        summarise(dv_old_mean = mean(self_k),
+                  dv_old_sd = sd(self_k),
+                  old_age_min = min(Age),
+                  old_mean_age = mean(Age),
+                  old_sd_age = sd(Age),
+                  old_age_max = max(Age),
+                  old_total_n = n(),
+                  old_prop_female = mean(Gender == 2),
+                  .groups = "drop") %>% 
+        ungroup()
+      
+      
+      
+      dat_lockwood <- bind_cols(dat_lockwood_cor, dat_lockwood_o, dat_lockwood_y)%>% 
+        mutate(outcome_num = 1,
+               dv_units = "Discounting rate",
+               first_author = "Lockwood",
+               year_of_publication = "2021",
+               title_of_article = "Aging Increases Prosocial Motivation for Effort")
+      
+      
+      return(dat_lockwood)
+      
+      
+    }
+    
+    
+    
+    # EFFORT: MCLAUGHLIN 2021 ---------------------------------------------------
+    
+    mclaughlin_data <- function() {
+      
+      dat_auc <- read_csv("data/raw_data/effort/McLaughlin_2021/LED-P2_AUC.csv", col_types =  cols())
+      dat_dem <- read_xlsx("data/raw_data/effort/McLaughlin_2021/LED_Demographics.xlsx")
+      dat_dem <- dat_dem %>% rename(Participant = Number)  %>% 
+        mutate(Age = as.numeric(Age))
+      dat_auc <- dat_auc %>% mutate(Participant = as.numeric(Participant),
+                                    AUC = as.numeric(AUC))
+      
+      
+      dat_mclaughlin_cor <- dat_auc %>% 
+        left_join(dat_dem, by = "Participant") %>% 
+        filter(!is.na(Age) & !is.infinite(AUC)) %>% 
+        summarise(dv_correlation = cor(AUC, Age),
+                  age_min = min(Age),
+                  mean_age = mean(Age),
+                  sd_age = sd(Age),
+                  age_max = max(Age),
+                  total_n = n(),
+                  prop_female =  mean(Sex == "Female"),
+                  .groups = "drop")%>% 
+        ungroup() 
+      
+      
+      dat_mclaughlin_y <- dat_auc %>% 
+        left_join(dat_dem, by = "Participant") %>% 
+        filter(!is.na(Age) & !is.infinite(AUC)) %>% 
+        filter(AgeGroup == "YA") %>% 
+        summarise(dv_young_mean = mean(AUC),
+                  dv_young_sd = sd(AUC),
+                  young_age_min = min(Age),
+                  young_mean_age = mean(Age),
+                  young_sd_age = sd(Age),
+                  young_age_max = max(Age),
+                  young_total_n = n(),
+                  young_prop_female = mean(Sex == "Female"),
+                  .groups = "drop") %>% 
+        ungroup()
+      
+      
+      dat_mclaughlin_o <- dat_auc %>% 
+        left_join(dat_dem, by = "Participant") %>% 
+        filter(!is.na(Age) & !is.infinite(AUC)) %>% 
+        filter(AgeGroup == "OA") %>% 
+        summarise(dv_old_mean = mean(AUC),
+                  dv_old_sd = sd(AUC),
+                  old_age_min = min(Age),
+                  old_mean_age = mean(Age),
+                  old_sd_age = sd(Age),
+                  old_age_max = max(Age),
+                  old_total_n = n(),
+                  old_prop_female = mean(Sex == "Female"),
+                  .groups = "drop") %>% 
+        ungroup()
+      
+      
+      dat_mclaughlin <- bind_cols(dat_mclaughlin_cor, dat_mclaughlin_o, dat_mclaughlin_y)%>% 
+        mutate(outcome_num = 1,
+               dv_units = "Area Under the Curve",
+               first_author = "McLaughlin",
+               year_of_publication = "2021",
+               title_of_article = "Measuring the Subjective Cost of Listening Effort Using a Discounting Task")
+      
+      
+      return(dat_mclaughlin)
+      
+      
+    }
+    
+    
+    
+    # EFFORT: SEAMAN 2016 ---------------------------------------------------
+    
+    seaman_data <- function() {
+      
+      
+      
+      dat <- read_csv("data/raw_data/effort/Seaman_2016/all_sublevel_data.csv", col_types =  cols())
+      dat <- dat %>% filter(task == "Effort_money")
+      
+      seaman_dat  <- dat %>% 
+        filter(!is.na(Age) & !is.na(k)) %>% 
+        summarise(dv_correlation = cor(k, Age),
+                  age_min = min(Age),
+                  mean_age = mean(Age),
+                  sd_age = sd(Age),
+                  age_max = max(Age),
+                  total_n = n(),
+                  prop_female =  mean(Sex == "F"),
+                  .groups = "drop")%>% 
+        ungroup()  %>% 
+        mutate(outcome_num = 1,
+               dv_units = "Discounting Rate",
+               first_author = "Seaman",
+               year_of_publication = "2016",
+               title_of_article = "Adult Age Differences in Decision Making Across Domains: Increased Discounting of Social and Health-Related Rewards")
+      
+      
+      return(seaman_dat)
+    }
+    
+    
+    # EFFORT: CHEN 2020 ---------------------------------------------------
+    
+    chen_data <- function() {
+      
+      
+      dat <- read_csv("data/raw_data/effort/Chen_2020/chen_2020_indifpoint_dat.csv", col_types =  cols())
+      
+      dat_chen_y <- dat %>% 
+        filter(age_group == "ya") %>% 
+        group_by(force_lvl, cond_domain) %>% 
+        summarise(dv_young_mean = mean(indif_point),
+                  dv_young_sd = sd(indif_point),
+                  young_mean_age = 23.1,
+                  young_sd_age = 4.56,
+                  young_total_n = n(),
+                  .groups = "drop") %>% 
+        ungroup() %>% 
+        arrange(desc(cond_domain),force_lvl) %>% 
+        mutate(outcome_num = 1:12) %>% 
+        select(-c(cond_domain,force_lvl))
+      
+      
+      dat_chen_o <- dat %>% 
+        filter(age_group == "oa") %>% 
+        group_by(force_lvl, cond_domain) %>% 
+        summarise(dv_old_mean = mean(indif_point),
+                  dv_old_sd = sd(indif_point),
+                  old_mean_age = 69,
+                  old_sd_age = 4.54,
+                  old_total_n = n(),
+                  .groups = "drop") %>% 
+        ungroup() %>% 
+        arrange(desc(cond_domain),force_lvl) %>% 
+        mutate(outcome_num = 1:12) %>% 
+        select(-c(cond_domain,force_lvl))
+      
+      
+      dat_chen <- left_join(dat_chen_o, dat_chen_y, 
+                            by = "outcome_num")%>% 
+        mutate(dv_units = "Indifference Point",
+               first_author = "Chen",
+               year_of_publication = "2020",
+               title_of_article = "Dopamine-Dependent Loss Aversion during Effort-Based Decision-Making")
+      
+      
+      return(dat_chen)
+    }
+    
+    
+    
+    
+    
+    
+    # EFFORT: COMBINE RAW DATA ----------------------------------------------
+    
+    dat_pref <- bind_rows(lockwood_data(),
+                          mclaughlin_data(),
+                          seaman_data(),
+                          chen_data())
+    
+    
+    
+  }
+  
+  
   
   
   # SAVE OUTPUT -------------------------------------------------------------

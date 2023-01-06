@@ -24,6 +24,37 @@ processing_plot_data <- function(preference) {
   
   if (preference == "risk") {
     
+    # RISK: ALBERT 2012 -------------------------------------------------------
+    
+    data_albert <- function() {
+      
+      dat <- read_csv("data/plots/risk/Albert_2012/Albert_2012_plots.csv",
+                      col_types = cols())
+      
+      dat_albert <- dat %>% 
+        rowwise() %>% 
+        mutate(group_id = unlist(str_split(group_id, "_"))[[1]]) %>% 
+        ungroup() %>%
+        # only use the prop.
+        rename(prop = mean) %>% 
+        mutate(prop = ifelse(prop > 100, 100, prop)) %>%  # accounting for plot extract innacuracy
+        group_by(group_id) %>% 
+        summarise(mean = mean(prop),
+                  sd = sd(prop)) %>% 
+        mutate(outcome_num = 1) %>% 
+        pivot_wider(outcome_num,
+                    names_from = group_id,
+                    values_from = c(mean, sd),
+                    names_glue = paste0("dv_","{group_id}_{.value}")) %>% 
+        mutate(first_author = "Albert",
+               year_of_publication = "2012",
+               title_of_article = "Differences in risk aversion between young and older adults")
+      
+      return(dat_albert)
+      
+    }
+    
+    
     # RISK: CAVANAGH 2012 -------------------------------------------------------
     
     data_cavanagh <- function() {
@@ -318,6 +349,7 @@ processing_plot_data <- function(preference) {
     # RISK: COMBINE PROCESSED PLOT DATA ----------------------------------------------
     
     dat_pref <-  bind_rows(data_cavanagh(),
+                           data_albert(),
                            data_dror(),
                            data_mikels(),
                            data_samanez_larkin(),
@@ -337,48 +369,69 @@ processing_plot_data <- function(preference) {
     
     # TIME: SPARROW 2019 ---------------------------------------------------
     
-    dat <- read_csv("data/plots/time/Sparrow_2019/Sparrow_2019_plots.csv",
-                    col_types = cols())
+    
+    # data_sparrow <- function(){
+    #   
+    #   
+    #   dat <- read_csv("data/plots/time/Sparrow_2019/Sparrow_2019_plots.csv",
+    #                   col_types = cols())
+    #   
+    #   dat_sparrow <- dat %>% 
+    #     filter(grepl("gain", group_id)) %>% # from the gain domain
+    #     rowwise() %>% 
+    #     mutate(group_id = unlist(str_split(group_id, "_"))[[1]]) %>% 
+    #     ungroup() %>% 
+    #     pivot_wider(names_from = group_id,
+    #                 values_from = c(mean,se,sd),
+    #                 names_glue = paste0("dv_","{group_id}_{.value}")) %>% 
+    #     select(dv_young_mean: dv_old_sd) %>% 
+    #     mutate(outcome_num = 1,
+    #            dv_units = "Reward Index",
+    #            first_author = "Sparrow",
+    #            year_of_publication = "2019",
+    #            title_of_article = "Acute stress and altruism in younger and older adults")
+    #   
+    #   return(dat_sparrow)
+    #   
+    # }
+    # 
     
     
-    dat_g <- dat %>% 
-      filter(grepl("gain", group_id)) %>% # from the gain domain
-      rowwise() %>% 
-      mutate(group_id = unlist(str_split(group_id, "_"))[[1]]) %>% 
-      ungroup() %>% 
-      pivot_wider(names_from = group_id,
-                  values_from = c(mean,se,sd),
-                  names_glue = paste0("dv_","{group_id}_{.value}")) %>% 
-      select(dv_young_mean: dv_old_sd) %>% 
-      mutate(outcome_num = 1)
+    # TIME: WESTBROOK 2013 -------------------------------------------------------------------
     
     
-    
-    
-    dat_l <- dat %>% 
-      filter(!grepl("gain", group_id)) %>% # from the loss domain
-      rowwise() %>% 
-      mutate(group_id = unlist(str_split(group_id, "_"))[[1]]) %>% 
-      ungroup() %>% 
-      pivot_wider(names_from = group_id,
-                  values_from = c(mean,se,sd),
-                  names_glue = paste0("dv_","{group_id}_{.value}")) %>% 
-      select(dv_young_mean: dv_old_sd) %>% 
-      mutate(outcome_num = 2)
-    
-    
-    
-    dat_sparrow <- bind_rows(dat_g, dat_l) %>% 
-      mutate(dv_units = "Reward Index",
-             first_author = "Sparrow",
-             year_of_publication = "2019",
-             title_of_article = "Acute stress and altruism in younger and older adults")
-    
+    data_westbrook <- function() {
+      
+      
+      
+      dat <- read_csv("data/plots/time/Westbrook_2013/Westbrook_2013_plots.csv",
+                      col_types = cols())
+      
+      dat_westbrook <- dat %>% 
+        filter(!grepl("2", filename) & grepl("disc", variable)) %>% 
+        rowwise() %>% 
+        select(-c(n, filename, variable,r)) %>% 
+        ungroup() %>% 
+        pivot_wider(names_from = group_id,
+                    values_from = c(mean,se,sd),
+                    names_glue = paste0("dv_","{group_id}_{.value}")) %>% 
+        select(dv_old_mean: dv_young_sd) %>% 
+        mutate(outcome_num = 1,
+               dv_units = "Area Under the Curve",
+               first_author = "Westbrook",
+               year_of_publication = "2013",
+               title_of_article = "What Is the Subjective Cost of Cognitive Effort? Load,Trait, and Aging Effects Revealed by Economic Preference")
+      
+      
+      
+      
+      return(dat_westbrook)
+    }    
     
     
     # TIME: COMBINE PROCESSED PLOT DATA ----------------------------------------------
     
-    dat_pref <- dat_sparrow
+    dat_pref <-  data_westbrook()
     
     
   }
@@ -424,6 +477,94 @@ processing_plot_data <- function(preference) {
   
   
   
+  if (preference == "effort") {
+    
+    # EFFORT: HESS 2021 ---------------------------------------------------
+    
+    data_hess <- function() {
+      
+      dat <- read_csv("data/plots/effort/Hess_2021/Hess_2021_plots.csv",
+                      col_types = cols())
+      
+      
+      dat_hess <- dat %>% 
+        rowwise() %>% 
+        mutate(cog_level = unlist(str_split(group_id, "_"))[[2]],
+               group_id = unlist(str_split(group_id, "_"))[[3]]) %>% 
+        select(-c(n, filename)) %>% 
+        ungroup() %>% 
+        pivot_wider(names_from = group_id,
+                    values_from = c(mean,se,sd),
+                    names_glue = paste0("dv_","{group_id}_{.value}")) %>% 
+        select(dv_old_mean: dv_young_sd,cog_level) %>% 
+        mutate(outcome_num = as.numeric(cog_level) -3,
+               dv_units = "Subjective value",
+               first_author = "Hess",
+               year_of_publication = "2021",
+               title_of_article = "Predictors of Engagement in Young and Older Adults: The Role ofSpecific Activity Experience") %>% 
+        select(-cog_level)
+      
+      return(dat_hess)
+      
+    }
+    
+    # EFFORT: WESTBROOK 2013 ---------------------------------------------------
+    
+    
+    data_westbrook <- function() {
+      
+      
+      
+      dat <- read_csv("data/plots/effort/Westbrook_2013/Westbrook_2013_plots.csv",
+                      col_types = cols())
+      
+      
+      dat_a <- dat %>% 
+        filter(grepl("2", filename)) %>% 
+        rowwise() %>% 
+        mutate(cog_level = unlist(str_split(group_id, "_"))[[2]],
+               group_id = unlist(str_split(group_id, "_"))[[3]]) %>% 
+        select(-c(n, filename)) %>% 
+        ungroup() %>% 
+        pivot_wider(names_from = group_id,
+                    values_from = c(mean,se,sd),
+                    names_glue = paste0("dv_","{group_id}_{.value}")) %>% 
+        select(dv_old_mean: dv_young_sd,cog_level) %>% 
+        mutate(outcome_num = as.numeric(cog_level) -1,
+               dv_units = "Subjective value",
+               first_author = "Westbrook",
+               year_of_publication = "2013",
+               title_of_article = "What Is the Subjective Cost of Cognitive Effort? Load,Trait, and Aging Effects Revealed by Economic Preference") %>% 
+        select(-cog_level)
+      
+      dat_b <- dat %>% 
+        filter(!grepl("2", filename) & grepl("effort", variable)) %>% 
+        rowwise() %>% 
+        select(-c(n, filename, variable,r)) %>% 
+        ungroup() %>% 
+        pivot_wider(names_from = group_id,
+                    values_from = c(mean,se,sd),
+                    names_glue = paste0("dv_","{group_id}_{.value}")) %>% 
+        select(dv_old_mean: dv_young_sd) %>% 
+        mutate(outcome_num = 4,
+               dv_units = "Area Under the Curve",
+               first_author = "Westbrook",
+               year_of_publication = "2013",
+               title_of_article = "What Is the Subjective Cost of Cognitive Effort? Load,Trait, and Aging Effects Revealed by Economic Preference")
+      
+      
+      
+      dat_westbrook <- bind_rows(dat_a, dat_b)
+      
+      return(dat_westbrook)
+    }
+    
+    # EFFORT: COMBINE PROCESSED PLOT DATA ----------------------------------------------
+    
+    dat_pref <-  bind_rows(data_hess(),
+                           data_westbrook())
+    
+  }
   # SAVE OUTPUT -------------------------------------------------------------
   
   write_csv(dat_pref, sprintf("data/plots/%s/processed_plot_data_%s.csv", preference, preference)) 

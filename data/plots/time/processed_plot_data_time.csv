@@ -1,3 +1,2 @@
-dv_young_mean,dv_old_mean,dv_young_se,dv_old_se,dv_young_sd,dv_old_sd,outcome_num,dv_units,first_author,year_of_publication,title_of_article
-69.84536082474226,68.04123711340205,5.154639175257728,5.412371134020631,30.927835051546367,32.47422680412379,1,Reward Index,Sparrow,2019,Acute stress and altruism in younger and older adults
-80.92783505154637,89.17525773195875,4.381443298969089,2.835051546391753,26.28865979381453,17.01030927835052,2,Reward Index,Sparrow,2019,Acute stress and altruism in younger and older adults
+dv_old_mean,dv_young_mean,dv_old_se,dv_young_se,dv_old_sd,dv_young_sd,outcome_num,dv_units,first_author,year_of_publication,title_of_article
+0.3350299401197605,0.41338499471644946,0.03902910226513309,0.06340824208839455,0.15611640906053237,0.2614388796651861,1,Area Under the Curve,Westbrook,2013,"What Is the Subjective Cost of Cognitive Effort? Load,Trait, and Aging Effects Revealed by Economic Preference"

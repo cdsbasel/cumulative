@@ -27,12 +27,17 @@ plot_year_cma <- function(m_list) {
   
   
   if (sum(grepl("risk", tolower(unique(dat$preference)))) == 1) {
-    dat$preference = factor(dat$preference, levels=c('risk','time','social'))
+    dat$preference = factor(dat$preference, levels=c('risk','time','social', 'effort'))
   }
   
+
   # choosing color palette
-  col_pal <- case_when(sum(grepl("risk", unique(dat$preference))) == 1 ~c("#2AB7CA","#4D5382", "#D5573B"),
-                       sum(grepl("risk", tolower(unique(dat$preference)))) != 1 ~c("#2AB7CA","#2AB7CA", "#2AB7CA"))
+  if (sum(grepl("risk", tolower(unique(dat$preference)))) == 1) {
+    col_pal <- c("#2AB7CA","#4D5382", "#D5573B", "#9F7131")
+    
+  } else {
+    col_pal <-c("#2AB7CA","#2AB7CA", "#2AB7CA")}
+  
   
   p <-  dat %>% ggplot()+ 
     # add effect sizes & 95 Ci

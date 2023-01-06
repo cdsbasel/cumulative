@@ -20,11 +20,11 @@
 covidence_extraction_format <- function(preference) {
   
   
-  cols <- read_xlsx("data/study_data_codebook.xlsx", sheet = "codebook") #order of columns
+  
   
   if (preference == "risk") {
     
-    
+    cols <- read_xlsx("data/study_data_codebook.xlsx", sheet = "codebook") #order of columns
     
     # RISK --------------------------------------------------------------------
     dat <- read_csv("data/covidence/risk_ageing_extracted.csv", col_types = cols())
@@ -69,7 +69,7 @@ covidence_extraction_format <- function(preference) {
   
   if (preference == "time") {
     
-    
+    cols <- read_xlsx("data/study_data_codebook.xlsx", sheet = "codebook") #order of columns
     
     # TIME --------------------------------------------------------------------
     
@@ -117,6 +117,8 @@ covidence_extraction_format <- function(preference) {
   
   if (preference == "social") {
     
+    cols <- read_xlsx("data/study_data_codebook.xlsx", sheet = "codebook") #order of columns
+    
     # SOCIAL --------------------------------------------------------------------
     
     dat <- read_csv("data/covidence/social_ageing_extracted.csv", col_types = cols())
@@ -157,6 +159,53 @@ covidence_extraction_format <- function(preference) {
       filter(!is.na(pub_id))
     
   }
+  
+  if (preference == "effort") {
+    
+    
+    cols <- read_xlsx("data/study_data_codebook.xlsx", sheet = "codebook_effort") #order of columns
+    
+    # EFFORT --------------------------------------------------------------------
+    
+    dat <- read_csv("data/covidence/effort_ageing_extracted.csv", col_types = cols())
+    
+    #cleaning columns names
+    dat <- clean_names(dat)
+    colnames(dat)[614:781] <- paste0("dv_", colnames(dat)[614:781]) # indicate that these last columns are related to the outcome of interest  
+    
+    
+    dat_l <- dat %>% 
+      select(first_author:dv_summary_stats_in_figure_outcome_12) %>% 
+      mutate_all(., as.character()) %>% 
+      mutate_if(is.logical, as.character) %>%
+      mutate_if(is.double, as.character) %>% 
+      pivot_longer(-c(first_author:title_of_article),
+                   names_to = "var",
+                   values_to = "val") %>% 
+      rowwise() %>% 
+      mutate(outcome_num = unlist(str_split(var, "_outcome_", n = 2))[2],
+             info = unlist(str_split(var, "_outcome_", n = 2))[1]) %>% 
+      ungroup() %>% 
+      filter(!is.na(val)) %>% 
+      select(-var)
+    
+    #publication ID
+    pub_id <- dat_l %>% distinct(title_of_article) %>% mutate(pub_id = as.character(1:n()))
+    
+    dat_lw <- dat_l %>% pivot_wider(names_from = info, values_from = val) %>% 
+      left_join(pub_id, by = "title_of_article") %>% 
+      rename(domain_frame = frame)
+    
+    # place columns in the correct order
+    df <- data.frame(matrix(nrow = 1, ncol = nrow(cols)))
+    colnames(df) <- cols$column_name
+    df <- df %>% 
+      bind_rows(dat_lw) %>% 
+      filter(!is.na(pub_id))
+    
+  }
+  
+  
   
   
   

@@ -12,7 +12,7 @@
 # library(tidyverse) # for data wrangling and plotting 
 
 
-plot_year_ma <- function(m_list, rho) {
+plot_year_ma <- function(m_list) {
   
   l <- NULL
   dat <- NULL
@@ -20,13 +20,14 @@ plot_year_ma <- function(m_list, rho) {
   for (m_name in m_list) {
     
     m <- read_rds(m_name)
-    
+
+    # aggregate by year
     agg_yr <- aggregate(m$data,
                         cluster=year_of_publication, # year-level estimates
                         V=vcov(m, type="obs"), #returns the marginal variance-covariance matrix of the observed effect sizes or outcomes
                         addk=TRUE) # count
     
-    
+    agg_yr <- summary(agg_yr)
     l <- bind_rows(l, agg_yr)
     
     
@@ -36,20 +37,22 @@ plot_year_ma <- function(m_list, rho) {
   
   
   l <- l %>%
-    mutate(estimate = yi,
-           ci.ub = yi + (1.96*sqrt(vi)),
-           ci.lb = yi - (1.96*sqrt(vi)),
+    rename(estimate = yi,
            slab = year_of_publication)
   
   
   if (sum(grepl("risk", tolower(unique(l$pref)))) == 1) {
-    l$pref = factor(l$pref, levels=c('risk','time','social'))
+    l$pref = factor(l$pref, levels=c('risk','time','social', 'effort'))
     
   }
   
+
   # choosing color palette
-  col_pal <- case_when(sum(grepl("risk", tolower(unique(l$pref)))) == 1 ~c("#2AB7CA","#4D5382", "#D5573B"),
-                       sum(grepl("risk", tolower(unique(l$pref)))) != 1 ~c("#2AB7CA","#2AB7CA", "#2AB7CA"))
+  if (sum(grepl("risk", tolower(unique(l$pref)))) == 1) {
+    col_pal <- c("#2AB7CA","#4D5382", "#D5573B", "#9F7131")
+    
+  } else {
+    col_pal <-c("#2AB7CA","#2AB7CA", "#2AB7CA")}
   
   
   p <- l %>% 

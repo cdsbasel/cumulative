@@ -42,15 +42,17 @@ plot_temp_trend <- function(m_list) {
   
   
   # direction of effect sizes label
-  es_dir_txt <- tibble( x= rep(c(1986),length(unique(dat$pref))*2),
-                        y = rep(c(-.35, .35), each = length(unique(dat$pref))),
+  es_dir_txt <- tibble( x= rep(c(1985),length(unique(dat$pref))*2),
+                        y = rep(c(-.5, .5), each = length(unique(dat$pref))),
                         pref = rep(unique(dat$pref),2), 
                         label=rep(c("Decreases\nwith age","Increases\nwith age"),each = length(unique(dat$pref))))
   
-
   # choosing color palette
-  col_pal <- case_when(sum(grepl("risk", tolower(unique(dat$pref)))) == 1 ~c("#2AB7CA","#4D5382", "#D5573B"),
-                       sum(grepl("risk", tolower(unique(dat$pref)))) != 1 ~c("#2AB7CA","#2AB7CA", "#2AB7CA"))
+  if (sum(grepl("risk", tolower(unique(dat$pref)))) == 1) {
+    col_pal <- c("#2AB7CA","#4D5382", "#D5573B", "#9F7131")
+    
+  } else {
+    col_pal <-c("#2AB7CA","#2AB7CA", "#2AB7CA")}
   
   
   if (sum(grepl("risk", tolower(unique(dat$pref)))) == 1) {
@@ -58,12 +60,13 @@ plot_temp_trend <- function(m_list) {
   risk_lab <- unique(dat$pref)[grepl("risk", tolower(unique(dat$pref)))]
   time_lab <- unique(dat$pref)[grepl("time", tolower(unique(dat$pref)))]
   social_lab <- unique(dat$pref)[grepl("social", tolower(unique(dat$pref)))]
+  effort_lab <- unique(dat$pref)[grepl("effort", tolower(unique(dat$pref)))]
   
-  dat$pref <- factor(dat$pref, levels=c(risk_lab,time_lab,social_lab))
+  dat$pref <- factor(dat$pref, levels=c(risk_lab,time_lab,social_lab, effort_lab))
   
-  df$pref <- factor(df$pref, levels=c(risk_lab,time_lab,social_lab))
+  df$pref <- factor(df$pref, levels=c(risk_lab,time_lab,social_lab, effort_lab))
   
-  es_dir_txt$pref <- factor(es_dir_txt$pref, levels=c(risk_lab,time_lab,social_lab))
+  es_dir_txt$pref <- factor(es_dir_txt$pref, levels=c(risk_lab,time_lab,social_lab, effort_lab))
   
   }
   
@@ -75,16 +78,16 @@ plot_temp_trend <- function(m_list) {
     geom_hline(yintercept = setdiff(seq(-.5,.5,.25),0),
                linetype = "solid", color = "grey80", size = 0.2) +
     # add raw es points and predictions
-    geom_jitter(data = dat, aes(y = cor_yi, x = year_of_publication, color = pref),
+    geom_jitter(data = dat, aes(y = cor_yi, x = 2022-(dec_in_print*10), color = pref),
                 height = 0, width = .25, alpha = .2, size = 1.25)+
     geom_ribbon(data = df, 
-                aes(x = year_of_publication, ymin = ci.lb, ymax = ci.ub, fill = pref), alpha = .3) +
+                aes(x = 2022-(dec_in_print*10), ymin = ci.lb, ymax = ci.ub, fill = pref), alpha = .3) +
     geom_line(data = df, 
-              aes(x = year_of_publication, y = pred, color = pref), size = .75) +
+              aes(x = 2022-(dec_in_print*10), y = pred, color = pref), size = .75) +
     # add effect size direction label
     geom_text(data = es_dir_txt, 
               aes(x = x, y = y, label = label), 
-              angle = 90, size = 1.5, color = "grey50",
+              angle = 90, size = 2.6, color = "grey20",
               lineheight = .75,
               fontface = "italic") + 
     scale_color_manual(values = col_pal) +
