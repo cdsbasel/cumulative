@@ -1,4 +1,4 @@
-# Age Differences in Economic Preferences: Cumulative meta-analyses of risk, time, and social preferences (Bagaïni et al., 2022)
+# Age Differences in Economic Preferences: Cumulative meta-analyses of risk, time, social, and effort preferences (Bagaïni et al., 2022)
 This repository contains all the scripts and data files used to conduct the anaylses reported in the manuscript
 
  ## Files & Folders
