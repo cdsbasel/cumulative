@@ -916,7 +916,7 @@ p_val
 
 
 ### Proteus Phenomenon: Effort Discounting
-We followed the approach by Koricheva et al. (2013) and compared the effect size and variance of the first study ( Study 1 in Westbrook et at., 2013) with the mean effect size and variance of the rest of the studies.
+We followed the approach by Koricheva et al. (2013) and compared the effect size and variance of the first article (Westbrook et at., 2013) with the mean effect size and variance of the rest of the studies.
 ```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 # get data
 dat <- read_csv("data/summary/effort/effect_sizes_effort.csv",col_types = cols())
@@ -965,7 +965,7 @@ p_val
 
 
 ### Citations
-
+Using citation data from Google Scholar we analysed the link between and article's yearly citations with its (aggregated) effect size and (average) sample size.
 ```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
 source("code/01_cit_regression.R")
 ```
