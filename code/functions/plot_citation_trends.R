@@ -1,4 +1,6 @@
 
+#library(tidyverse)
+
 plot_citation_trends <- function(data) {
 
 
@@ -107,7 +109,7 @@ pB <- es_cit_dat_pub %>%
   # scale_x_continuous(limits = c(-.75,.75), expand = c(0,0), breaks = seq(-.75,.75,.25)) +
   scale_y_log10(expand = c(0.01,0.01)) +
   scale_x_continuous(expand = c(0.01,0.01)) +
-  coord_cartesian(ylim  = c(1,50))  +
+  coord_cartesian(ylim  = c(1,80))  +
   # scale_y_continuous(limits = c(-1,1), breaks = seq(-1,1,.5)) +
   labs(color = "PREFERENCE", x = "Aggregated Effect Size", y = "Median Yearly Citation (log10)",
        # caption = sprintf("Data based on %d publications",nrow(es_cit_dat_pub)),
@@ -151,7 +153,7 @@ pC <- es_cit_dat_pub %>%
   scale_x_log10(expand = c(0.01,0.01)) +
   # scale_x_log10(breaks = c(10,100,1000, 10000), limits = c(10,50000),expand = c(0.01,0.01)) +
   scale_y_log10(expand = c(0.01,0.01)) +
-  coord_cartesian(ylim  = c(1,50))  +
+  coord_cartesian(ylim  = c(1,80))  +
   # scale_y_continuous(limits = c(-1,1), breaks = seq(-1,1,.5)) +
   labs(color = "PREFERENCE", x = "Sample Size (log10)", y = "Median Yearly Citation (log10)",
        # caption = sprintf("Data based on %d publications", nrow(es_cit_dat_pub)),
